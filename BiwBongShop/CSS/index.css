@@ -1,0 +1,191 @@
+/* ====== Variables ====== */
+:root {
+  --bg: #2ce78a;
+  --card: #baf874;
+  --text: #0b0b0b;
+  --border: #000000;
+  --primary: #20c997;
+  --primary-hover: #159c79;
+  --danger-hover: #a51717;
+  --muted: #888;
+  --shadow: 0 4px 12px #0000001a;
+  --radius: 12px;
+}
+
+/* ====== Reset & Base ====== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  min-height: 100svh;
+  /* แทน 100vh เพื่อแก้ปัญหาบนมือถือ */
+  display: grid;
+  place-items: center;
+  /* จัดกึ่งกลางแนวตั้ง+แนวนอน */
+  color: var(--text);
+}
+
+/* ====== Card ====== */
+.login-container {
+  background: var(--card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: min(92vw, 360px);
+  /* ปรับความกว้างแบบยืดหยุ่น */
+  text-align: center;
+}
+
+.login-container h1 {
+  margin: 0 0 1.5rem 0;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* ====== Form ====== */
+form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+form label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+form input {
+  width: 100%;
+  /* จากเดิม 75% -> เต็มแถวเพื่ออ่านง่าย */
+  padding: 0.6rem 0.75rem;
+  margin: 0;
+  /* ช่องว่างจัดด้วย gap ของ grid */
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  box-sizing: border-box;
+  text-align: left;
+  /* พิมพ์สะดวกขึ้น */
+}
+
+/* ====== Password field + Toggle ====== */
+.password-container {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+.password-container input {
+  width: 100%;
+  padding-right: 2.5rem;
+  /* เผื่อพื้นที่ไอคอนขวา */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* จาก -85% -> -50% ให้อยู่กึ่งกลางจริง */
+  cursor: pointer;
+  user-select: none;
+  font-size: 18px;
+  color: var(--muted);
+  transition: color 0.2s ease;
+  background: transparent;
+  border: 0;
+  line-height: 1;
+}
+
+.toggle-password:hover {
+  color: #000;
+}
+
+/* ====== Button ====== */
+form button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: filter 0.2s ease, background-color 0.2s ease;
+}
+
+form button:hover {
+  filter: brightness(1);
+}
+
+form button:active {
+  filter: brightness(1);
+}
+
+/* ====== Links / Paragraph ====== */
+p {
+  margin-top: 1rem;
+}
+
+p a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+/* ====== Focus Visible (เข้าถึงได้ดีขึ้น) ====== */
+:focus-visible {
+  outline: 3px solid #0e766e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ลดแอนิเมชันสำหรับผู้ใช้ที่ไม่ต้องการ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 480px) {
+  .login-container {
+    width: min(90vw, 360px);
+    padding: 1.5rem;
+  }
+
+  form button {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .login-container {
+    width: min(84vw, 420px);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1279px) {
+  .login-container {
+    width: min(70vw, 420px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .login-container {
+    width: 420px;
+  }
+}

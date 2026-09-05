@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>💧 ประวัติการใช้น้ำ · BiwBong Utilities</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- =====================================================
+         Navbar
+    ====================================================== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+        />
+
+        <!-- Title -->
+        <h1 class="text-lg font-bold sm:text-xl md:text-2xl">
+          ระบบคำนวณ ค่าใช้จ่าย BiwBong Utilities
+        </h1>
+      </div>
+
+      <!-- =================================================
+             Drawer
+        ================================================== -->
+      <div
+        id="navDrawer"
+        aria-hidden="true"
+        class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+
+            เมนู
+          </span>
+
+          <!-- Close -->
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ➕ เพิ่มข้อมูลมิเตอร์
+          </a>
+
+          <a
+            href="/summary"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📊 สรุปรวม
+          </a>
+
+          <a
+            href="/history-electric"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ⚡ ประวัติการใช้ไฟฟ้า
+          </a>
+
+          <a
+            href="/history-water"
+            class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            💧 ประวัติการใช้น้ำ
+          </a>
+
+          <a
+            href="/graph-electric"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📉 กราฟการใช้ไฟฟ้า
+          </a>
+
+          <a
+            href="/graph-water"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📈 กราฟการใช้น้ำ
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- =====================================================
+         Backdrop
+    ====================================================== -->
+    <div
+      id="backdrop"
+      class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    ></div>
+
+    <!-- =====================================================
+         Main Content
+    ====================================================== -->
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:py-12">
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-8 text-center text-white"
+        >
+          <h2 class="text-2xl font-extrabold sm:text-3xl md:text-4xl">
+            💧 ประวัติการใช้น้ำ
+          </h2>
+
+          <p id="status" class="mt-2 text-sm text-green-50 sm:text-base">
+            กำลังโหลดข้อมูล…
+          </p>
+        </div>
+
+        <!-- =================================================
+                 Table
+            ================================================== -->
+        <div class="p-4 sm:p-6 lg:p-8">
+          <div
+            class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm"
+          >
+            <table
+              id="table"
+              class="min-w-[1000px] w-full border-collapse text-sm"
+            >
+              <!-- Table Header -->
+              <thead>
+                <tr class="bg-gray-100 text-gray-700">
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-left font-bold"
+                  >
+                    รอบเดือน
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-right font-bold"
+                  >
+                    มิเตอร์
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-right font-bold"
+                  >
+                    มิเตอร์เดือนก่อน
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-right font-bold"
+                  >
+                    จำนวนหน่วย
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-center font-bold"
+                  >
+                    ราคาที่คำนวณแล้ว
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-center font-bold"
+                  >
+                    วันลง
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-center font-bold"
+                  >
+                    แก้ไข
+                  </th>
+
+                  <th
+                    class="whitespace-nowrap border-b border-gray-200 px-4 py-4 text-center font-bold"
+                  >
+                    ลบ
+                  </th>
+                </tr>
+              </thead>
+
+              <!-- Table Body -->
+              <tbody class="divide-y divide-gray-100 bg-white">
+                <!-- JS จะเพิ่มข้อมูลตรงนี้ -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+         Footer
+    ====================================================== -->
+    <footer class="border-t bg-white py-6 text-center text-sm text-gray-500">
+      <p>© 2025 Phuwanat Pahala. All rights reserved</p>
+    </footer>
+
+    <!-- =====================================================
+         Scripts
+    ====================================================== -->
+
+    <script src="JS/history-water.js" defer></script>
+
+    <script src="JS/nav.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>เข้าสู่ระบบ · ระบบจัดการอุปกรณ์</title>
+
+    <link rel="icon" type="image/png" href="/image/logo.png" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50"
+  >
+    <!-- =====================================================
+         Login Container
+    ====================================================== -->
+    <main class="flex min-h-screen items-center justify-center px-4 py-8">
+      <div
+        class="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-gray-100"
+      >
+        <!-- =================================================
+                 Header
+            ================================================== -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-8 text-center text-white"
+        >
+          <!-- Logo -->
+          <div class="mb-4 flex justify-center">
+            <img
+              src="/image/logo.png"
+              alt="Logo"
+              class="h-20 w-20 rounded-full bg-white object-contain p-2 shadow-lg"
+            />
+          </div>
+
+          <h1 class="text-2xl font-extrabold sm:text-3xl">ระบบจัดการอุปกรณ์</h1>
+
+          <p class="mt-2 text-lg font-medium text-green-50">เข้าสู่ระบบ</p>
+        </div>
+
+        <!-- =================================================
+                 Login Form
+            ================================================== -->
+        <div class="px-6 py-8 sm:px-8">
+          <form id="loginForm" class="space-y-5">
+            <!-- Username -->
+            <div>
+              <label
+                for="username"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                ชื่อผู้ใช้
+              </label>
+
+              <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                autocomplete="username"
+                placeholder="กรอกชื่อผู้ใช้"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-800 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-200"
+              />
+            </div>
+
+            <!-- Password -->
+            <div>
+              <label
+                for="password"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                รหัสผ่าน
+              </label>
+
+              <div class="relative">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  autocomplete="current-password"
+                  placeholder="กรอกรหัสผ่าน"
+                  class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 pr-12 text-gray-800 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-200"
+                />
+
+                <!-- Toggle Password -->
+                <button
+                  type="button"
+                  id="togglePassword"
+                  class="absolute right-3 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-lg px-2 py-1 text-xl transition hover:bg-gray-100"
+                  aria-label="แสดงรหัสผ่าน"
+                >
+                  🙈
+                </button>
+              </div>
+            </div>
+
+            <!-- Login Button -->
+            <button
+              type="submit"
+              class="w-full rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-6 py-3.5 text-lg font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
+            >
+              เข้าสู่ระบบ
+            </button>
+
+            <!-- Forgot Password -->
+            <div class="pt-1 text-right">
+              <a
+                href="forgotPassword.html"
+                id="forgotPasswordLink"
+                class="font-medium text-blue-600 underline transition hover:text-blue-800"
+              >
+                ฉันลืมรหัสผ่าน
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- =====================================================
+         SweetAlert2
+    ====================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Authentication -->
+    <script src="JS/auth.js"></script>
+
+    <!-- Login -->
+    <script src="JS/login.js"></script>
+  </body>
+</html>

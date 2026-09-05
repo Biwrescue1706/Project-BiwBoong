@@ -1,0 +1,211 @@
+/* ================= Variables ================= */
+:root {
+  --bg: #46e2a1;
+  --card: #fff;
+  --text: #000;
+  --shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  --radius: 12px;
+  --head-bg: #00bcd4;
+  --head-text: #fff;
+  --row-alt: #f7faf8;
+  --row-hover: #eef7f0;
+  --border: #d0d7de;
+  --btn: #ff9800;
+  --btn-hover: #e68900;
+  --ok: #28a745;
+  --warn: #dc3545;
+}
+
+/* ================= Base ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ================= Container ================= */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 20px auto;
+  background: var(--card);
+  padding: clamp(18px, 3vw, 34px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ================= Heading ================= */
+h1 {
+  margin: 0 0 16px;
+  text-align: center;
+  color: var(--texts);
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1;
+}
+
+/* ================= Table Wrapper ================= */
+.table-wrap {
+
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+
+}
+
+/* ================= Table ================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+
+  table-layout: fixed;
+}
+
+thead {
+  background: var(--head-bg);
+  color: var(--head-text);
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 12px 14px;
+  text-align: center;
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  font-size: clamp(14px, 1.6vw, 16px);
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+tbody tr:nth-child(even) {
+  background: var(--row-alt);
+}
+
+tbody tr:hover {
+  background: var(--row-hover);
+}
+
+/* ================= Status Tags ================= */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tag.returned {
+  background: var(--ok);
+}
+
+.tag.borrowing {
+  background: var(--warn);
+}
+
+/* ================= Return Button ================= */
+.return-btn {
+  background: var(--btn);
+  color: #fff;
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, transform .05s ease;
+}
+
+.return-btn:hover {
+  background: var(--btn-hover);
+}
+
+.return-btn:active {
+  transform: translateY(1px);
+}
+
+/* ================= Accessibility ================= */
+:focus-visible {
+  outline: 3px solid #0e766e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ================= Breakpoints ================= */
+/* 481–768px : Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    padding: 22px;
+  }
+
+  th,
+  td {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+}
+
+/* 769–1279px : Laptop */
+@media (min-width: 769px) and (max-width: 1279px) {
+  .container {
+    max-width: 1200px;
+    padding: 24px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  th,
+  td {
+    font-size: 15px;
+  }
+}
+
+/* ≥1280px : Desktop XL */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1400px;
+  }
+    th,
+  td {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+}

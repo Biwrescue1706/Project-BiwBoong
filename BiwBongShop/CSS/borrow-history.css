@@ -1,0 +1,206 @@
+/* ================= Variables ================= */
+:root {
+  --bg: #46e2a1;
+  --card: #fff;
+  --text: #0f172a;
+  --shadow: 0 2px 12px #000000;
+  --radius: 12px;
+
+  --head-bg: #f0ed35;
+  --head-text: #ff0000;
+  --row-alt: #ffffff;
+  --row-hover: #eef7f0;
+  --border: #000000;
+
+  --btn-bg: #ff9800;
+  --btn-bg-hover: #e68900;
+
+  --ok: #178a2f;
+  --bad: #000000;
+  --bad-row: #000000;
+}
+
+/* ================= Reset & Base ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  margin: 0;
+  padding: 20px;
+  color: var(--text);
+}
+
+/* ================= Container ================= */
+.container {
+  max-width: 1400px;
+  margin: 10px auto;
+  background: var(--card);
+  padding: clamp(18px, 3vw, 34px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ================= Heading ================= */
+h1 {
+  text-align: center;
+  margin: 0 0 20px;
+  color: var(--texts);
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.2;
+}
+
+/* ================= Table Wrap ================= */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+}
+
+/* ================= Table ================= */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+
+  table-layout: fixed;
+}
+
+thead {
+  background-color: var(--head-bg);
+  color: var(--head-text);
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  font-size: clamp(14px, 1.6vw, 16px);
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+tbody tr:nth-child(even) {
+  background-color: var(--row-alt);
+}
+
+tbody tr:hover {
+  background-color: var(--row-hover);
+}
+
+/* ================= Status ================= */
+.returned {
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.not-returned {
+  color: var(--bad);
+  font-weight: 700;
+}
+
+tr.not-returned-row {
+  background-color: var(--bad-row);
+}
+
+/* ================= Button ================= */
+.return-btn {
+  background-color: var(--btn-bg);
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: clamp(13px, 1.6vw, 15px);
+  transition: filter .15s ease, background-color .2s ease, transform .05s ease;
+}
+
+.return-btn:hover {
+  background-color: var(--btn-bg-hover);
+}
+
+.return-btn:active {
+  transform: translateY(1px);
+}
+
+/* ================= Accessibility ================= */
+:focus-visible {
+  outline: 3px solid #0e766e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ================= Media Queries ================= */
+
+/* Tablet (481px–768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    padding: 22px;
+  }
+
+  th,
+  td {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .return-btn {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+/* Notebook / Tablet แนวนอน (769px–1279px) */
+@media (min-width: 769px) and (max-width: 1279px) {
+  .container {
+    max-width: 1000px;
+    padding: 24px;
+  }
+
+  th,
+  td {
+    font-size: 15px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .return-btn {
+    font-size: 15px;
+    padding: 8px 14px;
+  }
+}
+
+/* Desktop XL (≥1280px) */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1400px;
+  }
+
+  th,
+  td {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  .return-btn {
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+}

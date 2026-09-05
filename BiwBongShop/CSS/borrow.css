@@ -1,0 +1,218 @@
+/* ================== variables ================== */
+:root {
+  --bg: #46e2a1;
+  --card: #ffffff;
+  --btn-bg: #6fd53f;
+  --btn-bg-hover: #51ff00;
+  --text: #000;
+  --head-bg: #53ff04;
+  --head-text: #000;
+  --row-alt: #f7faf9;
+  --row-hover: #eef7f3;
+  --border: #d0d7de;
+  --shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  --radius: 12px;
+  --btn-text: #ffffffff;
+}
+
+/* ================ base & layout ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  margin: 10px;
+  padding: 0;
+  color: var(--text);
+}
+
+.container {
+  background-color: var(--card);
+  padding: clamp(20px, 3vw, 40px) clamp(16px, 4vw, 50px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  max-width: 1400px;
+  margin: 10px auto;
+}
+
+/* ================ heading ================= */
+h2 {
+  text-align: center;
+  margin: 0 0 16px;
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  line-height: 1.2;
+}
+
+/* ================= table ================== */
+.table-wrap {
+  overflow-x: auto;
+  /* เผื่อคอลัมน์เยอะบนจอแคบ */
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+}
+
+thead {
+  background-color: var(--head-bg);
+  color: var(--head-text);
+}
+
+th,
+td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+  /* ป้องกันตัดคำในหัวคอลัมน์ยาว */
+}
+
+tbody tr:nth-child(odd) {
+  background: var(--row-alt);
+}
+
+tbody tr:hover {
+  background: var(--row-hover);
+}
+
+/* เส้นขอบรอบนอกนุ่ม ๆ */
+table {
+  border: 1px solid var(--border);
+}
+
+/* ================ button ================= */
+.borrow-btn {
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: clamp(14px, 1.8vw, 16px);
+  font-weight: 700;
+  transition: filter .15s ease, background-color .2s ease, transform .05s ease;
+}
+
+.borrow-btn:hover {
+  background-color: var(--btn-bg-hover);
+  color: #fff;
+}
+
+.borrow-btn:active {
+  transform: translateY(1px);
+}
+
+/* โฟกัสเพื่อการเข้าถึง */
+:focus-visible {
+  outline: 3px solid #0e766e;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* ลดแอนิเมชันกรณีผู้ใช้ตั้งค่า */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ================ mobile: card view ================= */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 16px;
+    width: 100%;
+    margin: 12px auto;
+  }
+
+  /* เปลี่ยน table เป็นการ์ดอ่านง่าย */
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #0000000f;
+    margin: 12px 0;
+    padding: 10px;
+  }
+
+  td {
+    text-align: right;
+    border: none;
+    border-bottom: 1px dashed var(--border);
+    position: relative;
+    padding: 10px 10px 10px 52%;
+    white-space: normal;
+    /* ให้ข้อความยาวตัดบรรทัดได้ */
+  }
+
+  td:last-child {
+    border-bottom: 0;
+  }
+
+  /* แสดงชื่อคอลัมน์จาก data-label */
+  td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    width: 45%;
+    font-weight: 700;
+    text-align: left;
+    color: #000000;
+    white-space: normal;
+  }
+
+  .borrow-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+}
+
+/* ================ tablet ================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 28px;
+  }
+}
+
+/* ================ laptop ================= */
+@media (min-width: 769px) and (max-width: 1279px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/* ================ desktop ================= */
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1400px;
+  }
+}

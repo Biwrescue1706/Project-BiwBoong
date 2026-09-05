@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ระบบคำนวณ ค่าใช้จ่าย BiwBong Utilities</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- =========================
+         Navbar
+    ========================== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo Toggle -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+        />
+
+        <h1 class="text-lg font-bold sm:text-xl md:text-2xl">
+          ระบบคำนวณ ค่าใช้จ่าย BiwBong Utilities
+        </h1>
+      </div>
+
+      <!-- =========================
+             Drawer
+        ========================== -->
+      <div
+        id="navDrawer"
+        aria-hidden="true"
+        class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+
+            เมนู
+          </span>
+
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            ➕ เพิ่มข้อมูลมิเตอร์
+          </a>
+
+          <a
+            href="/summary"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📊 สรุปรวม
+          </a>
+
+          <a
+            href="/history-electric"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ⚡ ประวัติการใช้ไฟฟ้า
+          </a>
+
+          <a
+            href="/history-water"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            💧 ประวัติการใช้น้ำ
+          </a>
+
+          <a
+            href="/graph-electric"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📉 กราฟการใช้ไฟฟ้า
+          </a>
+
+          <a
+            href="/graph-water"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            📈 กราฟการใช้น้ำ
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- =========================
+         Backdrop
+    ========================== -->
+    <div
+      id="backdrop"
+      class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    ></div>
+
+    <!-- =========================
+         Content
+    ========================== -->
+    <main class="mx-auto max-w-3xl px-4 py-8 sm:py-12">
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-8 text-center text-white"
+        >
+          <h2 class="text-2xl font-extrabold sm:text-3xl">
+            เพิ่มข้อมูลมิเตอร์
+          </h2>
+
+          <p class="mt-2 text-sm text-green-50 sm:text-base">
+            บันทึกข้อมูลการใช้ไฟฟ้าและน้ำประปา
+          </p>
+        </div>
+
+        <!-- Form -->
+        <div class="space-y-6 p-6 sm:p-8">
+          <!-- เดือน -->
+          <div>
+            <label
+              for="monthSelect"
+              class="mb-2 block font-semibold text-gray-700"
+            >
+              เดือน (พ.ศ.)
+            </label>
+
+            <select
+              id="monthSelect"
+              class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-200"
+            >
+              <option value="">-- เลือกเดือน --</option>
+            </select>
+          </div>
+
+          <!-- =========================
+                     ไฟฟ้า
+                ========================== -->
+          <div class="rounded-2xl bg-green-50 p-5 ring-1 ring-green-100">
+            <div class="mb-5 flex items-center gap-3">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl shadow-sm"
+              >
+                ⚡
+              </div>
+
+              <div>
+                <h3 class="text-xl font-bold text-green-700">ไฟฟ้า</h3>
+
+                <p class="text-sm text-gray-500">ข้อมูลมิเตอร์ไฟฟ้า</p>
+              </div>
+            </div>
+
+            <!-- มิเตอร์เดือนก่อน -->
+            <div class="mb-4">
+              <label
+                for="EprevMeter"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                เลขมิเตอร์เดือนก่อน
+              </label>
+
+              <input
+                type="number"
+                id="EprevMeter"
+                readonly
+                placeholder="ระบบดึงให้อัตโนมัติ"
+                class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-gray-500 outline-none"
+              />
+            </div>
+
+            <!-- มิเตอร์ปัจจุบัน -->
+            <div>
+              <label
+                for="Emeter"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                เลขมิเตอร์ปัจจุบัน
+              </label>
+
+              <input
+                type="number"
+                id="Emeter"
+                placeholder="ใส่เลขมิเตอร์ปัจจุบัน"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-200"
+              />
+            </div>
+          </div>
+
+          <!-- =========================
+                     น้ำประปา
+                ========================== -->
+          <div class="rounded-2xl bg-teal-50 p-5 ring-1 ring-teal-100">
+            <div class="mb-5 flex items-center gap-3">
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl shadow-sm"
+              >
+                💧
+              </div>
+
+              <div>
+                <h3 class="text-xl font-bold text-teal-700">น้ำประปา</h3>
+
+                <p class="text-sm text-gray-500">ข้อมูลมิเตอร์น้ำประปา</p>
+              </div>
+            </div>
+
+            <!-- มิเตอร์เดือนก่อน -->
+            <div class="mb-4">
+              <label
+                for="WprevMeter"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                เลขมิเตอร์เดือนก่อน
+              </label>
+
+              <input
+                type="number"
+                id="WprevMeter"
+                readonly
+                placeholder="ระบบดึงให้อัตโนมัติ"
+                class="w-full cursor-not-allowed rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-gray-500 outline-none"
+              />
+            </div>
+
+            <!-- มิเตอร์ปัจจุบัน -->
+            <div>
+              <label
+                for="Wmeter"
+                class="mb-2 block font-semibold text-gray-700"
+              >
+                เลขมิเตอร์ปัจจุบัน
+              </label>
+
+              <input
+                type="number"
+                id="Wmeter"
+                placeholder="ใส่เลขมิเตอร์ปัจจุบัน"
+                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-200"
+              />
+            </div>
+          </div>
+
+          <!-- =========================
+                     Button
+                ========================== -->
+          <div class="pt-2">
+            <button
+              id="btnSave"
+              class="w-full rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-6 py-3.5 text-lg font-bold text-white shadow-lg transition duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
+            >
+              บันทึกข้อมูล
+            </button>
+          </div>
+
+          <!-- Status -->
+          <p id="status" class="text-center text-sm font-medium"></p>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================
+         Footer
+    ========================== -->
+    <footer class="border-t bg-white py-6 text-center text-sm text-gray-500">
+      <p>© 2025 Phuwanat Pahala. All rights reserved</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="JS/index.js"></script>
+    <script src="JS/nav.js"></script>
+  </body>
+</html>

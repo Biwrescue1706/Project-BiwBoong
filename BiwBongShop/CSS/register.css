@@ -1,0 +1,201 @@
+/* ================= Variables ================= */
+:root {
+  --bg: #2ce78a;
+  --card: #baf874;
+  --text: #000;
+  --border: #bdc3c7;
+  --shadow: 0 8px 20px rgb(0 0 0 / 0.2);
+  --radius: 12px;
+
+  --primary: #20c997;
+  --primary-hover: #1a7f63;
+
+  --focus-ring: #0e766e40;
+}
+
+/* ================= Reset & Base ================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg);
+  margin: 0;
+  padding: 16px;
+  color: var(--text);
+
+  /* กึ่งกลางแนวตั้ง/แนวนอน และแก้ปัญหา 100vh บนมือถือ */
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+}
+
+/* ================= Card ================= */
+.register-container {
+  background-color: var(--card);
+  width: min(92vw, 420px);
+  padding: clamp(20px, 4vw, 32px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+/* ================= Headings ================= */
+h1,
+h2 {
+  margin: 0 0 12px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+}
+
+h2 {
+  font-size: clamp(1.05rem, 2.6vw, 1.25rem);
+  opacity: .9;
+}
+
+/* ================= Form ================= */
+form {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+form label {
+  display: block;
+  text-align: left;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Inputs */
+form input[type="text"],
+form input[type="password"] {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  text-align: left;
+  /* อ่านง่ายเวลาพิมพ์ */
+  transition: border-color .2s ease, box-shadow .2s ease;
+  background: #fff;
+}
+
+form input[type="text"]::placeholder,
+form input[type="password"]::placeholder {
+  color: #8f9aa3;
+}
+
+form input[type="text"]:focus,
+form input[type="password"]:focus {
+  outline: none;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* ================= Password with toggle ================= */
+.password-container {
+  position: relative;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"].is-password {
+  padding-right: 42px;
+  /* เผื่อพื้นที่ไอคอน */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  /* จัดกึ่งกลางจริง */
+  font-size: 1.15rem;
+  cursor: pointer;
+  user-select: none;
+  color: #000;
+  opacity: .75;
+  transition: opacity .2s ease;
+  background: transparent;
+  border: 0;
+  line-height: 1;
+}
+
+.toggle-password:hover {
+  opacity: 1;
+}
+
+/* ================= Submit Button ================= */
+form button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: filter .15s ease, background-color .2s ease, transform .05s ease;
+  margin-top: 6px;
+}
+
+form button:hover {
+  background-color: var(--primary-hover);
+}
+
+form button:active {
+  transform: translateY(1px);
+}
+
+form button[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* ================= Accessibility ================= */
+:focus-visible {
+  outline: 3px solid #0e766e;
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* ================= Responsive ================= */
+@media (max-width: 480px) {
+  .register-container {
+    width: min(94vw, 420px);
+    padding: 18px;
+  }
+
+  form button {
+    font-size: .95rem;
+    padding: 11px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .register-container {
+    width: min(90vw, 460px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .register-container {
+    width: 420px;
+  }
+}
