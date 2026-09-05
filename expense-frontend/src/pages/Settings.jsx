@@ -7,6 +7,7 @@ import {
   FaChevronRight,
   FaCog,
   FaShieldAlt,
+  FaWallet,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +21,7 @@ function Settings() {
       icon: <FaUser />,
       path: "/profile",
       iconClass: "bg-blue-100 text-blue-600",
-      hoverClass: "group-hover:bg-blue-600",
+      hoverClass: "group-hover",
     },
     {
       title: "เปลี่ยนรหัสผ่าน",
@@ -28,7 +29,7 @@ function Settings() {
       icon: <FaLock />,
       path: "/change-password",
       iconClass: "bg-orange-100 text-orange-600",
-      hoverClass: "group-hover:bg-orange-600",
+      hoverClass: "group-hover",
     },
     {
       title: "ประเภท",
@@ -36,7 +37,7 @@ function Settings() {
       icon: <FaTags />,
       path: "/types",
       iconClass: "bg-green-100 text-green-600",
-      hoverClass: "group-hover:bg-green-600",
+      hoverClass: "group-hover",
     },
     {
       title: "หมวดหมู่",
@@ -44,7 +45,15 @@ function Settings() {
       icon: <FaList />,
       path: "/categories",
       iconClass: "bg-purple-100 text-purple-600",
-      hoverClass: "group-hover:bg-purple-600",
+      hoverClass: "group-hover",
+    },
+    {
+      title: "บัญชีเงิน",
+      description: "จัดการบัญชีและยอดเงินของคุณ",
+      icon: <FaWallet />,
+      path: "/accounts",
+      iconClass: "bg-cyan-100 text-cyan-600",
+      hoverClass: "group-hover",
     },
     {
       title: "สมาชิก",
@@ -52,36 +61,14 @@ function Settings() {
       icon: <FaUsers />,
       path: "/register",
       iconClass: "bg-pink-100 text-pink-600",
-      hoverClass: "group-hover:bg-pink-600",
+      hoverClass: "group-hover",
     },
   ];
 
   return (
     <div className="min-h-full bg-slate-50/60 px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
       <div className="mx-auto w-full max-w-5xl">
-        {/* =====================================================
-                    HEADER
-                ====================================================== */}
-        <section
-          className="
-                        relative
-                        mb-5
-                        overflow-hidden
-                        rounded-2xl
-                        bg-gradient-to-r
-                        from-green-600
-                        via-emerald-600
-                        to-teal-600
-                        p-5
-                        text-white
-                        shadow-lg
-                        shadow-green-600/10
-
-                        sm:p-6
-                        md:p-7
-                    "
-        >
-          {/* Background decoration */}
+        <section className=" relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-5 text-white shadow-lg shadow-green-600/10 sm:p-6 md:p-7 " >
           <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-20 right-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
@@ -89,21 +76,10 @@ function Settings() {
           <div className="relative flex items-center gap-4">
             <div
               className="
-                                flex
-                                h-12
-                                w-12
-                                flex-shrink-0
-                                items-center
-                                justify-center
-                                rounded-2xl
-                                bg-white/15
-                                text-xl
-                                backdrop-blur-sm
-
-                                sm:h-14
-                                sm:w-14
-                                sm:text-2xl
-                            "
+            flex h-12 w-12 flex-shrink-0 items-center justify-center
+            rounded-2xl bg-white/15 text-xl backdrop-blur-sm
+            sm:h-14 sm:w-14 sm:text-2xl
+          "
             >
               <FaCog />
             </div>
@@ -111,12 +87,9 @@ function Settings() {
             <div>
               <h1
                 className="
-                                    text-2xl
-                                    font-extrabold
-                                    tracking-tight
-
-                                    sm:text-3xl
-                                "
+              text-2xl font-extrabold tracking-tight
+              sm:text-3xl
+            "
               >
                 ตั้งค่า
               </h1>
@@ -128,9 +101,6 @@ function Settings() {
           </div>
         </section>
 
-        {/* =====================================================
-                    SETTINGS MENU
-                ====================================================== */}
         <section className="grid gap-4 md:grid-cols-2">
           {menus.map((menu) => (
             <button
@@ -138,176 +108,86 @@ function Settings() {
               type="button"
               onClick={() => navigate(menu.path)}
               className="
-                                group
-                                relative
-                                flex
-                                min-h-[112px]
-                                w-full
-                                items-center
-                                gap-4
-                                overflow-hidden
-                                rounded-2xl
-                                border
-                                border-gray-100
-                                bg-white
-                                p-4
-                                text-left
-                                shadow-sm
-
-                                transition-all
-                                duration-300
-
-                                hover:-translate-y-1
-                                hover:border-gray-200
-                                hover:shadow-lg
-
-                                active:scale-[0.99]
-
-                                sm:p-5
-                            "
+            group relative flex min-h-[112px] w-full items-center
+            gap-4 overflow-hidden rounded-2xl border border-gray-100
+            bg-white p-4 text-left shadow-sm transition-all duration-300
+            hover:-translate-y-1 hover:border-gray-200 hover:shadow-lg
+            active:scale-[0.99] sm:p-5
+          "
             >
-              {/* Decorative background */}
               <div
                 className="
-                                    pointer-events-none
-                                    absolute
-                                    -right-10
-                                    -top-10
-                                    h-28
-                                    w-28
-                                    rounded-full
-                                    bg-gray-50
-                                    transition-transform
-                                    duration-500
-
-                                    group-hover:scale-150
-                                "
+              pointer-events-none absolute -right-10 -top-10 h-28 w-28
+              rounded-full bg-gray-50 transition-transform duration-500
+              group-hover:scale-150
+            "
               />
 
-              {/* Icon */}
               <div
                 className={`
-                                    relative
-                                    flex
-                                    h-12
-                                    w-12
-                                    flex-shrink-0
-                                    items-center
-                                    justify-center
-                                    rounded-xl
-                                    text-lg
-
-                                    transition-all
-                                    duration-300
-
-                                    sm:h-14
-                                    sm:w-14
-                                    sm:text-xl
-
-                                    ${menu.iconClass}
-
-                                    ${menu.hoverClass}
-
-                                    group-hover:text-white
-                                    group-hover:shadow-lg
-                                `}
+              relative flex h-12 w-12 flex-shrink-0 items-center
+              justify-center rounded-xl text-lg transition-all duration-300
+              sm:h-14 sm:w-14 sm:text-xl
+              ${menu.iconClass}
+              ${menu.hoverClass}
+              group-hover:text-white
+              group-hover:shadow-lg
+            `}
               >
                 {menu.icon}
               </div>
 
-              {/* Content */}
               <div className="relative min-w-0 flex-1">
                 <h2
                   className="
-                                        text-base
-                                        font-bold
-                                        text-black
-
-                                        sm:text-lg
-                                    "
+                text-base font-bold text-black
+                sm:text-lg
+              "
                 >
                   {menu.title}
                 </h2>
 
                 <p
                   className="
-                                        mt-1
-                                        text-xs
-                                        font-medium
-                                        leading-5
-                                        text-black
-
-                                        sm:text-sm
-                                    "
+                mt-1 text-xs font-medium leading-5 text-black
+                sm:text-sm
+              "
                 >
                   {menu.description}
                 </p>
               </div>
 
-              {/* Arrow */}
               <div
                 className="
-                                    relative
-                                    flex
-                                    h-9
-                                    w-9
-                                    flex-shrink-0
-                                    items-center
-                                    justify-center
-                                    rounded-full
-                                    bg-gray-50
-                                    text-black
-
-                                    transition-all
-                                    duration-300
-
-                                    group-hover:bg-green-50
-                                    group-hover:text-green-600
-                                "
+              relative flex h-9 w-9 flex-shrink-0 items-center
+              justify-center rounded-full bg-gray-50 text-black
+              transition-all duration-300
+              group-hover:bg-green-50 group-hover:text-green-600
+            "
               >
                 <FaChevronRight
                   className="
-                                        text-xs
-                                        transition-transform
-                                        duration-300
-
-                                        group-hover:translate-x-0.5
-                                    "
+                text-xs transition-transform duration-300
+                group-hover:translate-x-0.5
+              "
                 />
               </div>
             </button>
           ))}
         </section>
 
-        {/* =====================================================
-                    SECURITY INFORMATION
-                ====================================================== */}
         <section
           className="
-                        mt-5
-                        overflow-hidden
-                        rounded-2xl
-                        border
-                        border-green-100
-                        bg-green-50/70
-                        p-4
-
-                        sm:p-5
-                    "
+        mt-5 overflow-hidden rounded-2xl border border-green-100
+        bg-green-50/70 p-4 sm:p-5
+      "
         >
           <div className="flex items-start gap-3">
             <div
               className="
-                                flex
-                                h-10
-                                w-10
-                                flex-shrink-0
-                                items-center
-                                justify-center
-                                rounded-xl
-                                bg-green-100
-                                text-green-600
-                            "
+            flex h-10 w-10 flex-shrink-0 items-center justify-center
+            rounded-xl bg-green-100 text-green-600
+          "
             >
               <FaShieldAlt />
             </div>
@@ -319,13 +199,14 @@ function Settings() {
 
               <p className="mt-1 text-xs font-medium leading-5 text-black sm:text-sm">
                 คุณสามารถจัดการข้อมูลส่วนตัว รหัสผ่าน ประเภท หมวดหมู่
-                และสมาชิกของระบบได้จากเมนูด้านบน
+                บัญชีเงิน และสมาชิกของระบบได้จากเมนูด้านบน
               </p>
             </div>
           </div>
         </section>
       </div>
     </div>
+
   );
 }
 

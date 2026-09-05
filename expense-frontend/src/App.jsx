@@ -17,6 +17,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const AddTransaction = lazy(() => import("./pages/AddTransaction"));
 const Profile = lazy(() => import("./pages/Profile"));
 const ChangePassword = lazy(() => import("./pages/ChangePassword"));
+const AccountPage = lazy(() => import("./pages/AccountPage"));
 
 function Loading() {
   return (
@@ -55,7 +56,7 @@ function App() {
               <Route path="/setting" element={<Settings />} />
               <Route path="/add-transaction" element={<AddTransaction />} />
               <Route path="/profile" element={<Profile />} />
-
+              <Route path="/accounts" element={<AccountPage />} />
               <Route path="/change-password" element={<ChangePassword />} />
             </Route>
           </Route>

@@ -1,4 +1,3 @@
-// src/pages/Transactions.jsx
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,10 +11,9 @@ import {
   FaFilter,
   FaCalendarAlt,
   FaWallet,
-  FaMoneyBillWave,
   FaReceipt,
-  FaChevronRight,
   FaTimes,
+  FaCreditCard,
 } from "react-icons/fa";
 import api from "../api/axios";
 import { getTransactions, deleteTransaction } from "../services/transaction.service";
@@ -64,7 +62,7 @@ function Transactions() {
   const formatThaiDate = (date) => {
     if (!date) return "-";
     const [year, month, day] = date.split("-").map(Number);
-    const months = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+    const months = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
     if (!year || !month || !day || !months[month - 1]) return date;
     return `${day} ${months[month - 1]} ${year + 543}`;
   };
@@ -122,14 +120,20 @@ function Transactions() {
     const years = transactions
       .map((transaction) => transaction.date ? transaction.date.substring(0, 4) : null)
       .filter(Boolean);
+
     return [...new Set(years)].sort((a, b) => Number(b) - Number(a));
   }, [transactions]);
 
   const filteredTransactions = useMemo(() => {
     let result = [...transactions];
 
-    if (startDate) result = result.filter((transaction) => transaction.date >= startDate);
-    if (endDate) result = result.filter((transaction) => transaction.date <= endDate);
+    if (startDate) {
+      result = result.filter((transaction) => transaction.date >= startDate);
+    }
+
+    if (endDate) {
+      result = result.filter((transaction) => transaction.date <= endDate);
+    }
 
     return result.sort((a, b) =>
       String(a.date || "").localeCompare(String(b.date || ""))
@@ -154,6 +158,32 @@ function Transactions() {
     if (filteredTransactions.length === 0) return 0;
     const lastTransaction = filteredTransactions[filteredTransactions.length - 1];
     return Number(lastTransaction.balance || 0);
+  }, [filteredTransactions]);
+
+  const accountSummary = useMemo(() => {
+    const summary = {};
+
+    filteredTransactions.forEach((transaction) => {
+      const id = transaction.accountTypesId || transaction.accountTypeId || "unknown";
+      const name = transaction.accountTypeName || "ไม่ระบุช่องทาง";
+
+      if (!summary[id]) {
+        summary[id] = {
+          id,
+          name,
+          income: 0,
+          expense: 0,
+          balance: 0,
+        };
+      }
+
+      summary[id].income += Number(transaction.income || 0);
+      summary[id].expense += Number(transaction.expense || 0);
+      summary[id].balance +=
+        Number(transaction.income || 0) - Number(transaction.expense || 0);
+    });
+
+    return Object.values(summary);
   }, [filteredTransactions]);
 
   const arrayBufferToBase64 = (buffer) => {
@@ -227,6 +257,7 @@ function Transactions() {
       const tableData = pdfTransactions.map((transaction) => [
         formatThaiDate(transaction.date),
         transaction.categoryName || "-",
+        transaction.accountTypeName || "-",
         Number(transaction.income || 0) > 0
           ? Number(transaction.income).toLocaleString()
           : "-",
@@ -249,6 +280,7 @@ function Transactions() {
           15,
           35
         );
+
         pdf.setFontSize(14);
         pdf.setTextColor(22, 163, 74);
         pdf.text(`รายรับทั้งหมด: ${totalIncome.toLocaleString()} บาท`, 15, 43);
@@ -273,14 +305,14 @@ function Transactions() {
 
       autoTable(pdf, {
         startY: 50,
-        head: [["วันที่", "รายการ", "รายรับ", "รายจ่าย", "คงเหลือ", "หมายเหตุ"]],
+        head: [["วันที่", "รายการ", "ช่องทาง", "รายรับ", "รายจ่าย", "คงเหลือ", "หมายเหตุ"]],
         body: tableData,
         theme: "grid",
         styles: {
           font: "THSarabunNew",
           fontStyle: "normal",
-          fontSize: 14,
-          cellPadding: 3,
+          fontSize: 12,
+          cellPadding: 2.5,
           textColor: [0, 0, 0],
           lineColor: [180, 180, 180],
           lineWidth: 0.3,
@@ -288,7 +320,7 @@ function Transactions() {
         headStyles: {
           font: "THSarabunNew",
           fontStyle: "normal",
-          fontSize: 14,
+          fontSize: 12,
           fillColor: [243, 244, 246],
           textColor: [0, 0, 0],
           halign: "center",
@@ -296,18 +328,19 @@ function Transactions() {
           lineWidth: 0.3,
         },
         columnStyles: {
-          0: { cellWidth: 25, halign: "center" },
-          1: { cellWidth: 40, halign: "center" },
-          2: { cellWidth: 20, halign: "center" },
-          3: { cellWidth: 20, halign: "right" },
-          4: { cellWidth: 20, halign: "right" },
-          5: { cellWidth: "auto", halign: "left" },
+          0: { cellWidth: 23, halign: "center" },
+          1: { cellWidth: 35, halign: "center" },
+          2: { cellWidth: 30, halign: "center" },
+          3: { cellWidth: 18, halign: "right" },
+          4: { cellWidth: 18, halign: "right" },
+          5: { cellWidth: 18, halign: "right" },
+          6: { cellWidth: "auto", halign: "left" },
         },
         didParseCell: (data) => {
           if (data.section !== "body") return;
-          if (data.column.index === 2) data.cell.styles.textColor = [22, 163, 74];
-          if (data.column.index === 3) data.cell.styles.textColor = [220, 38, 38];
-          if (data.column.index === 4) data.cell.styles.textColor = [37, 99, 235];
+          if (data.column.index === 3) data.cell.styles.textColor = [22, 163, 74];
+          if (data.column.index === 4) data.cell.styles.textColor = [220, 38, 38];
+          if (data.column.index === 5) data.cell.styles.textColor = [37, 99, 235];
         },
         margin: { top: 50, bottom: 20, left: 10, right: 10 },
         didDrawPage: () => {
@@ -335,13 +368,13 @@ function Transactions() {
       pdf.save(`${fileName}.pdf`);
       successAlert("ส่งออก PDF สำเร็จ");
     } catch (err) {
+      console.error(err);
       errorAlert(err.message || "ไม่สามารถสร้างไฟล์ PDF ได้");
     }
   };
 
   return (
     <div className="min-h-full space-y-5 bg-slate-50/50 pb-8">
-      {/* HEADER */}
       <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-5 text-white shadow-lg shadow-green-600/10 sm:p-6 md:p-7">
         <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 right-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
@@ -387,7 +420,6 @@ function Transactions() {
         </div>
       </section>
 
-      {/* FILTER */}
       <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
         <div className="flex items-center gap-3 border-b border-gray-100 p-4 sm:p-5 md:p-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-50 text-green-600">
@@ -472,63 +504,123 @@ function Transactions() {
         </div>
       </section>
 
-      {/* SUMMARY */}
       {!loading && filteredTransactions.length > 0 && (
-        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="group relative overflow-hidden rounded-2xl border border-green-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10">
-            <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-green-50 transition-transform duration-300 group-hover:scale-125" />
-            <div className="relative flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-black">รายรับทั้งหมด</p>
-                <p className="mt-1 text-xs text-black">เงินที่ได้รับทั้งหมด</p>
-                <p className="mt-4 text-2xl font-extrabold text-green-600 sm:text-3xl">
-                  +{totalIncome.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs font-medium text-black">บาท</p>
-              </div>
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-600">
-                <FaArrowUp />
+        <>
+          <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="group relative overflow-hidden rounded-2xl border border-green-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10">
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-green-50 transition-transform duration-300 group-hover:scale-125" />
+              <div className="relative flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-black">รายรับทั้งหมด</p>
+                  <p className="mt-1 text-xs text-black">เงินที่ได้รับทั้งหมด</p>
+                  <p className="mt-4 text-2xl font-extrabold text-green-600 sm:text-3xl">
+                    +{totalIncome.toLocaleString()}
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-black">บาท</p>
+                </div>
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-600">
+                  <FaArrowUp />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="group relative overflow-hidden rounded-2xl border border-red-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10">
-            <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-red-50 transition-transform duration-300 group-hover:scale-125" />
-            <div className="relative flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold text-black">รายจ่ายทั้งหมด</p>
-                <p className="mt-1 text-xs text-black">เงินที่จ่ายออกทั้งหมด</p>
-                <p className="mt-4 text-2xl font-extrabold text-red-600 sm:text-3xl">
-                  -{totalExpense.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs font-medium text-black">บาท</p>
-              </div>
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
-                <FaArrowDown />
+            <div className="group relative overflow-hidden rounded-2xl border border-red-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10">
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-red-50 transition-transform duration-300 group-hover:scale-125" />
+              <div className="relative flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-black">รายจ่ายทั้งหมด</p>
+                  <p className="mt-1 text-xs text-black">เงินที่จ่ายออกทั้งหมด</p>
+                  <p className="mt-4 text-2xl font-extrabold text-red-600 sm:text-3xl">
+                    -{totalExpense.toLocaleString()}
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-black">บาท</p>
+                </div>
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                  <FaArrowDown />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="group relative overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 sm:col-span-2 lg:col-span-1">
-            <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-50 transition-transform duration-300 group-hover:scale-125" />
-            <div className="relative flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-black">คงเหลือ</p>
-                <p className="mt-1 text-xs text-black">ยอดคงเหลือสุทธิ</p>
-                <p className="mt-4 truncate text-2xl font-extrabold text-blue-600 sm:text-3xl">
-                  {latestBalance.toLocaleString()}
-                </p>
-                <p className="mt-1 text-xs font-medium text-black">บาท</p>
-              </div>
-              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-                <FaWallet />
+            <div className="group relative overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 sm:col-span-2 lg:col-span-1">
+              <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-50 transition-transform duration-300 group-hover:scale-125" />
+              <div className="relative flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-black">คงเหลือ</p>
+                  <p className="mt-1 text-xs text-black">ยอดคงเหลือสุทธิ</p>
+                  <p className="mt-4 truncate text-2xl font-extrabold text-blue-600 sm:text-3xl">
+                    {latestBalance.toLocaleString()}
+                  </p>
+                  <p className="mt-1 text-xs font-medium text-black">บาท</p>
+                </div>
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                  <FaWallet />
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+
+          {accountSummary.length > 0 && (
+            <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+              <div className="flex items-center gap-3 border-b border-gray-100 p-4 sm:p-5 md:p-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                  <FaCreditCard />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-black">สรุปตามช่องทางบัญชี</h2>
+                  <p className="text-xs text-black sm:text-sm">
+                    ยอดรายรับ รายจ่าย และคงเหลือแยกตามช่องทาง
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 p-4 sm:grid-cols-2 sm:p-5 lg:grid-cols-3">
+                {accountSummary.map((account) => (
+                  <div
+                    key={account.id}
+                    className="rounded-2xl border border-gray-100 bg-gray-50 p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                        <FaCreditCard />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-black">
+                          {account.name}
+                        </p>
+                        <p className="text-xs text-black">ช่องทางบัญชี</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-3 gap-2">
+                      <div className="rounded-xl bg-green-50 p-3">
+                        <p className="text-[10px] font-medium text-black">รายรับ</p>
+                        <p className="mt-1 truncate text-sm font-bold text-green-600">
+                          +{account.income.toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl bg-red-50 p-3">
+                        <p className="text-[10px] font-medium text-black">รายจ่าย</p>
+                        <p className="mt-1 truncate text-sm font-bold text-red-600">
+                          -{account.expense.toLocaleString()}
+                        </p>
+                      </div>
+
+                      <div className="rounded-xl bg-blue-50 p-3">
+                        <p className="text-[10px] font-medium text-black">คงเหลือ</p>
+                        <p className="mt-1 truncate text-sm font-bold text-blue-600">
+                          {account.balance.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
       )}
 
-      {/* TRANSACTION LIST */}
       <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
         <div className="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 md:p-6">
           <div className="flex items-center gap-3">
@@ -578,15 +670,22 @@ function Transactions() {
           </div>
         ) : (
           <>
-            {/* MOBILE CARDS */}
             <div className="space-y-3 p-4 md:hidden">
               {filteredTransactions.map((transaction) => {
                 const isIncome = Number(transaction.income) > 0;
 
                 return (
-                  <div key={transaction.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition active:scale-[0.99]">
+                  <div
+                    key={transaction.id}
+                    className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition active:scale-[0.99]"
+                  >
                     <div className="flex items-start gap-3">
-                      <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${isIncome ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>
+                      <div
+                        className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${isIncome
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                          }`}
+                      >
                         {isIncome ? <FaArrowUp /> : <FaArrowDown />}
                       </div>
 
@@ -624,19 +723,30 @@ function Transactions() {
                           {transaction.typeName || "-"}
                         </p>
                       </div>
+
                       <div>
                         <p className="text-[10px] font-medium text-black">หมวดหมู่</p>
                         <p className="mt-0.5 truncate text-xs font-semibold text-black">
                           {transaction.categoryName || "-"}
                         </p>
                       </div>
+
+                      <div>
+                        <p className="text-[10px] font-medium text-black">ช่องทาง</p>
+                        <p className="mt-0.5 flex items-center gap-1 truncate text-xs font-semibold text-black">
+                          <FaCreditCard className="flex-shrink-0 text-blue-600" />
+                          {transaction.accountTypeName || "-"}
+                        </p>
+                      </div>
+
                       <div>
                         <p className="text-[10px] font-medium text-black">คงเหลือ</p>
                         <p className="mt-0.5 text-xs font-bold text-blue-600">
                           {Number(transaction.balance || 0).toLocaleString()} บาท
                         </p>
                       </div>
-                      <div>
+
+                      <div className="col-span-2">
                         <p className="text-[10px] font-medium text-black">หมายเหตุ</p>
                         <p className="mt-0.5 truncate text-xs font-semibold text-black">
                           {transaction.note || "-"}
@@ -652,6 +762,7 @@ function Transactions() {
                         <FaEdit />
                         แก้ไข
                       </button>
+
                       <button
                         onClick={() => handleDelete(transaction.id)}
                         className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100 active:scale-[0.98]"
@@ -665,13 +776,13 @@ function Transactions() {
               })}
             </div>
 
-            {/* TABLE */}
             <div className="hidden overflow-x-auto md:block">
-              <table className="min-w-[1050px] w-full">
+              <table className="min-w-[1180px] w-full">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
                     <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">วันที่</th>
                     <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">รายการ</th>
+                    <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">ช่องทาง</th>
                     <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">รายรับ</th>
                     <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">รายจ่าย</th>
                     <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">คงเหลือ</th>
@@ -683,16 +794,29 @@ function Transactions() {
 
                 <tbody>
                   {filteredTransactions.map((transaction) => (
-                    <tr key={transaction.id} className="border-b border-gray-100 transition-colors hover:bg-green-50/40">
+                    <tr
+                      key={transaction.id}
+                      className="border-b border-gray-100 transition-colors hover:bg-green-50/40"
+                    >
                       <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-black">
                         {formatThaiDate(transaction.date)}
                       </td>
 
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${Number(transaction.income) > 0 ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"}`}>
-                            {Number(transaction.income) > 0 ? <FaArrowUp /> : <FaArrowDown />}
+                          <div
+                            className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${Number(transaction.income) > 0
+                              ? "bg-green-100 text-green-600"
+                              : "bg-red-100 text-red-600"
+                              }`}
+                          >
+                            {Number(transaction.income) > 0 ? (
+                              <FaArrowUp />
+                            ) : (
+                              <FaArrowDown />
+                            )}
                           </div>
+
                           <div className="min-w-0">
                             <p className="truncate text-sm font-bold text-black">
                               {transaction.categoryName || "-"}
@@ -704,12 +828,25 @@ function Transactions() {
                         </div>
                       </td>
 
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                            <FaCreditCard />
+                          </div>
+                          <span className="font-semibold text-black">
+                            {transaction.accountTypeName || "-"}
+                          </span>
+                        </div>
+                      </td>
+
                       <td className="px-5 py-4 text-right">
                         {Number(transaction.income) > 0 ? (
                           <span className="font-bold text-green-600">
                             +{Number(transaction.income).toLocaleString()}
                           </span>
-                        ) : <span className="text-black">-</span>}
+                        ) : (
+                          <span className="text-black">-</span>
+                        )}
                       </td>
 
                       <td className="px-5 py-4 text-right">
@@ -717,7 +854,9 @@ function Transactions() {
                           <span className="font-bold text-red-600">
                             -{Number(transaction.expense).toLocaleString()}
                           </span>
-                        ) : <span className="text-black">-</span>}
+                        ) : (
+                          <span className="text-black">-</span>
+                        )}
                       </td>
 
                       <td className="px-5 py-4 text-right">
