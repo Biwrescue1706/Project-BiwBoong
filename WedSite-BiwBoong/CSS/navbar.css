@@ -1,0 +1,44 @@
+/* ================= Navbar ================= */
+
+/* ฟอนต์ */
+@import url('https://fonts.googleapis.com/css2?family=TH+Sarabun+New:wght@400;700&display=swap');
+
+.navbar {
+  font-family: 'TH Sarabun New', sans-serif;
+  font-size: 1rem;
+}
+
+/* ปรับปุ่มเมนูให้เต็มกรอบ */
+.nav-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  border-radius: 6px;
+  transition: 0.2s ease-in-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* เอฟเฟกต์เมื่อ hover */
+.nav-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+
+/* ปุ่มสีเขียวอ่อน */
+.btn-outline-lightgreen {
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-outline-lightgreen:hover {
+  background-color: #28a745;
+  color: #fff;
+}
+
+/* ปรับการจัดวางบนมือถือ (481–768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .navbar-nav {
+    gap: .5rem;
+  }
+}

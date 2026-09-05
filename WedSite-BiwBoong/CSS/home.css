@@ -1,0 +1,35 @@
+/* ปุ่มลิงก์: hit-area ใหญ่, อ่านง่าย */
+.link-buttons .btn{
+  min-height: 72px;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.link-buttons .btn:hover{ transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+
+/* การ์ดปฏิทิน */
+.calendar-card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius: var(--radius, 12px);
+  box-shadow: var(--shadow, 0 8px 20px rgba(0,0,0,.06));
+  overflow:hidden;
+}
+
+/* สูงแบบยืดหยุ่นทุกจอ */
+/* สูงตายตัว */
+.calendar-card iframe{
+  display:block;
+  width:100%;
+  height: 950px; /* ความสูงตายตัว */
+  border:0;
+}
+
+/* ระยะห่างรวม */
+.section{ margin-block: 2rem; }
+
+/* ปรับปุ่มบนจอเล็ก */
+@media (min-width: 481px) and (max-width: 768px){
+  .link-buttons .btn{ min-height: 64px; }
+}

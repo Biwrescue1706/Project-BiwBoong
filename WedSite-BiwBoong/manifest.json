@@ -1,0 +1,25 @@
+{
+  "name": "เว็บไซต์ BiwBong",
+  "short_name": "BiwBong",
+  "description": "ศูนย์รวมเว็บไซต์และตารางเรียนของ BiwBong",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#16a34a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/logo192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

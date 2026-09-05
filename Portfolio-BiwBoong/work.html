@@ -1,0 +1,361 @@
+
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ประวัติการทำงาน</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- =========================
+       Navbar
+  ========================== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo Toggle -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+        />
+
+        <h1 class="text-xl font-bold sm:text-2xl">ประวัติการทำงาน</h1>
+      </div>
+
+      <!-- =========================
+         Drawer
+    ========================== -->
+      <div
+        id="navDrawer"
+        aria-hidden="true"
+        class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+
+            เมนู
+          </span>
+
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติส่วนตัว
+          </a>
+
+          <a
+            href="/education"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            การศึกษา
+          </a>
+
+          <a
+            href="/certificate"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            เกียรติบัตร
+          </a>
+
+          <a
+            href="/hobbies"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            กิจกรรมยามว่าง
+          </a>
+
+          <a
+            href="/portfolio"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ผลงาน
+          </a>
+
+          <a
+            href="/work"
+            class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            ประวัติการทำงาน
+          </a>
+
+          <a
+            href="/contact"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ติดต่อฉัน
+          </a>
+
+          <a
+            href="/action"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ดาวน์โหลด
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- =========================
+       Backdrop
+  ========================== -->
+    <div
+      id="backdrop"
+      class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    ></div>
+
+    <!-- =========================
+       Work Experience
+  ========================== -->
+    <main class="mx-auto max-w-5xl px-4 py-10 sm:py-14">
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-10 text-center text-white"
+        >
+          <h1 class="text-3xl font-extrabold sm:text-4xl">ประวัติการทำงาน</h1>
+
+          <p class="mt-2 text-green-50">Work Experience</p>
+        </div>
+
+        <!-- Work Entries -->
+        <div class="space-y-6 p-6 sm:p-10">
+          <!-- =========================
+             Current Job
+        ========================== -->
+          <article
+            class="group relative overflow-hidden rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
+          >
+            <div class="mb-5">
+              <span
+                class="rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700"
+              >
+                ทำงานปัจจุบัน
+              </span>
+            </div>
+
+            <h2
+              class="mb-6 text-xl font-bold leading-relaxed text-gray-800 sm:text-2xl"
+            >
+              🛂 ผู้ช่วยเจ้าหน้าที่ธุรการ – สถานีตำรวจภูธรเมืองชลบุรี
+            </h2>
+
+            <div class="space-y-4 text-gray-700">
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">สถานะ :</strong>
+                ทำงานปัจจุบัน
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ช่วงเวลา :</strong>
+                18 กุมภาพันธ์ 2566 – ปัจจุบัน
+              </div>
+
+              <div
+                class="rounded-xl bg-white px-4 py-3 leading-relaxed ring-1 ring-gray-100"
+              >
+                <strong class="text-green-600">หน้าที่ :</strong>
+                ช่วยจัดการงานเอกสาร หนังสือราชการ และงานธุรการทั่วไป
+              </div>
+            </div>
+          </article>
+
+          <!-- =========================
+             Internship - Website
+        ========================== -->
+          <article
+            class="group relative overflow-hidden rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
+          >
+            <div class="mb-5">
+              <span
+                class="rounded-full bg-blue-100 px-4 py-1.5 text-sm font-semibold text-blue-700"
+              >
+                ฝึกงาน
+              </span>
+            </div>
+
+            <h2
+              class="mb-6 text-xl font-bold leading-relaxed text-gray-800 sm:text-2xl"
+            >
+              🛂 ฝึกงาน – สถานีตำรวจภูธรเมืองชลบุรี
+            </h2>
+
+            <div class="space-y-4 text-gray-700">
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ตำแหน่ง :</strong>
+                ผู้ช่วยเจ้าหน้าที่ธุรการ
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ช่วงเวลา :</strong>
+                2 มิถุนายน 2566 – 2 สิงหาคม 2569
+              </div>
+
+              <div
+                class="rounded-xl bg-white px-4 py-3 leading-relaxed ring-1 ring-gray-100"
+              >
+                <strong class="text-green-600">หน้าที่ :</strong>
+                ทำเว็บไซต์ ลง สภ.เมืองชลบุรี
+
+                <div class="mt-3">
+                  <a
+                    href="https://mueangchonburi.chonburi.police.go.th/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center rounded-xl bg-green-100 px-4 py-2 font-semibold text-green-700 transition hover:bg-green-200"
+                  >
+                    🔗 เว็บไซต์ สภ.เมืองชลบุรี
+                  </a>
+                </div>
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ระดับการศึกษา :</strong>
+                ปริญญาตรี
+              </div>
+            </div>
+          </article>
+
+          <!-- =========================
+             Internship - Police
+        ========================== -->
+          <article
+            class="group relative overflow-hidden rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
+          >
+            <div class="mb-5">
+              <span
+                class="rounded-full bg-blue-100 px-4 py-1.5 text-sm font-semibold text-blue-700"
+              >
+                ฝึกงาน
+              </span>
+            </div>
+
+            <h2
+              class="mb-6 text-xl font-bold leading-relaxed text-gray-800 sm:text-2xl"
+            >
+              🛂 ฝึกงาน – สถานีตำรวจภูธรเมืองชลบุรี
+            </h2>
+
+            <div class="space-y-4 text-gray-700">
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ตำแหน่ง :</strong>
+                ผู้ช่วยเจ้าหน้าที่ธุรการ
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ช่วงเวลา :</strong>
+                17 ตุลาคม 2565 – 17 กุมภาพันธ์ 2566
+              </div>
+
+              <div
+                class="rounded-xl bg-white px-4 py-3 leading-relaxed ring-1 ring-gray-100"
+              >
+                <strong class="text-green-600">หน้าที่ :</strong>
+                จัดเอกสาร รับหนังสือราชการ และประสานงานธุรการ
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ระดับการศึกษา :</strong>
+                ปวส. (ประกาศนียบัตรวิชาชีพชั้นสูง)
+              </div>
+            </div>
+          </article>
+
+          <!-- =========================
+             Internship - Prosecutor
+        ========================== -->
+          <article
+            class="group relative overflow-hidden rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:p-8"
+          >
+            <div class="mb-5">
+              <span
+                class="rounded-full bg-blue-100 px-4 py-1.5 text-sm font-semibold text-blue-700"
+              >
+                ฝึกงาน
+              </span>
+            </div>
+
+            <h2
+              class="mb-6 text-xl font-bold leading-relaxed text-gray-800 sm:text-2xl"
+            >
+              ⚖️ ฝึกงาน – สำนักงานอัยการคดีศาลแขวงชลบุรี
+            </h2>
+
+            <div class="space-y-4 text-gray-700">
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ตำแหน่ง :</strong>
+                ผู้ช่วยเจ้าหน้าที่ธุรการ
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ช่วงเวลา :</strong>
+                30 มิถุนายน 2563 – 30 สิงหาคม 2566
+              </div>
+
+              <div
+                class="rounded-xl bg-white px-4 py-3 leading-relaxed ring-1 ring-gray-100"
+              >
+                <strong class="text-green-600">หน้าที่ :</strong>
+                ช่วยงานเอกสาร และสนับสนุนเจ้าหน้าที่ด้านธุรการ
+              </div>
+
+              <div class="rounded-xl bg-white px-4 py-3 ring-1 ring-gray-100">
+                <strong class="text-green-600">ระดับการศึกษา :</strong>
+                ปวช. (ประกาศนียบัตรวิชาชีพ)
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- =========================
+       Footer
+  ========================== -->
+    <footer class="border-t bg-white py-6 text-center text-sm text-gray-500">
+      <p>&copy; 2568 Phuwanat Pahala. All rights reserved.</p>
+    </footer>
+
+    <!-- Navbar JS -->
+    <script src="js/nav.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,292 @@
+/* =========================================================
+   term-1-2568.css — ตารางเรียน 1/2568
+   ใช้ร่วมกับ base.css (ไม่พึ่ง Bootstrap)
+========================================================= */
+
+/* ฟอนต์ */
+@import url('https://fonts.googleapis.com/css2?family=TH+Sarabun+New:wght@400;700&display=swap');
+
+/* ---------- Tokens ---------- */
+:root {
+  --bg: #9bf39b;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #000000;
+  --line: #e5e7eb;
+
+  --head: #b7fcfc;
+  --day: #b7fcfc;
+  --shadow: 0 6px 16px rgba(2, 6, 23, .08);
+
+  /* Subject colors */
+  --lavender: #6b6fcf;
+  --pink: #d946ef;
+  --green: #10b981;
+  --mint: #2dd4bf;
+  --amber: #f59e0b;
+
+  --col-first: 50px;
+  /* กว้างคอลัมน์ชื่อวัน */
+  --slot-gap: 8px;
+  /* ระยะช่องเวลา */
+}
+
+/* ---------- Base ---------- */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'TH Sarabun New', system-ui, sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+.sheet-head {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin: 10px auto;
+  text-align: center;
+  line-height: 1.55;
+}
+
+.sheet-head h2 {
+  margin: 0 0 .35rem 0;
+  letter-spacing: .2px;
+}
+
+.sheet-head .small {
+  color: var(--muted);
+  font-size: .92rem;
+  opacity: .95;
+}
+
+/* ---------- Grid ---------- */
+.grid-wrap {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-top: 16px;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+  padding-right: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.time-row,
+.day-row {
+  display: grid;
+  grid-template-columns: var(--col-first) repeat(16, minmax(56px, 1fr));
+  gap: var(--slot-gap);
+  align-items: stretch;
+  padding: 8px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.time-row {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  z-index: 10;
+}
+
+.day-cell {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--day);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 6px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.time-cell {
+  background: var(--head);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  padding: 6px 2px;
+  line-height: 1.05;
+}
+
+.time-row .time-cell {
+  grid-column: span 2;
+}
+
+.time-cell span {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: .95em;
+}
+
+/* ---------- Event ---------- */
+.event {
+  position: relative;
+  border-radius: 12px;
+  color: #0b1220;
+  padding: 10px 12px 10px 16px;
+  border: 1px solid #0f172a14;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  opacity: .9;
+}
+
+.ev-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.ev-sub {
+  font-size: .95em;
+  color: #0b1220cc;
+}
+
+/* ---------- Event Colors ---------- */
+.event-lavender {
+  background: color-mix(in srgb, var(--lavender) 20%, #fff);
+}
+
+.event-lavender::before {
+  background: var(--lavender);
+}
+
+.event-pink {
+  background: color-mix(in srgb, var(--pink) 25%, #fff);
+}
+
+.event-pink::before {
+  background: var(--pink);
+}
+
+.event-green {
+  background: color-mix(in srgb, var(--green) 25%, #fff);
+}
+
+.event-green::before {
+  background: var(--green);
+}
+
+.event-mint {
+  background: color-mix(in srgb, var(--mint) 24%, #fff);
+}
+
+.event-mint::before {
+  background: var(--mint);
+}
+
+.event-amber {
+  background: color-mix(in srgb, var(--amber) 24%, #fff);
+}
+
+.event-amber::before {
+  background: var(--amber);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  :root {
+    --col-first: 74px;
+    --slot-gap: 4px;
+  }
+
+  body {
+    font-size: 17px;
+  }
+
+  .time-row,
+  .day-row {
+    padding: 6px;
+  }
+
+  .day-cell {
+    min-height: 42px;
+  }
+
+  .event {
+    padding: 10px 12px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --col-first: 82px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1279px) {
+  :root {
+    --col-first: 90px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --col-first: 104px;
+  }
+
+  .time-row,
+  .day-row {
+    padding: 10px;
+  }
+
+  .event {
+    padding: 12px 16px;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 12px;
+  }
+
+  .sheet-head,
+  .grid-wrap {
+    box-shadow: none;
+    border-color: #ddd;
+  }
+
+  .time-row {
+    position: static;
+  }
+
+  .grid-wrap {
+    overflow: visible;
+  }
+
+  .event {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+  }
+
+  .event::before {
+    background: #000 !important;
+  }
+}

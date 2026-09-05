@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ผลงาน</title>
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- ========================= Navbar ========================== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+        />
+        <h1 class="text-xl font-bold sm:text-2xl">ผลงาน</h1>
+      </div>
+      <!-- ========================= Drawer ========================== -->
+      <div
+        id="navDrawer"
+        aria-hidden="true"
+        class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+            เมนู
+          </span>
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติส่วนตัว
+          </a>
+          <a
+            href="/education"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            การศึกษา
+          </a>
+          <a
+            href="/certificate"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            เกียรติบัตร
+          </a>
+          <a
+            href="/hobbies"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            กิจกรรมยามว่าง
+          </a>
+          <a
+            href="/portfolio"
+            class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            ผลงาน
+          </a>
+          <a
+            href="/work"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติการทำงาน
+          </a>
+          <a
+            href="/contact"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ติดต่อฉัน
+          </a>
+          <a
+            href="/action"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ดาวน์โหลด
+          </a>
+        </div>
+      </div>
+    </nav>
+    <!-- ========================= Backdrop ========================== -->
+    <div
+      id="backdrop"
+      class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    ></div>
+    <!-- ========================= Portfolio ========================== -->
+    <main class="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-10 text-center text-white"
+        >
+          <h1 class="text-3xl font-extrabold sm:text-4xl">ผลงาน</h1>
+          <p class="mt-2 text-green-50">Portfolio &amp; Projects</p>
+        </div>
+        <!-- Projects -->
+        <div class="space-y-8 p-6 sm:p-10">
+          <!-- ================================================== Project 1 : เว็บไซต์แสดงผลงาน =================================================== -->
+          <article
+            class="overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <!-- Images -->
+            <div
+              class="grid grid-cols-2 gap-2 bg-white p-3 sm:grid-cols-3 md:grid-cols-4"
+            >
+              <img
+                src="images/portfolio/p1/p1.jpg"
+                alt="Project 1 รูปที่ 1"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p2.jpg"
+                alt="Project 1 รูปที่ 2"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p3.jpg"
+                alt="Project 1 รูปที่ 3"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p4.jpg"
+                alt="Project 1 รูปที่ 4"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p5.jpg"
+                alt="Project 1 รูปที่ 5"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p6.jpg"
+                alt="Project 1 รูปที่ 6"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+              <img
+                src="images/portfolio/p1/p7.jpg"
+                alt="Project 1 รูปที่ 7"
+                class="h-40 w-full rounded-xl object-cover transition duration-300 hover:scale-[1.03] sm:h-44"
+              />
+            </div>
+            <!-- Text -->
+            <div class="space-y-3 p-6">
+              <h2 class="text-2xl font-bold text-gray-800">
+                เว็บไซต์แสดงผลงาน
+              </h2>
+              <p>
+                <strong class="text-green-600">เว็บไซต์ :</strong>
+                เว็บไซต์แสดงผลงาน
+              </p>
+              <p>
+                <strong class="text-green-600">ใช้ภาษา :</strong> HTML,
+                JavaScript, CSS
+              </p>
+              <a
+                href="https://portfolio-qruc.onrender.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-5 py-3 font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                เข้าเว็บไซต์
+              </a>
+            </div>
+          </article>
+          <!-- ================================================== Project 2 : แอปพลิเคชันยืมคืนหนังสือ =================================================== -->
+          <article
+            class="overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <!-- Images -->
+            <div
+              class="grid grid-cols-2 gap-2 bg-white p-3 sm:grid-cols-3 md:grid-cols-4"
+            >
+              <img
+                src="images/portfolio/Project3/1.jpg"
+                alt="Library Project 1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/2.jpg"
+                alt="Library Project 2"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/3.jpg"
+                alt="Library Project 3"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/4.jpg"
+                alt="Library Project 4"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/5.jpg"
+                alt="Library Project 5"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/6.jpg"
+                alt="Library Project 6"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/7.jpg"
+                alt="Library Project 7"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/8.jpg"
+                alt="Library Project 8"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/9.jpg"
+                alt="Library Project 9"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/10.jpg"
+                alt="Library Project 10"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/11.jpg"
+                alt="Library Project 11"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/12.jpg"
+                alt="Library Project 12"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/13.jpg"
+                alt="Library Project 13"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/14.jpg"
+                alt="Library Project 14"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/15.jpg"
+                alt="Library Project 15"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/16.jpg"
+                alt="Library Project 16"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/17.jpg"
+                alt="Library Project 17"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/18.jpg"
+                alt="Library Project 18"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/19.jpg"
+                alt="Library Project 19"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/20.jpg"
+                alt="Library Project 20"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/21.jpg"
+                alt="Library Project 21"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/22.jpg"
+                alt="Library Project 22"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/23.jpg"
+                alt="Library Project 23"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project3/24.jpg"
+                alt="Library Project 24"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+            </div>
+            <!-- Text -->
+            <div class="space-y-3 p-6">
+              <h2 class="text-2xl font-bold text-gray-800">
+                แอปพลิเคชันยืมคืนหนังสือ
+              </h2>
+              <p>
+                <strong class="text-green-600">ใช้ภาษา :</strong> React Native,
+                TypeScript, SQL
+              </p>
+              <p><strong class="text-green-600">รหัสวิชา :</strong> CE308</p>
+              <p>
+                <strong class="text-green-600">ชื่อวิชา :</strong>
+                โปรแกรมประยุกต์บนอุปกรณ์เคลื่อนที่
+              </p>
+              <a
+                href="https://github.com/Biwrescue1706/CE308-Library_project/archive/refs/heads/main.zip"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-5 py-3 font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                📥 ดาวน์โหลดโปรเจกต์
+              </a>
+            </div>
+          </article>
+          <!-- ================================================== Project 3 : ระบบพยากรณ์อากาศอัจฉริยะ =================================================== -->
+          <article
+            class="overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <!-- Images -->
+            <div
+              class="grid grid-cols-2 gap-2 bg-white p-3 sm:grid-cols-3 md:grid-cols-4"
+            >
+              <img
+                src="images/portfolio/Project2/4.jpg"
+                alt="Weather Project 4"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project2/5.jpg"
+                alt="Weather Project 5"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project2/6.jpg"
+                alt="Weather Project 6"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project2/1.jpg"
+                alt="Weather Project 1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project2/2.jpg"
+                alt="Weather Project 2"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project2/3.jpg"
+                alt="Weather Project 3"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+            </div>
+            <!-- Text -->
+            <div class="space-y-3 p-6">
+              <h2 class="text-2xl font-bold text-gray-800">
+                ระบบพยากรณ์อากาศอัจฉริยะ
+              </h2>
+              <p>
+                <strong class="text-green-600">ใช้ภาษา :</strong> C++, React,
+                HTML, CSS, JavaScript, TypeScript, SQL
+              </p>
+              <p><strong class="text-green-600">รหัสวิชา :</strong> CE395</p>
+              <p>
+                <strong class="text-green-600">ชื่อวิชา :</strong>
+                ปฏิบัติการทางวิศวกรรมคอมพิวเตอร์
+              </p>
+              <div class="flex flex-wrap gap-3">
+                <a
+                  href="https://github.com/Biwrescue1706/CE395-Pre-Project/archive/refs/heads/main.zip"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-5 py-3 font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  📥 ดาวน์โหลดโปรเจกต์
+                </a>
+                <a
+                  href="https://github.com/Biwrescue1706/weather/archive/refs/heads/main.zip"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center rounded-xl bg-gray-700 px-5 py-3 font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  📥 ดาวน์โหลดโปรเจกต์
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- ================================================== Project 4 : ระบบยืมคืนหนังสือ =================================================== -->
+          <article
+            class="rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <h2 class="mb-4 text-2xl font-bold text-gray-800">
+              ระบบยืมคืนหนังสือ
+            </h2>
+            <div class="space-y-3 text-gray-700">
+              <p>
+                <strong class="text-green-600">ใช้ภาษา :</strong> HTML, CSS,
+                JavaScript
+              </p>
+              <p><strong class="text-green-600">รหัสวิชา :</strong> CE396</p>
+              <p>
+                <strong class="text-green-600">ชื่อวิชา :</strong>
+                การออกแบบฐานข้อมูล
+              </p>
+            </div>
+          </article>
+          <!-- ================================================== Project 5 : เว็บไซต์จองตั๋วคอนเสิร์ต =================================================== -->
+          <article
+            class="rounded-3xl bg-gray-50 p-6 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <h2 class="mb-4 text-2xl font-bold text-gray-800">
+              เว็บไซต์จองตั๋วคอนเสิร์ต
+            </h2>
+            <div class="space-y-3 text-gray-700">
+              <p>
+                <strong class="text-green-600">ใช้ภาษา :</strong> React,
+                TypeScript, Vite, SQL
+              </p>
+              <p><strong class="text-green-600">รหัสวิชา :</strong> CE385</p>
+              <p>
+                <strong class="text-green-600">ชื่อวิชา :</strong>
+                การออกแบบสถาปัตยกรรมแอพพลิเคชั่น
+              </p>
+            </div>
+          </article>
+          <!-- ================================================== Project 6 : ตู้กดน้ำ =================================================== -->
+          <article
+            class="overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <!-- Images -->
+            <div
+              class="grid grid-cols-2 gap-2 bg-white p-3 sm:grid-cols-3 md:grid-cols-4"
+            >
+              <img
+                src="images/portfolio/Project1/1.jpg"
+                alt="ตู้กดน้ำ 1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/2.1.jpg"
+                alt="ตู้กดน้ำ 2.1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/2.2.jpg"
+                alt="ตู้กดน้ำ 2.2"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/2.3.jpg"
+                alt="ตู้กดน้ำ 2.3"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/2.4.jpg"
+                alt="ตู้กดน้ำ 2.4"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/3.jpg"
+                alt="ตู้กดน้ำ 3"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/4.jpg"
+                alt="ตู้กดน้ำ 4"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/5.1.1.jpg"
+                alt="ตู้กดน้ำ 5.1.1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/5.1.2.jpg"
+                alt="ตู้กดน้ำ 5.1.2"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/5.2.1.jpg"
+                alt="ตู้กดน้ำ 5.2.1"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/5.2.2.jpg"
+                alt="ตู้กดน้ำ 5.2.2"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+              <img
+                src="images/portfolio/Project1/6.jpg"
+                alt="ตู้กดน้ำ 6"
+                class="h-40 w-full rounded-xl object-cover transition hover:scale-[1.03]"
+              />
+            </div>
+            <!-- Text -->
+            <div class="space-y-3 p-6">
+              <h2 class="text-2xl font-bold text-gray-800">ตู้กดน้ำ</h2>
+              <p><strong class="text-green-600">ใช้ภาษา :</strong> C#</p>
+              <p><strong class="text-green-600">รหัสวิชา :</strong> CE216</p>
+              <p>
+                <strong class="text-green-600">ชื่อวิชา :</strong>
+                หลักการเขียนโปรแกรมเชิงวัตถุ
+              </p>
+              <a
+                href="https://github.com/Biwrescue1706/Project_CE216/archive/refs/heads/main.zip"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-5 py-3 font-semibold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+              >
+                📥 ดาวน์โหลดโปรเจกต์
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <!-- ========================= Footer ========================== -->
+    <footer class="border-t bg-white py-6 text-center text-sm text-gray-500">
+      <p>&copy; 2568 Phuwanat Pahala. All rights reserved.</p>
+    </footer>
+    <!-- Navbar JS -->
+    <script src="js/nav.js"></script>
+  </body>
+</html>

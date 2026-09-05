@@ -1,0 +1,436 @@
+/* =========================================================
+   Base.css — Navbar, Grid, Buttons, Drawer, Backdrop
+   ไม่ใช้ Bootstrap
+   ฟอนต์หลัก: Sarabun (โหลดใน <head> ของ HTML แล้ว)
+========================================================= */
+
+/* ---------- Theme & Resets ---------- */
+:root {
+  /* Colors */
+  --bg: #9bf39b;
+  --text: #000000;
+  --muted: #000000;
+
+  --primary: #2563eb;
+  --success: #ff4e02;
+  --warning: #f59e0b;
+
+  --nav-bg: #7975e1;
+  --nav-fg: #ffffff;
+
+  /* Drawer */
+  --drawer-w: 320px;
+  --drawer-bg: #111827;
+  --drawer-fg: #ffffff;
+  --drawer-shadow: 0 10px 30px #00000040;
+
+  /* Backdrop */
+  --backdrop-bg: #000000c8;
+
+  /* Misc */
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, .08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Sarabun', system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans Thai', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* ปิดสกอร์ลหน้าเวลามี Drawer */
+.body-lock {
+  overflow: hidden;
+}
+
+/* ---------- Utilities ---------- */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-4 {
+  margin-bottom: 1.25rem;
+}
+
+.my-4 {
+  margin: 1.25rem 0;
+}
+
+/* ---------- Navbar ---------- */
+.navbar {
+  background: var(--nav-bg);
+  color: var(--nav-fg);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  margin: 0;
+}
+
+/* โลโก้ที่เป็นปุ่มสำหรับเปิด Drawer */
+#navToggle[role="button"] {
+  cursor: pointer;
+  outline: none;
+  border-radius: 8px;
+}
+
+#navToggle[role="button"]:focus-visible {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, .6);
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: block;
+  text-align: center;
+  padding: 16px;
+  border-radius: 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+}
+
+.btn:hover {
+  opacity: .95;
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, .7);
+  outline-offset: 2px;
+}
+
+.btn-green {
+  background: var(--success);
+}
+
+.btn-blue {
+  background: var(--primary);
+}
+
+.btn-yellow {
+  background: var(--warning);
+}
+
+/* ---------- Calendar Card ---------- */
+.calendar-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.calendar-card iframe {
+  display: block;
+  width: 100%;
+  height: 700px;
+  border: 0;
+  border-radius: 10px;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  background: var(--nav-bg);
+  color: var(--nav-fg);
+  text-align: center;
+  padding: 12px;
+  margin-top: 40px;
+}
+
+/* ---------- Backdrop ---------- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--backdrop-bg);
+  backdrop-filter: blur(1px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 999;
+  /* ใต้ drawer */
+}
+
+.backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ---------- Drawer (slide-in from left) ---------- */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* ถ้าต้องการจากขวา: เปลี่ยนเป็น right: 0 และ transform เริ่มต้นเป็น translateX(100%) */
+  height: 100dvh;
+  width: min(100%, var(--drawer-w));
+  background: var(--drawer-bg);
+  color: var(--drawer-fg);
+  box-shadow: var(--drawer-shadow);
+  transform: translateX(-100%);
+  /* ซ่อนไว้ทางซ้าย */
+  transition: transform .28s cubic-bezier(.2, .7, .2, 1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.drawer-title {
+  font-weight: 700;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 20px;
+  line-height: 1;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.drawer .links {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 8px 16px;
+  gap: 6px;
+  overflow: auto;
+}
+
+.drawer .links a {
+  display: block;
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+}
+
+.drawer .links a:hover,
+.drawer .links a:focus-visible {
+  background: rgba(255, 255, 255, .08);
+}
+
+/* ---------- Reduce Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+
+  .drawer,
+  .backdrop,
+  .btn {
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   Responsive
+========================================================= */
+
+/* ≤ 480px : มือถือเล็ก */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px 14px;
+  }
+
+  .navbar h1 {
+    font-size: 18px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  .btn {
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+
+  .calendar-card iframe {
+    height: 560px;
+  }
+}
+
+/* 481–678px : มือถือทั่วไป/แท็บเล็ตตั้ง */
+@media (min-width: 481px) and (max-width: 678px) {
+  .navbar h1 {
+    font-size: 19px;
+  }
+
+  .btn {
+    padding: 15px;
+    font-size: 1.03rem;
+  }
+
+  .grid {
+    gap: 14px;
+  }
+
+  .calendar-card iframe {
+    height: 620px;
+  }
+}
+
+/* 679–1279px : แท็บเล็ตนอน/แล็ปท็อปเล็ก */
+@media (min-width: 679px) and (max-width: 1279px) {
+  .navbar h1 {
+    font-size: 20px;
+  }
+
+  .btn {
+    padding: 16px;
+    font-size: 1.06rem;
+  }
+
+  .grid {
+    gap: 16px;
+  }
+
+  .calendar-card iframe {
+    height: 680px;
+  }
+}
+
+/* ≥ 1280px : เดสก์ท็อปใหญ่ */
+@media (min-width: 1280px) {
+  .navbar h1 {
+    font-size: 22px;
+  }
+
+  .btn {
+    padding: 18px;
+    font-size: 1.08rem;
+  }
+
+  .grid {
+    gap: 18px;
+  }
+
+  .calendar-card iframe {
+    height: 720px;
+  }
+}
+
+/* =========================================================
+   Print
+========================================================= */
+@media print {
+
+  nav,
+  .navbar,
+  .drawer,
+  .backdrop,
+  .footer {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .container {
+    max-width: none;
+    padding: 0;
+  }
+
+  .grid {
+    gap: 8px;
+  }
+
+  /* ปุ่มพิมพ์เป็นรายการเรียบ ๆ */
+  .btn {
+    background: #fff !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+    border-radius: 6px;
+    padding: 8px 10px;
+    transform: none !important;
+  }
+
+  .calendar-card {
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .calendar-card iframe {
+    height: auto;
+  }
+}

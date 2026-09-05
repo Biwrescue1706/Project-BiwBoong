@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>ติดต่อฉัน</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Navbar Script -->
+    <script src="js/nav.js" defer></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- ===== Navbar ===== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition hover:scale-105"
+        />
+
+        <h1 class="text-xl font-bold sm:text-2xl">ติดต่อฉัน</h1>
+      </div>
+
+      <!-- Drawer -->
+      <div
+        class="drawer fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+        id="navDrawer"
+        aria-hidden="true"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between border-b bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+            เมนู
+          </span>
+
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติส่วนตัว
+          </a>
+
+          <a
+            href="/education"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            การศึกษา
+          </a>
+
+          <a
+            href="/certificate"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            เกียรติบัตร
+          </a>
+
+          <a
+            href="/hobbies"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            กิจกรรมยามว่าง
+          </a>
+
+          <a
+            href="/portfolio"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ผลงาน
+          </a>
+
+          <a
+            href="/work"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติการทำงาน
+          </a>
+
+          <a
+            href="/contact"
+            class="link active rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            ติดต่อฉัน
+          </a>
+
+          <a
+            href="/action"
+            class="link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ดาวน์โหลด
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Backdrop -->
+    <div
+      id="backdrop"
+      class="backdrop fixed inset-0 z-40 hidden bg-black/50 backdrop-blur-sm"
+    ></div>
+
+    <!-- ===== Contact Section ===== -->
+    <main class="mx-auto max-w-4xl px-4 py-10 sm:py-16">
+      <!-- Card -->
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-10 text-center text-white sm:px-10"
+        >
+          <h1 class="text-3xl font-extrabold sm:text-4xl">ติดต่อฉัน</h1>
+
+          <p class="mt-3 text-base text-green-50 sm:text-lg">
+            คุณสามารถติดต่อฉันได้ที่
+          </p>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="space-y-4 p-6 sm:p-10">
+          <!-- Address -->
+          <div
+            class="flex items-start gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/address.png"
+                alt="address"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">ที่อยู่</p>
+
+              <p class="mt-1 text-base leading-relaxed text-gray-800">
+                47/21 ม.1 ต.บ้านสวน อ.เมืองชลบุรี จังหวัดชลบุรี 20000
+              </p>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/Tel.png"
+                alt="โทรศัพท์"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">โทรศัพท์</p>
+
+              <a
+                href="tel:061747731"
+                class="mt-1 block text-base font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                06-174-7731
+              </a>
+            </div>
+          </div>
+
+          <!-- Email 1 -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/email.png"
+                alt="email"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">อีเมล</p>
+
+              <a
+                href="mailto:phuwanatbiw@gmail.com"
+                class="mt-1 block break-all text-base font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                phuwanatbiw@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <!-- Email 2 -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/email.png"
+                alt="email"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">อีเมล</p>
+
+              <a
+                href="mailto:phuwanatbiw1@gmail.com"
+                class="mt-1 block break-all text-base font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                phuwanatbiw1@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <!-- Email 3 -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/email.png"
+                alt="email"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">อีเมล</p>
+
+              <a
+                href="mailto:phuwanatbiw2@gmail.com"
+                class="mt-1 block break-all text-base font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                phuwanatbiw2@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <!-- University Email -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-green-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-green-100"
+            >
+              <img
+                src="images/contact/email.png"
+                alt="email"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">
+                อีเมลมหาวิทยาลัย
+              </p>
+
+              <a
+                href="mailto:66110045@dpu.ac.th"
+                class="mt-1 block break-all text-base font-medium text-green-600 hover:text-green-700 hover:underline"
+              >
+                66110045@dpu.ac.th
+              </a>
+            </div>
+          </div>
+
+          <!-- Facebook -->
+          <div
+            class="flex items-center gap-4 rounded-2xl bg-gray-50 p-4 transition hover:bg-blue-50"
+          >
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-100"
+            >
+              <img
+                src="images/contact/FB.png"
+                alt="Facebook"
+                class="h-7 w-7 object-contain"
+              />
+            </div>
+
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Facebook</p>
+
+              <a
+                href="https://www.facebook.com/biwrescue1706"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-1 block text-base font-medium text-blue-600 hover:text-blue-700 hover:underline"
+              >
+                Phuwanat Phahala
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Footer ===== -->
+    <footer
+      class="mt-auto border-t bg-white py-6 text-center text-sm text-gray-500"
+    >
+      <p>&copy; 2568 Phuwanat Pahala. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <meta name="theme-color" content="#16a34a" />
+
+    <link rel="apple-touch-icon" href="/images/logo192.png" />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sarabun: ["Sarabun", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body
+    class="min-h-screen bg-gradient-to-b from-green-100 to-emerald-50 font-sarabun text-gray-800"
+  >
+    <!-- Navbar -->
+    <div id="nav-container"></div>
+
+    <main
+      class="mx-auto w-full max-w-[1400px] px-3 py-5 sm:px-6 sm:py-8 lg:px-8"
+    >
+      <!-- ====================================================== -->
+      <!-- หัวข้อ -->
+      <!-- ====================================================== -->
+
+      <section
+        class="mx-auto max-w-[1000px] rounded-3xl bg-white p-5 text-center shadow-lg sm:p-7"
+      >
+        <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
+          ตารางเรียน BiwBong
+        </h1>
+
+        <p
+          class="mx-auto mt-3 max-w-3xl text-sm leading-6 text-gray-600 sm:mt-4 sm:text-base sm:leading-7 lg:text-lg"
+        >
+          เลือกดูตารางเรียนตามภาคเรียนได้ตั้งแต่ปีการศึกษา 2566 ถึง 2568
+          ครอบคลุมเทอม 1 และเทอม 2
+        </p>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- รายการภาคเรียน -->
+      <!-- ====================================================== -->
+
+      <section class="mx-auto mt-6 max-w-[1200px] sm:mt-8">
+        <div
+          class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 min-[1400px]:grid-cols-4"
+        >
+          <!-- ตารางเรียนปัจจุบัน -->
+          <a
+            href="/current-timetable.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-red-600 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-red-700 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียนปัจจุบัน</div>
+
+              <div class="mt-1 text-xs font-normal text-red-100 sm:text-sm">
+                Current Timetable
+              </div>
+            </div>
+          </a>
+
+          <!-- 1/2568 -->
+          <a
+            href="/timetable/term-1-2568.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-blue-600 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-blue-700 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 1/2568</div>
+
+              <div class="mt-1 text-xs font-normal text-blue-100 sm:text-sm">
+                ภาคเรียนที่ 1
+              </div>
+            </div>
+          </a>
+
+          <!-- 2/2568 -->
+          <a
+            href="/timetable/term-2-2568.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-purple-600 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 2/2568</div>
+
+              <div class="mt-1 text-xs font-normal text-purple-100 sm:text-sm">
+                ภาคเรียนที่ 2
+              </div>
+            </div>
+          </a>
+
+          <!-- 1/2567 -->
+          <a
+            href="/timetable/term-1-2567.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-amber-500 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-amber-600 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 1/2567</div>
+
+              <div class="mt-1 text-xs font-normal text-amber-100 sm:text-sm">
+                ภาคเรียนที่ 1
+              </div>
+            </div>
+          </a>
+
+          <!-- 2/2567 -->
+          <a
+            href="/timetable/term-2-2567.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-cyan-500 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-cyan-600 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 2/2567</div>
+
+              <div class="mt-1 text-xs font-normal text-cyan-100 sm:text-sm">
+                ภาคเรียนที่ 2
+              </div>
+            </div>
+          </a>
+
+          <!-- 1/2566 -->
+          <a
+            href="/timetable/term-1-2566.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-pink-600 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-pink-700 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 1/2566</div>
+
+              <div class="mt-1 text-xs font-normal text-pink-100 sm:text-sm">
+                ภาคเรียนที่ 1
+              </div>
+            </div>
+          </a>
+
+          <!-- 2/2566 -->
+          <a
+            href="/timetable/term-2-2566.html"
+            class="group flex min-h-[90px] items-center justify-center rounded-2xl bg-gray-600 p-5 text-center font-bold text-white shadow-md transition duration-200 hover:-translate-y-1 hover:bg-gray-700 hover:shadow-xl active:scale-[0.98] sm:min-h-[105px] sm:p-6"
+          >
+            <div>
+              <div class="text-base sm:text-lg">ตารางเรียน 2/2566</div>
+
+              <div class="mt-1 text-xs font-normal text-gray-200 sm:text-sm">
+                ภาคเรียนที่ 2
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- ====================================================== -->
+    <!-- Footer -->
+    <!-- ====================================================== -->
+
+    <footer
+      class="mt-10 border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-500"
+    >
+      &copy; 2025 - 2026 เว็บไซต์ของฉัน สงวนลิขสิทธิ์.
+    </footer>
+
+    <!-- ====================================================== -->
+    <!-- Navbar -->
+    <!-- ====================================================== -->
+
+    <script>
+      fetch("/nav.html")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("โหลด nav.html ไม่สำเร็จ");
+          }
+
+          return response.text();
+        })
+        .then((html) => {
+          document.getElementById("nav-container").innerHTML = html;
+
+          const script = document.createElement("script");
+
+          script.src = "/JS/nav.js";
+
+          document.body.appendChild(script);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    </script>
+
+    <!-- ====================================================== -->
+    <!-- Service Worker -->
+    <!-- ====================================================== -->
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js");
+        });
+      }
+    </script>
+  </body>
+</html>

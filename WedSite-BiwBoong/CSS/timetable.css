@@ -1,0 +1,187 @@
+/* =================== CSS/timetable.css (No-Bootstrap) =================== */
+
+/* ---- โทนเฉพาะหน้าตารางเรียน ---- */
+:root {
+  --term-gap: 14px;
+  --term-radius: 14px;
+  --term-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  --term-shadow-hover: 0 10px 20px rgba(0, 0, 0, 0.12);
+  --term-font: 1.05rem;
+
+  /* สีปุ่ม (ไม่ใช้เขียว และไม่ซ้ำกัน) */
+  --c-blue: #2563eb;
+  --c-red: #dc2626;
+  --c-yellow: #f59e0b;
+  --c-cyan: #06b6d4;
+  --c-purple: #7c3aed;
+  --c-pink: #db2777;
+  --c-gray: #6b7280;
+  --amber: #f59e0b;
+}
+
+/* ---- หัวเรื่อง ---- */
+h1 {
+  letter-spacing: 0.2px;
+  margin-bottom: 1rem;
+}
+
+/* =================== GRID =================== */
+.term-grid {
+  display: grid;
+  gap: var(--term-gap);
+  grid-template-columns: 1fr;
+}
+
+/* ≥576px: 2 คอลัมน์ */
+@media (min-width: 576px) {
+  .term-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ≥768px: 3 คอลัมน์ */
+@media (min-width: 768px) {
+  .term-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =================== BUTTON =================== */
+.term-btn {
+  display: block;
+  width: 100%;
+  min-height: 72px;
+  padding: 16px;
+  border: 0;
+  border-radius: var(--term-radius);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--term-font);
+  box-shadow: var(--term-shadow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease;
+  text-wrap: balance;
+  cursor: pointer;
+}
+
+.term-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--term-shadow-hover);
+  opacity: 0.96;
+}
+
+.term-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--term-shadow);
+}
+
+.term-btn:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.7);
+  outline-offset: 2px;
+}
+
+/* สีปุ่ม */
+.term-btn.is-blue {
+  background: var(--c-blue);
+}
+
+.term-btn.is-amber {
+  background: var(--amber);
+}
+.term-btn.is-red {
+  background: var(--c-red);
+}
+.term-btn.is-yellow {
+  background: var(--c-yellow);
+}
+.term-btn.is-cyan {
+  background: var(--c-cyan);
+}
+.term-btn.is-purple {
+  background: var(--c-purple);
+}
+.term-btn.is-pink {
+  background: var(--c-pink);
+}
+.term-btn.is-gray {
+  background: var(--c-gray);
+}
+
+/* =================== Navbar/Footer =================== */
+.nav-btn {
+  white-space: nowrap;
+}
+
+footer {
+  margin-top: 2rem;
+}
+
+/* =================== Responsive =================== */
+/* ≤480px */
+@media (max-width: 480px) {
+  h1 {
+    font-size: clamp(1.35rem, 1rem + 2.2vw, 1.6rem);
+  }
+
+  .term-btn {
+    min-height: 62px;
+    font-size: 1rem;
+  }
+
+  .nav-btn {
+    width: 100%;
+  }
+}
+
+/* 481–678px */
+@media (min-width: 481px) and (max-width: 678px) {
+  .term-btn {
+    min-height: 66px;
+    font-size: 1.03rem;
+  }
+
+  .nav-btn {
+    width: 100%;
+  }
+}
+
+/* 679–1279px */
+@media (min-width: 679px) and (max-width: 1279px) {
+  .term-btn {
+    min-height: 70px;
+    font-size: 1.06rem;
+  }
+}
+
+/* ≥1280px */
+@media (min-width: 1280px) {
+  .term-btn {
+    min-height: 72px;
+    font-size: 1.08rem;
+  }
+}
+
+/* =================== Print =================== */
+@media print {
+  nav,
+  footer {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 14px;
+  }
+
+  .term-btn {
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: #fff !important;
+    min-height: auto !important;
+    padding: 8px 10px !important;
+    transform: none !important;
+  }
+}

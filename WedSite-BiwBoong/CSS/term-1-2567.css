@@ -1,0 +1,324 @@
+/* ================= ตารางเรียน 1/2567 (Clean) ================= */
+/* ฟอนต์ */
+@import url('https://fonts.googleapis.com/css2?family=TH+Sarabun+New:wght@400;700&display=swap');
+
+/* ---------- Tokens ---------- */
+:root {
+  --bg: #9bf39b;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #000000;
+  --line: #e5e7eb;
+
+  --head: #b7fcfc;
+  /* Header row background */
+  --day: #b7fcfc;
+  /* Day column background */
+  --shadow: 0 6px 16px rgba(2, 6, 23, .08);
+
+  /* สีวิชา */
+  --red: #ef4444;
+  --light-yellow-green: #a3e635;
+  --green: #10b981;
+  --dark-green: #065f46;
+  --pink: #d946ef;
+  --orange: #f59e0b;
+
+  /* Layout */
+  --col-first: 50px;
+  --slot-gap: 8px;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'TH Sarabun New', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 20px;
+  line-height: 1.6;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Header ---------- */
+.sheet-head {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin: 10px auto;
+  text-align: center;
+}
+
+.sheet-head .small {
+  color: var(--muted);
+}
+
+/* ---------- Grid Wrapper ---------- */
+.grid-wrap {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-top: 16px;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+  max-width: 1200px;
+  padding-right: 8px;
+  /* กันช่องสุดท้ายโดนตัด */
+}
+
+/* ---------- Rows ---------- */
+.time-row,
+.day-row {
+  display: grid;
+  grid-template-columns: var(--col-first) repeat(16, minmax(56px, 1fr));
+  gap: var(--slot-gap);
+  align-items: stretch;
+  padding: 8px;
+  border-bottom: 1px dashed var(--line);
+}
+
+/* Header row sticky */
+.time-row {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  z-index: 10;
+}
+
+/* Day column sticky */
+.day-cell {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--day);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 6px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* Time cell */
+.time-cell {
+  background: var(--head);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 700;
+  padding: 6px 2px;
+  line-height: 1.2;
+}
+
+.time-row .time-cell {
+  grid-column: span 2;
+}
+
+/* 1 ชั่วโมง = 2 slot */
+.time-cell span {
+  display: block;
+  font-weight: 400;
+  color: var(--muted);
+  font-size: .95em;
+}
+
+/* ---------- Events ---------- */
+.event {
+  position: relative;
+  border-radius: 12px;
+  color: #0b1220;
+  padding: 10px 12px 10px 16px;
+  border: 1px solid rgba(15, 23, 42, .08);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.event::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  opacity: .9;
+}
+
+.ev-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.ev-sub {
+  color: #0b1220cc;
+  font-size: .95em;
+}
+
+/* ---------- Event Colors ---------- */
+.event-red {
+  background: color-mix(in srgb, var(--red) 20%, #fff);
+}
+
+.event-red::before {
+  background: var(--red);
+}
+
+.event-light-yellow-green {
+  background: color-mix(in srgb, var(--light-yellow-green) 25%, #fff);
+}
+
+.event-light-yellow-green::before {
+  background: var(--light-yellow-green);
+}
+
+.event-green {
+  background: color-mix(in srgb, var(--green) 25%, #fff);
+}
+
+.event-green::before {
+  background: var(--green);
+}
+
+.event-dark-green {
+  background: color-mix(in srgb, var(--dark-green) 25%, #fff);
+}
+
+.event-dark-green::before {
+  background: var(--dark-green);
+}
+
+.event-pink {
+  background: color-mix(in srgb, var(--pink) 25%, #fff);
+}
+
+.event-pink::before {
+  background: var(--pink);
+}
+
+.event-orange {
+  background: color-mix(in srgb, var(--orange) 25%, #fff);
+}
+
+.event-orange::before {
+  background: var(--orange);
+}
+
+/* ---------- Interaction ---------- */
+.event:hover {
+  outline: 2px solid #0f172a14;
+}
+
+.event:focus-within {
+  outline: 2px solid #0f172a2e;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  :root {
+    --col-first: 74px;
+    --slot-gap: 4px;
+  }
+
+  body {
+    font-size: 17px;
+  }
+
+  .time-row,
+  .day-row {
+    padding: 6px;
+  }
+
+  .day-cell {
+    min-height: 42px;
+  }
+
+  .event {
+    padding: 10px 12px;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  :root {
+    --col-first: 82px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1279px) {
+  :root {
+    --col-first: 90px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --col-first: 104px;
+  }
+
+  .time-row,
+  .day-row {
+    padding: 10px;
+  }
+
+  .event {
+    padding: 12px 16px;
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+
+  nav,
+  .navbar,
+  .drawer,
+  .backdrop {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 12px;
+  }
+
+  .sheet-head,
+  .grid-wrap {
+    box-shadow: none;
+    border-color: #ddd;
+  }
+
+  .time-row {
+    position: static;
+  }
+
+  .grid-wrap {
+    overflow: visible;
+  }
+
+  .event {
+    background: #fff !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+    box-shadow: none !important;
+  }
+
+  .event::before {
+    background: #000 !important;
+  }
+}

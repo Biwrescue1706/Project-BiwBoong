@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#16a34a" />
+    <link rel="apple-touch-icon" href="/images/logo192.png" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sarabun: ["Sarabun", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-gray-50 font-sarabun text-gray-800">
+    <div id="nav-container"></div>
+
+    <main class="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <section class="text-center">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          ศูนย์รวมลิงก์และตารางเรียนของ BiwBong
+        </h1>
+
+        <p
+          class="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg"
+        >
+          รวมลิงก์ไปยังเว็บไซต์ย่อยของ BiwBong
+          เข้าถึงข้อมูลและเครื่องมือที่ใช้งานประจำได้สะดวกในที่เดียว
+        </p>
+      </section>
+
+      <section
+        class="mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <a
+          href="https://cashflow-page.smartdorm-biwboong.shop/"
+          target="_blank"
+          rel="noopener"
+          class="flex min-h-[150px] flex-col items-center justify-center rounded-2xl bg-purple-600 p-5 text-center text-white shadow-md transition duration-300 hover:-translate-y-1 hover:bg-purple-700 hover:shadow-xl active:scale-[0.98]"
+        >
+          <div class="text-3xl">💰</div>
+
+          <h2 class="mt-3 text-lg font-bold sm:text-xl">
+            เว็บไซต์บันทึกรายรับ-รายจ่าย
+          </h2>
+
+          <p class="mt-2 text-sm text-purple-100">
+            ระบบบันทึกและจัดการรายรับ-รายจ่าย
+          </p>
+        </a>
+
+        <a
+          href="https://biwbong-wedsite-portfolio.onrender.com"
+          target="_blank"
+          rel="noopener"
+          class="flex min-h-[150px] flex-col items-center justify-center rounded-2xl bg-green-500 p-5 text-center text-white shadow-md transition duration-300 hover:-translate-y-1 hover:bg-green-600 hover:shadow-xl active:scale-[0.98]"
+        >
+          <div class="text-3xl">💼</div>
+
+          <h2 class="mt-3 text-lg font-bold sm:text-xl">เว็บไซต์แสดงผลงาน</h2>
+
+          <p class="mt-2 text-sm text-green-50">Portfolio และผลงานต่าง ๆ</p>
+        </a>
+
+        <a
+          href="https://biwbongshop.onrender.com"
+          target="_blank"
+          rel="noopener"
+          class="flex min-h-[150px] flex-col items-center justify-center rounded-2xl bg-blue-500 p-5 text-center text-white shadow-md transition duration-300 hover:-translate-y-1 hover:bg-blue-600 hover:shadow-xl active:scale-[0.98]"
+        >
+          <div class="text-3xl">📦</div>
+
+          <h2 class="mt-3 text-lg font-bold sm:text-xl">
+            เว็บไซต์ยืมคืนอุปกรณ์
+          </h2>
+
+          <p class="mt-2 text-sm text-blue-50">ระบบจัดการยืมและคืนอุปกรณ์</p>
+        </a>
+
+        <a
+          href="https://biwbongexpenses.onrender.com"
+          target="_blank"
+          rel="noopener"
+          class="flex min-h-[150px] flex-col items-center justify-center rounded-2xl bg-yellow-400 p-5 text-center text-gray-900 shadow-md transition duration-300 hover:-translate-y-1 hover:bg-yellow-500 hover:shadow-xl active:scale-[0.98]"
+        >
+          <div class="text-3xl">💡</div>
+
+          <h2 class="mt-3 text-lg font-bold sm:text-xl">
+            เว็บไซต์คำนวณค่าน้ำค่าไฟ
+          </h2>
+
+          <p class="mt-2 text-sm text-gray-700">
+            ระบบคำนวณและจัดการค่าน้ำค่าไฟ
+          </p>
+        </a>
+      </section>
+
+      <section class="mt-12" aria-labelledby="calendar-title">
+        <h2
+          id="calendar-title"
+          class="text-center text-2xl font-bold text-gray-900 sm:text-3xl"
+        >
+          Google Calendar – BiwBong
+        </h2>
+
+        <div
+          class="mx-auto mt-6 max-w-6xl overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200"
+        >
+          <iframe
+            src="https://calendar.google.com/calendar/embed?src=bewrockgame1%40gmail.com&ctz=Asia%2FBangkok"
+            title="Google Calendar – BiwBong"
+            class="h-[500px] w-full sm:h-[650px] lg:h-[700px]"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+
+    <footer
+      class="mt-10 border-t border-gray-200 bg-white px-4 py-6 text-center text-sm text-gray-500"
+    >
+      &copy; 2025 - 2026 เว็บไซต์ของฉัน สงวนลิขสิทธิ์.
+    </footer>
+
+    <script>
+      fetch("/nav.html")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error();
+          }
+
+          return response.text();
+        })
+        .then((html) => {
+          document.getElementById("nav-container").innerHTML = html;
+
+          const script = document.createElement("script");
+          script.src = "/JS/nav.js";
+          document.body.appendChild(script);
+        })
+        .catch(() => {});
+    </script>
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js");
+        });
+      }
+    </script>
+  </body>
+</html>

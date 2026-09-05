@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css2?family=TH+Sarabun+New:wght@400;700&display=swap');
+
+/* ================= Tokens ================= */
+:root {
+  --bg: linear-gradient(180deg,#9bf39b,#d1fae5);
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --line: #e5e7eb;
+
+  --head: #ccfbf1;
+  --day: #a7f3d0;
+  --shadow: 0 10px 30px rgba(2,6,23,.12);
+
+  --col-first: 84px;
+  --slot-min: 96px;
+  --slot-gap: 8px;
+
+  --amber: #fbbf24;
+}
+
+/* ================= Base ================= */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'TH Sarabun New', system-ui, sans-serif;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+/* ================= Header ================= */
+.sheet-head {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  max-width: 1200px;
+  margin: 12px auto;
+  text-align: center;
+}
+.sheet-head .small { color: var(--muted); }
+
+/* ================= Day Tabs ================= */
+.day-tabs {
+  display: none;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px;
+}
+.day-tabs .tab {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  font-weight: 700;
+  cursor: pointer;
+}
+.day-tabs .tab.active {
+  background: #22c55e;
+  color: #fff;
+}
+
+/* ================= Grid Wrapper ================= */
+.grid-wrap {
+  background: var(--card);
+  border-radius: 18px;
+  margin-top: 16px;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 8px;
+}
+
+/* ================= Rows (Desktop Table) ================= */
+.time-row,
+.day-row {
+  display: grid;
+  grid-template-columns: var(--col-first) repeat(8, minmax(var(--slot-min), 1fr));
+  gap: var(--slot-gap);
+  padding: 10px;
+  border-bottom: 1px dashed var(--line);
+  align-items: stretch;
+}
+
+.time-row {
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  z-index: 10;
+}
+
+/* ซ่อนวันที่ไม่มีวิชา */
+.day-row:not(:has(.event)) {
+  display: none;
+}
+
+/* ================= Cells ================= */
+.day-cell {
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: var(--day);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  min-height: 44px;
+  text-align: center;
+}
+
+.time-cell {
+  background: var(--head);
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 700;
+  padding: 10px 6px;
+}
+
+/* ================= Event ================= */
+.event {
+  position: relative;
+  border-radius: 14px;
+  padding: 12px 14px 12px 18px;
+  box-shadow: var(--shadow);
+  background: color-mix(in srgb, var(--amber) 24%, #fff);
+  overflow: hidden;
+}
+.event::before {
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:6px;
+  border-radius:14px 0 0 14px;
+  background:var(--amber);
+}
+.ev-title { font-weight: 800; }
+.ev-sub { font-size: .95em; color: #334155; }
+
+/* ครึ่งชั่วโมง */
+.event.half {
+  transform: translateX(50%);
+  width: 100%;
+}
+
+/* ================= Responsive ================= */
+/* มือถือ: เปลี่ยนเป็นลิสต์เรียงตามวัน */
+@media (max-width: 768px) {
+  .day-tabs { display: flex; }
+
+  /* ซ่อนหัวเวลา */
+  .time-row { display: none; }
+
+  /* เปลี่ยนแต่ละวันเป็นกล่องแนวตั้ง */
+  .day-row {
+    display: block;
+    padding: 12px 14px;
+  }
+
+  /* ชื่อวัน */
+  .day-row .day-cell {
+    position: static;
+    width: fit-content;
+    padding: 6px 14px;
+    margin-bottom: 10px;
+    border-radius: 999px;
+    background: #22c55e;
+    color: #fff;
+    font-weight: 800;
+  }
+
+  /* การ์ดวิชาเรียงลง */
+  .day-row .event {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+    transform: none !important; /* ยกเลิก half */
+  }
+
+  /* ไม่ใช้ grid-column ในโหมดลิสต์ */
+  .day-row .event[style] {
+    grid-column: auto !important;
+  }
+
+  :root {
+    --col-first: 70px;
+    --slot-min: 80px;
+    --slot-gap: 6px;
+  }
+
+  body { font-size: 18px; }
+}
+
+/* แท็บเล็ต */
+@media (min-width:769px) and (max-width:1279px) {
+  :root {
+    --col-first: 90px;
+    --slot-min: 104px;
+  }
+}
+
+/* จอใหญ่ */
+@media (min-width:1280px) {
+  :root {
+    --col-first: 110px;
+    --slot-min: 120px;
+  }
+  .event { padding: 14px 18px 14px 22px; }
+}

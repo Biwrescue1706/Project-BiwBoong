@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เกียรติบัตร</title>
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-green-50 via-white to-teal-50 text-gray-800"
+  >
+    <!-- ========================= Navbar ========================== -->
+    <nav
+      class="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg"
+    >
+      <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+        <!-- Logo Toggle -->
+        <img
+          src="/images/logo.png"
+          height="40"
+          alt="logo"
+          id="navToggle"
+          role="button"
+          tabindex="0"
+          aria-controls="navDrawer"
+          aria-expanded="false"
+          class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+        />
+        <h1 class="text-xl font-bold sm:text-2xl">เกียรติบัตร</h1>
+      </div>
+      <!-- ========================= Drawer ========================== -->
+      <div
+        id="navDrawer"
+        aria-hidden="true"
+        class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+      >
+        <!-- Drawer Header -->
+        <div
+          class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+        >
+          <span class="flex items-center text-lg font-bold">
+            <img
+              src="/images/logo.png"
+              alt="หน้าแรก"
+              height="32"
+              class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+            />
+            เมนู
+          </span>
+          <button
+            id="drawerClose"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+            aria-label="ปิดเมนู"
+          >
+            ✕
+          </button>
+        </div>
+        <!-- Menu -->
+        <div class="flex flex-col gap-1 p-4">
+          <a
+            href="/"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติส่วนตัว
+          </a>
+          <a
+            href="/education"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            การศึกษา
+          </a>
+          <a
+            href="/certificate"
+            class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+          >
+            เกียรติบัตร
+          </a>
+          <a
+            href="/hobbies"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            กิจกรรมยามว่าง
+          </a>
+          <a
+            href="/portfolio"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ผลงาน
+          </a>
+          <a
+            href="/work"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ประวัติการทำงาน
+          </a>
+          <a
+            href="/contact"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ติดต่อฉัน
+          </a>
+          <a
+            href="/action"
+            class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+          >
+            ดาวน์โหลด
+          </a>
+        </div>
+      </div>
+    </nav>
+    <!-- ========================= Backdrop ========================== -->
+    <div
+      id="backdrop"
+      class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+    ></div>
+    <!-- ========================= Certificate ========================== -->
+    <main class="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <section
+        class="overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-100"
+      >
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-r from-green-600 to-teal-600 px-6 py-10 text-center text-white"
+        >
+          <h1 class="text-3xl font-extrabold sm:text-4xl">เกียรติบัตร</h1>
+          <p class="mt-2 text-green-50">Certificates &amp; Achievements</p>
+        </div>
+        <!-- Certificate Cards -->
+        <div class="grid gap-6 p-6 md:grid-cols-2 lg:p-10">
+          <!-- ========================= Certificate 1 ========================== -->
+          <article
+            class="group overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <!-- Image -->
+            <div
+              class="flex h-64 items-center justify-center overflow-hidden bg-white p-4"
+            >
+              <img
+                src="images/certificate/AHC.png"
+                alt="การปฐมพยาบาลขั้นพื้นฐาน"
+                class="h-full w-full object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <!-- Text -->
+            <div class="space-y-3 p-6">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                >
+                  พ.ศ. 2562
+                </span>
+              </div>
+              <h2 class="text-lg font-bold leading-relaxed text-gray-800">
+                การปฐมพยาบาลเบื้องต้นและการช่วยคืนชีพขั้นพื้นฐาน
+              </h2>
+              <div class="space-y-2 text-sm text-gray-600">
+                <p>
+                  <strong class="text-green-600"> สถานที่ : </strong>
+                  โรงพยาบาลเอกชล
+                </p>
+                <p>
+                  <strong class="text-green-600"> วันที่ : </strong> 6 กันยายน
+                  2562
+                </p>
+              </div>
+            </div>
+          </article>
+          <!-- ========================= Certificate 2 ========================== -->
+          <article
+            class="group overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <div
+              class="flex h-64 items-center justify-center overflow-hidden bg-white p-4"
+            >
+              <img
+                src="images/certificate/Chonvc2.png"
+                alt="commadejoy Enterprise"
+                class="h-full w-full object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div class="space-y-3 p-6">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                >
+                  พ.ศ. 2562
+                </span>
+              </div>
+              <h2 class="text-lg font-bold leading-relaxed text-gray-800">
+                เป็นฝ่ายดำเนินการโครงการ "commadejoy Enterprise"
+              </h2>
+              <div class="space-y-2 text-sm text-gray-600">
+                <p>
+                  <strong class="text-green-600"> สถานที่ : </strong>
+                  วิทยาลัยอาชีวศึกษาชลบุรี
+                </p>
+                <p>
+                  <strong class="text-green-600"> วันที่ : </strong> 17 สิงหาคม
+                  2562
+                </p>
+              </div>
+            </div>
+          </article>
+          <!-- ========================= Certificate 3 ========================== -->
+          <article
+            class="group overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <div
+              class="flex h-64 items-center justify-center overflow-hidden bg-white p-4"
+            >
+              <img
+                src="images/certificate/Chonvc1.png"
+                alt="อบรมธุรกิจออนไลน์"
+                class="h-full w-full object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div class="space-y-3 p-6">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                >
+                  พ.ศ. 2562
+                </span>
+              </div>
+              <h2 class="text-lg font-bold leading-relaxed text-gray-800">
+                อบรมเชิงปฎิบัติการทำธุรกิจออนไลน์
+              </h2>
+              <div class="space-y-2 text-sm text-gray-600">
+                <p>
+                  <strong class="text-green-600"> สถานที่ : </strong>
+                  วิทยาลัยอาชีวศึกษาชลบุรี
+                </p>
+                <p>
+                  <strong class="text-green-600"> วันที่ : </strong> 25 พฤษาภาคม
+                  2562
+                </p>
+              </div>
+            </div>
+          </article>
+          <!-- ========================= Certificate 4 - Multiple Images ========================== -->
+          <article
+            class="group overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+          >
+            <div class="grid h-64 grid-cols-2 gap-2 bg-white p-4">
+              <img
+                src="images/certificate/BSJ2.1.png"
+                alt="สอบธรรมศึกษา 1"
+                class="h-full w-full rounded-xl object-contain transition duration-500 group-hover:scale-105"
+              />
+              <img
+                src="images/certificate/BSJ2.2.png"
+                alt="สอบธรรมศึกษา 2"
+                class="h-full w-full rounded-xl object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div class="space-y-3 p-6">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                >
+                  พ.ศ. 2558
+                </span>
+              </div>
+              <h2 class="text-lg font-bold leading-relaxed text-gray-800">
+                สอบไล่ได้ธรรมศึกษาชั้นตรี
+              </h2>
+              <div class="space-y-2 text-sm text-gray-600">
+                <p>
+                  <strong class="text-green-600"> สถานศึกษา : </strong>
+                  โรงเรียนบ้านสวน(จั่นอนุสรณ์)
+                </p>
+                <p>
+                  <strong class="text-green-600"> วันที่ : </strong> 30 ธันวาคม
+                  2558
+                </p>
+              </div>
+            </div>
+          </article>
+          <!-- ========================= Certificate 5 ========================== -->
+          <article
+            class="group overflow-hidden rounded-3xl bg-gray-50 shadow-sm ring-1 ring-gray-100 transition duration-300 hover:-translate-y-1 hover:shadow-xl md:col-span-2 lg:col-span-1"
+          >
+            <div
+              class="flex h-64 items-center justify-center overflow-hidden bg-white p-4"
+            >
+              <img
+                src="images/certificate/BSJ.png"
+                alt="เด็กดีศรี จอ."
+                class="h-full w-full object-contain transition duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div class="space-y-3 p-6">
+              <div class="flex items-center gap-2">
+                <span
+                  class="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700"
+                >
+                  พ.ศ. 2558
+                </span>
+              </div>
+              <h2 class="text-lg font-bold leading-relaxed text-gray-800">
+                เด็กดีศรี จอ. ประจำเดือนมิถุนายน
+              </h2>
+              <div class="space-y-2 text-sm text-gray-600">
+                <p>
+                  <strong class="text-green-600"> วันที่ : </strong> 30 มิถุนายน
+                  2558
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <!-- ========================= Footer ========================== -->
+    <footer class="border-t bg-white py-6 text-center text-sm text-gray-500">
+      <p>&copy; 2568 Phuwanat Pahala. All rights reserved.</p>
+    </footer>
+    <!-- Navbar JS -->
+    <script src="js/nav.js"></script>
+  </body>
+</html>
