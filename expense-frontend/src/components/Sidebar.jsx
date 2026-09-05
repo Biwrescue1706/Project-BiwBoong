@@ -6,6 +6,7 @@ import {
   FaSignOutAlt,
   FaCog,
   FaDownload,
+  FaWallet,
 } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import api from "../api/axios";
@@ -26,13 +27,21 @@ const menus = [
     icon: <FaPlus className="text-lg" />,
     path: "/add-transaction",
   },
-  { name: "ตั้งค่า", icon: <FaCog className="text-lg" />, path: "/setting" },
+  {
+    name: "สรุปตามช่องทางบัญชี",
+    icon: <FaWallet className="text-lg" />,
+    path: "/account-summary",
+  },
+  {
+    name: "ตั้งค่า",
+    icon: <FaCog className="text-lg" />,
+    path: "/setting",
+  },
 ];
 
 function Sidebar({ open, setOpen, user }) {
   const navigate = useNavigate();
 
-  // ติดตั้ง PWA
   const handleInstallApp = async () => {
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
@@ -59,7 +68,6 @@ function Sidebar({ open, setOpen, user }) {
     }
   };
 
-  // Logout
   const handleLogout = async () => {
     try {
       await api.post("/auth/logout");
@@ -77,8 +85,11 @@ function Sidebar({ open, setOpen, user }) {
     "ผู้ใช้งาน";
 
   const roleName = user?.role === "admin" ? "ผู้ดูแลระบบ" : "สมาชิก";
+
   const avatarText =
-    user?.firstName?.charAt(0) || user?.username?.charAt(0) || "U";
+    user?.firstName?.charAt(0) ||
+    user?.username?.charAt(0) ||
+    "U";
 
   return (
     <>
@@ -90,11 +101,9 @@ function Sidebar({ open, setOpen, user }) {
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen w-64 transform flex-col bg-slate-900 text-white transition-transform duration-300 lg:static lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed left-0 top-0 z-40 flex h-screen w-64 transform flex-col bg-slate-900 text-white transition-transform duration-300 lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
-        {/* Header */}
         <div className="flex h-16 items-center justify-between border-b border-slate-700 px-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500">
@@ -121,7 +130,6 @@ function Sidebar({ open, setOpen, user }) {
           </button>
         </div>
 
-        {/* User */}
         <div className="px-4 pt-5">
           <div className="flex items-center gap-3 rounded-xl bg-slate-100 p-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-500 font-bold uppercase text-white">
@@ -132,9 +140,11 @@ function Sidebar({ open, setOpen, user }) {
               <p className="truncate text-sm font-semibold text-black">
                 {displayName}
               </p>
+
               <p className="truncate text-sm font-semibold text-slate-400">
                 {roleName}
               </p>
+
               <p className="truncate text-sm font-semibold text-green-600">
                 @{user?.username || "-"}
               </p>
@@ -146,7 +156,6 @@ function Sidebar({ open, setOpen, user }) {
           เมนูหลัก
         </div>
 
-        {/* Menu */}
         <nav className="flex-1 space-y-2 overflow-y-auto px-3">
           {menus.map((menu) => (
             <NavLink
@@ -154,10 +163,9 @@ function Sidebar({ open, setOpen, user }) {
               to={menu.path}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
-                  isActive
-                    ? "bg-green-500 text-white shadow-lg"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${isActive
+                  ? "bg-green-500 text-white shadow-lg"
+                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
                 }`
               }
             >
@@ -167,7 +175,6 @@ function Sidebar({ open, setOpen, user }) {
           ))}
         </nav>
 
-        {/* Bottom */}
         <div className="border-t border-slate-700 p-5">
           <button
             onClick={handleLogout}
