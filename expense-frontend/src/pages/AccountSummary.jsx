@@ -57,7 +57,9 @@ function AccountSummary() {
 
     const today = `${currentDate.getFullYear()}-${String(
         currentDate.getMonth() + 1
-    ).padStart(2, "0")}-${String(currentDate.getDate()).padStart(2, "0")}`;
+    ).padStart(2, "0")}-${String(
+        currentDate.getDate()
+    ).padStart(2, "0")}`;
 
     useEffect(() => {
         loadData();
@@ -67,13 +69,17 @@ function AccountSummary() {
         try {
             setLoading(true);
 
-            const [transactionRes, accountRes] = await Promise.all([
-                api.get("/transactions"),
-                api.get("/accounts"),
-            ]);
+            const [transactionRes, accountRes] =
+                await Promise.all([
+                    api.get("/transactions"),
+                    api.get("/accounts"),
+                ]);
 
-            const transactionResponse = transactionRes.data;
-            const accountResponse = accountRes.data;
+            const transactionResponse =
+                transactionRes.data;
+
+            const accountResponse =
+                accountRes.data;
 
             const transactionData =
                 transactionResponse.data?.transactions ||
@@ -108,6 +114,12 @@ function AccountSummary() {
         }
     };
 
+    const isUUID = (value) => {
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+            String(value || "").trim()
+        );
+    };
+
     const years = useMemo(() => {
         const yearSet = new Set();
 
@@ -138,10 +150,11 @@ function AccountSummary() {
         transactions.forEach((item) => {
             if (!item.date) return;
 
-            const [year, month] = String(item.date)
-                .substring(0, 10)
-                .split("-")
-                .map(Number);
+            const [year, month] =
+                String(item.date)
+                    .substring(0, 10)
+                    .split("-")
+                    .map(Number);
 
             if (
                 year === Number(selectedYear) &&
@@ -161,10 +174,8 @@ function AccountSummary() {
         return transactions.filter((item) => {
             if (!item.date) return false;
 
-            const itemDate = String(item.date).substring(
-                0,
-                10
-            );
+            const itemDate =
+                String(item.date).substring(0, 10);
 
             const [year, month, day] =
                 itemDate.split("-").map(Number);
@@ -239,85 +250,78 @@ function AccountSummary() {
         today,
     ]);
 
-    // ใช้ Accounts เป็นตัวหลักและรวม Transactions ตาม Accounts.id
+    // ใช้ Accounts เป็นตัวหลักและจับ Transactions ด้วย Accounts.id
     const accountSummary = useMemo(() => {
-        const accountMap = new Map();
+        return accounts
+            .filter((account) => {
+                const name = String(
+                    account.name || ""
+                ).trim();
 
-        accounts.forEach((account) => {
-            const accountId = String(
-                account.id || ""
-            ).trim();
+                return (
+                    name &&
+                    !isUUID(name)
+                );
+            })
+            .map((account) => {
+                const accountId = String(
+                    account.id || ""
+                ).trim();
 
-            if (!accountId) return;
-
-            const accountName = String(
-                account.name || "ไม่ระบุชื่อบัญชี"
-            ).trim();
-
-            if (!accountMap.has(accountName)) {
-                accountMap.set(accountName, {
-                    id: accountName,
-                    name: accountName,
-                    accountIds: [],
-                    balance: 0,
-                    income: 0,
-                    expense: 0,
-                });
-            }
-
-            const item = accountMap.get(accountName);
-
-            if (!item.accountIds.includes(accountId)) {
-                item.accountIds.push(accountId);
-            }
-
-            item.balance += Number(
-                account.balance || 0
-            );
-        });
-
-        accountMap.forEach((account) => {
-            const accountIdSet = new Set(
-                account.accountIds
-            );
-
-            filteredTransactions.forEach(
-                (transaction) => {
-                    const transactionAccountId =
-                        String(
-                            transaction.accountTypesId ||
-                            ""
-                        ).trim();
-
-                    if (
-                        !transactionAccountId ||
-                        !accountIdSet.has(
-                            transactionAccountId
-                        )
-                    ) {
-                        return;
-                    }
-
-                    account.income += Number(
-                        transaction.income || 0
+                const accountTransactions =
+                    filteredTransactions.filter(
+                        (transaction) =>
+                            String(
+                                transaction.accountTypesId ||
+                                ""
+                            ).trim() === accountId
                     );
 
-                    account.expense += Number(
-                        transaction.expense || 0
+                const income =
+                    accountTransactions.reduce(
+                        (sum, transaction) =>
+                            sum +
+                            Number(
+                                transaction.income || 0
+                            ),
+                        0
                     );
-                }
-            );
-        });
 
-        return Array.from(accountMap.values());
-    }, [accounts, filteredTransactions]);
+                const expense =
+                    accountTransactions.reduce(
+                        (sum, transaction) =>
+                            sum +
+                            Number(
+                                transaction.expense || 0
+                            ),
+                        0
+                    );
+
+                return {
+                    id: account.id,
+                    name: account.name,
+                    income,
+                    expense,
+                    balance:
+                        income - expense,
+                };
+            });
+    }, [
+        accounts,
+        filteredTransactions,
+    ]);
 
     const total = useMemo(() => {
         return accountSummary.reduce(
             (result, account) => {
-                result.income += account.income;
-                result.expense += account.expense;
-                result.balance += account.balance;
+                result.income +=
+                    account.income;
+
+                result.expense +=
+                    account.expense;
+
+                result.balance +=
+                    account.balance;
 
                 return result;
             },
@@ -345,7 +349,9 @@ function AccountSummary() {
             .substring(0, 10)
             .split("-");
 
-        if (parts.length !== 3) return date;
+        if (parts.length !== 3) {
+            return date;
+        }
 
         const year = Number(parts[0]);
         const month = Number(parts[1]);
@@ -375,7 +381,9 @@ function AccountSummary() {
             }
 
             if (endDate) {
-                return `ถึง ${formatDate(endDate)}`;
+                return `ถึง ${formatDate(
+                    endDate
+                )}`;
             }
 
             return "ระหว่างวันที่";
@@ -391,7 +399,9 @@ function AccountSummary() {
                 ? " • ทุกเดือน"
                 : ` • ${
                       monthNames[
-                          Number(selectedMonth) - 1
+                          Number(
+                              selectedMonth
+                          ) - 1
                       ]
                   }`;
 
@@ -500,24 +510,38 @@ function AccountSummary() {
                                     </option>
 
                                     {Array.from(
-                                        { length: 31 },
+                                        {
+                                            length: 31,
+                                        },
                                         (_, i) =>
                                             i + 1
-                                    ).map((day) => (
-                                        <option
-                                            key={day}
-                                            value={day}
-                                        >
-                                            วันที่ {day}
-                                        </option>
-                                    ))}
+                                    ).map(
+                                        (day) => (
+                                            <option
+                                                key={
+                                                    day
+                                                }
+                                                value={
+                                                    day
+                                                }
+                                            >
+                                                วันที่{" "}
+                                                {
+                                                    day
+                                                }
+                                            </option>
+                                        )
+                                    )}
                                 </select>
 
                                 <select
-                                    value={selectedMonth}
+                                    value={
+                                        selectedMonth
+                                    }
                                     onChange={(e) =>
                                         handleMonthChange(
-                                            e.target.value
+                                            e.target
+                                                .value
                                         )
                                     }
                                     className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
@@ -527,10 +551,16 @@ function AccountSummary() {
                                     </option>
 
                                     {availableMonths.map(
-                                        (month) => (
+                                        (
+                                            month
+                                        ) => (
                                             <option
-                                                key={month}
-                                                value={month}
+                                                key={
+                                                    month
+                                                }
+                                                value={
+                                                    month
+                                                }
                                             >
                                                 {
                                                     monthNames[
@@ -544,10 +574,13 @@ function AccountSummary() {
                                 </select>
 
                                 <select
-                                    value={selectedYear}
+                                    value={
+                                        selectedYear
+                                    }
                                     onChange={(e) =>
                                         handleYearChange(
-                                            e.target.value
+                                            e.target
+                                                .value
                                         )
                                     }
                                     className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
@@ -555,12 +588,18 @@ function AccountSummary() {
                                     {years.map(
                                         (year) => (
                                             <option
-                                                key={year}
-                                                value={year}
+                                                key={
+                                                    year
+                                                }
+                                                value={
+                                                    year
+                                                }
                                             >
                                                 พ.ศ.{" "}
-                                                {year +
-                                                    543}
+                                                {
+                                                    year +
+                                                        543
+                                                }
                                             </option>
                                         )
                                     )}
@@ -611,33 +650,66 @@ function AccountSummary() {
 
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="rounded-2xl border border-green-100 bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-gray-600">
-                        รายรับรวม
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-semibold text-gray-600">
+                                รายรับรวม
+                            </p>
 
-                    <p className="mt-2 text-2xl font-extrabold text-green-600">
-                        ฿ {formatMoney(total.income)}
-                    </p>
+                            <p className="mt-2 text-2xl font-extrabold text-green-600">
+                                ฿{" "}
+                                {formatMoney(
+                                    total.income
+                                )}
+                            </p>
+                        </div>
+
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
+                            <FaArrowUp />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-gray-600">
-                        รายจ่ายรวม
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-semibold text-gray-600">
+                                รายจ่ายรวม
+                            </p>
 
-                    <p className="mt-2 text-2xl font-extrabold text-red-500">
-                        ฿ {formatMoney(total.expense)}
-                    </p>
+                            <p className="mt-2 text-2xl font-extrabold text-red-500">
+                                ฿{" "}
+                                {formatMoney(
+                                    total.expense
+                                )}
+                            </p>
+                        </div>
+
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100 text-red-500">
+                            <FaArrowDown />
+                        </div>
+                    </div>
                 </div>
 
                 <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
-                    <p className="text-sm font-semibold text-gray-600">
-                        ยอดคงเหลือรวม
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-semibold text-gray-600">
+                                ยอดคงเหลือรวม
+                            </p>
 
-                    <p className="mt-2 text-2xl font-extrabold text-blue-600">
-                        ฿ {formatMoney(total.balance)}
-                    </p>
+                            <p className="mt-2 text-2xl font-extrabold text-blue-600">
+                                ฿{" "}
+                                {formatMoney(
+                                    total.balance
+                                )}
+                            </p>
+                        </div>
+
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                            <FaWallet />
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -665,7 +737,8 @@ function AccountSummary() {
                         <div className="flex justify-center py-16">
                             <div className="h-10 w-10 animate-spin rounded-full border-4 border-blue-100 border-t-blue-600" />
                         </div>
-                    ) : accountSummary.length === 0 ? (
+                    ) : accountSummary.length ===
+                      0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-center">
                             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100">
                                 <FaWallet className="text-2xl text-gray-300" />
