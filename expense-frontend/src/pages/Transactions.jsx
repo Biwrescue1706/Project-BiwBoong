@@ -34,12 +34,14 @@ function Transactions() {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [editTransaction, setEditTransaction] = useState(null);
+  const [editTransaction, setEditTransaction] =
+    useState(null);
   const [user, setUser] = useState(null);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedYear, setSelectedYear] =
+    useState("");
 
   useEffect(() => {
     loadData();
@@ -50,15 +52,16 @@ function Transactions() {
     try {
       setLoading(true);
 
-      const [transactionData, accountRes] =
-        await Promise.all([
-          getTransactions(),
-          api.get("/accounts"),
-        ]);
-
-      const accountResponse = accountRes.data;
+      const [
+        transactionData,
+        accountResponse,
+      ] = await Promise.all([
+        getTransactions(),
+        api.get("/accounts"),
+      ]);
 
       const accountData =
+        accountResponse?.data?.data ||
         accountResponse?.data?.accounts ||
         accountResponse?.data ||
         accountResponse?.accounts ||
@@ -108,8 +111,9 @@ function Transactions() {
 
   const loadUser = async () => {
     try {
-      const res =
-        await api.get("/auth/profile");
+      const res = await api.get(
+        "/auth/profile"
+      );
 
       setUser(res.data.user);
     } catch (err) {
@@ -136,32 +140,33 @@ function Transactions() {
 
       if (!id || !name) return;
 
-      map.set(id, name);
+      map.set(id, {
+        id,
+        name,
+        balance: Number(
+          account.balance || 0
+        ),
+      });
     });
 
     return map;
   }, [accounts]);
 
-  const getAccountName = (transaction) => {
+  const getAccountName = (
+    transaction
+  ) => {
     const accountId = String(
-      transaction.accountTypesId ||
-        transaction.accountTypeId ||
-        ""
+      transaction.accountTypesId || ""
     ).trim();
 
     return (
-      accountMap.get(accountId) ||
+      accountMap.get(accountId)?.name ||
       "ไม่ระบุช่องทาง"
     );
   };
 
   const handleEdit = (transaction) => {
-    setEditTransaction({
-      ...transaction,
-      accountTypeName:
-        getAccountName(transaction),
-    });
-
+    setEditTransaction(transaction);
     setModalOpen(true);
   };
 
@@ -185,7 +190,7 @@ function Transactions() {
         "ลบรายการสำเร็จ"
       );
 
-      await loadTransactions();
+      await loadData();
     } catch (err) {
       errorAlert(
         err.response?.data?.message ||
@@ -198,42 +203,6 @@ function Transactions() {
     await loadData();
   };
 
-  const handleStartDateChange = (
-    value
-  ) => {
-    setSelectedYear("");
-    setStartDate(value);
-  };
-
-  const handleEndDateChange = (
-    value
-  ) => {
-    setSelectedYear("");
-    setEndDate(value);
-  };
-
-  const handleYearChange = (year) => {
-    setSelectedYear(year);
-
-    if (year) {
-      setStartDate(
-        `${year}-01-01`
-      );
-      setEndDate(
-        `${year}-12-31`
-      );
-    } else {
-      setStartDate("");
-      setEndDate("");
-    }
-  };
-
-  const handleClearFilter = () => {
-    setSelectedYear("");
-    setStartDate("");
-    setEndDate("");
-  };
-
   const formatThaiDate = (date) => {
     if (!date) return "-";
 
@@ -242,11 +211,8 @@ function Transactions() {
       10
     );
 
-    const [
-      year,
-      month,
-      day,
-    ] = value.split("-").map(Number);
+    const [year, month, day] =
+      value.split("-").map(Number);
 
     const months = [
       "ม.ค.",
@@ -277,6 +243,43 @@ function Transactions() {
     } ${year + 543}`;
   };
 
+  const handleStartDateChange = (
+    value
+  ) => {
+    setSelectedYear("");
+    setStartDate(value);
+  };
+
+  const handleEndDateChange = (
+    value
+  ) => {
+    setSelectedYear("");
+    setEndDate(value);
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+
+    if (year) {
+      setStartDate(
+        `${year}-01-01`
+      );
+
+      setEndDate(
+        `${year}-12-31`
+      );
+    } else {
+      setStartDate("");
+      setEndDate("");
+    }
+  };
+
+  const handleClearFilter = () => {
+    setSelectedYear("");
+    setStartDate("");
+    setEndDate("");
+  };
+
   const availableYears = useMemo(() => {
     const years = transactions
       .map((transaction) =>
@@ -288,9 +291,7 @@ function Transactions() {
       )
       .filter(Boolean);
 
-    return [
-      ...new Set(years),
-    ].sort(
+    return [...new Set(years)].sort(
       (a, b) =>
         Number(b) - Number(a)
     );
@@ -298,9 +299,7 @@ function Transactions() {
 
   const filteredTransactions =
     useMemo(() => {
-      let result = [
-        ...transactions,
-      ];
+      let result = [...transactions];
 
       if (startDate) {
         result = result.filter(
@@ -365,20 +364,13 @@ function Transactions() {
       return 0;
     }
 
-    const sorted = [
-      ...filteredTransactions,
-    ].sort((a, b) =>
-      String(
-        a.date || ""
-      ).localeCompare(
-        String(b.date || "")
-      )
-    );
+    const lastTransaction =
+      filteredTransactions[
+        filteredTransactions.length - 1
+      ];
 
     return Number(
-      sorted[
-        sorted.length - 1
-      ]?.balance || 0
+      lastTransaction.balance || 0
     );
   }, [filteredTransactions]);
 
@@ -396,22 +388,19 @@ function Transactions() {
 
       if (!id || !name) return;
 
-      if (!summary.has(id)) {
-        summary.set(id, {
-          id,
-          name,
-          income: 0,
-          expense: 0,
-          balance: 0,
-        });
-      }
+      summary.set(id, {
+        id,
+        name,
+        income: 0,
+        expense: 0,
+        balance: 0,
+      });
     });
 
     filteredTransactions.forEach(
       (transaction) => {
         const accountId = String(
           transaction.accountTypesId ||
-            transaction.accountTypeId ||
             ""
         ).trim();
 
@@ -438,10 +427,6 @@ function Transactions() {
 
     return Array.from(
       summary.values()
-    ).filter(
-      (account) =>
-        account.income !== 0 ||
-        account.expense !== 0
     );
   }, [
     accounts,
@@ -464,14 +449,13 @@ function Transactions() {
       i < bytes.length;
       i += chunkSize
     ) {
-      const chunk =
-        bytes.subarray(
-          i,
-          Math.min(
-            i + chunkSize,
-            bytes.length
-          )
-        );
+      const chunk = bytes.subarray(
+        i,
+        Math.min(
+          i + chunkSize,
+          bytes.length
+        )
+      );
 
       binary += String.fromCharCode(
         ...chunk
@@ -490,6 +474,7 @@ function Transactions() {
       errorAlert(
         "วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด"
       );
+
       return;
     }
 
@@ -500,6 +485,7 @@ function Transactions() {
       errorAlert(
         "ไม่มีข้อมูลในช่วงวันที่หรือปีที่เลือก"
       );
+
       return;
     }
 
@@ -518,8 +504,11 @@ function Transactions() {
         format: "a4",
       });
 
+      const fontUrl =
+        "/fonts/THSarabunNew.ttf";
+
       const response = await fetch(
-        "/fonts/THSarabunNew.ttf"
+        fontUrl
       );
 
       if (!response.ok) {
@@ -571,16 +560,15 @@ function Transactions() {
         startDate ||
         (selectedYear
           ? `${selectedYear}-01-01`
-          : pdfTransactions[0]
-              ?.date || "");
+          : pdfTransactions[0]?.date ||
+            "");
 
       const reportEndDate =
         endDate ||
         (selectedYear
           ? `${selectedYear}-12-31`
           : pdfTransactions[
-              pdfTransactions.length -
-                1
+              pdfTransactions.length - 1
             ]?.date || "");
 
       const today = new Date()
@@ -943,7 +931,7 @@ function Transactions() {
                 <FaReceipt />
               </div>
 
-              <span className="text-sm font-medium">
+              <span className="text-sm font-medium text-white">
                 Financial Transactions
               </span>
             </div>
@@ -952,36 +940,34 @@ function Transactions() {
               รายการรายรับรายจ่าย
             </h1>
 
-            <p className="mt-1 text-sm sm:text-base">
+            <p className="mt-1 text-sm text-white sm:text-base">
               จัดการ ตรวจสอบ และติดตามรายการทางการเงิน
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <div className="flex w-full flex-col gap-3 sm:flex-row sm:w-auto">
             <button
               onClick={() =>
                 navigate(
                   "/add-transaction"
                 )
               }
-              className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-green-700 shadow-lg transition hover:bg-green-50 sm:w-auto"
+              className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-green-700 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-green-50 hover:shadow-xl active:scale-[0.98] sm:w-auto"
             >
               <FaPlus className="transition-transform group-hover:rotate-90" />
               เพิ่มรายการ
             </button>
 
             <button
-              onClick={
-                handleExportPDF
-              }
+              onClick={handleExportPDF}
               disabled={
                 loading ||
                 filteredTransactions.length ===
                   0
               }
-              className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-red-600 shadow-lg transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-red-600 shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-xl active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
-              <FaFilePdf />
+              <FaFilePdf className="transition-transform group-hover:scale-110" />
               ส่งออก PDF
             </button>
           </div>
@@ -1021,7 +1007,7 @@ function Transactions() {
                     e.target.value
                   )
                 }
-                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none"
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-500/10"
               />
             </div>
 
@@ -1039,7 +1025,7 @@ function Transactions() {
                     e.target.value
                   )
                 }
-                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none"
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-500/10"
               />
             </div>
 
@@ -1056,7 +1042,7 @@ function Transactions() {
                     e.target.value
                   )
                 }
-                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none"
+                className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-black outline-none transition focus:border-green-500 focus:bg-white focus:ring-4 focus:ring-green-500/10"
               >
                 <option value="">
                   -- เลือกปี --
@@ -1084,7 +1070,7 @@ function Transactions() {
 
               <span>พบข้อมูล</span>
 
-              <strong>
+              <strong className="font-bold text-black">
                 {filteredTransactions.length.toLocaleString()}
               </strong>
 
@@ -1098,7 +1084,7 @@ function Transactions() {
                 onClick={
                   handleClearFilter
                 }
-                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2 text-sm font-semibold text-black"
+                className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2 text-sm font-semibold text-black transition hover:bg-gray-200 active:scale-[0.98]"
               >
                 <FaTimes />
                 ล้างตัวกรอง
@@ -1113,48 +1099,90 @@ function Transactions() {
           0 && (
           <>
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-green-100 bg-white p-5 shadow-sm">
-                <p className="text-sm font-semibold text-black">
-                  รายรับทั้งหมด
-                </p>
+              <div className="group relative overflow-hidden rounded-2xl border border-green-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-green-500/10">
+                <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-green-50 transition-transform duration-300 group-hover:scale-125" />
 
-                <p className="mt-4 text-2xl font-extrabold text-green-600 sm:text-3xl">
-                  +
-                  {totalIncome.toLocaleString()}
-                </p>
+                <div className="relative flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-black">
+                      รายรับทั้งหมด
+                    </p>
 
-                <p className="mt-1 text-xs text-black">
-                  บาท
-                </p>
+                    <p className="mt-1 text-xs text-black">
+                      เงินที่ได้รับทั้งหมด
+                    </p>
+
+                    <p className="mt-4 text-2xl font-extrabold text-green-600 sm:text-3xl">
+                      +
+                      {totalIncome.toLocaleString()}
+                    </p>
+
+                    <p className="mt-1 text-xs font-medium text-black">
+                      บาท
+                    </p>
+                  </div>
+
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-green-100 text-green-600">
+                    <FaArrowUp />
+                  </div>
+                </div>
               </div>
 
-              <div className="rounded-2xl border border-red-100 bg-white p-5 shadow-sm">
-                <p className="text-sm font-semibold text-black">
-                  รายจ่ายทั้งหมด
-                </p>
+              <div className="group relative overflow-hidden rounded-2xl border border-red-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-red-500/10">
+                <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-red-50 transition-transform duration-300 group-hover:scale-125" />
 
-                <p className="mt-4 text-2xl font-extrabold text-red-600 sm:text-3xl">
-                  -
-                  {totalExpense.toLocaleString()}
-                </p>
+                <div className="relative flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-black">
+                      รายจ่ายทั้งหมด
+                    </p>
 
-                <p className="mt-1 text-xs text-black">
-                  บาท
-                </p>
+                    <p className="mt-1 text-xs text-black">
+                      เงินที่จ่ายออกทั้งหมด
+                    </p>
+
+                    <p className="mt-4 text-2xl font-extrabold text-red-600 sm:text-3xl">
+                      -
+                      {totalExpense.toLocaleString()}
+                    </p>
+
+                    <p className="mt-1 text-xs font-medium text-black">
+                      บาท
+                    </p>
+                  </div>
+
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                    <FaArrowDown />
+                  </div>
+                </div>
               </div>
 
-              <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-1">
-                <p className="text-sm font-semibold text-black">
-                  คงเหลือ
-                </p>
+              <div className="group relative overflow-hidden rounded-2xl border border-blue-100 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 sm:col-span-2 lg:col-span-1">
+                <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-blue-50 transition-transform duration-300 group-hover:scale-125" />
 
-                <p className="mt-4 text-2xl font-extrabold text-blue-600 sm:text-3xl">
-                  {latestBalance.toLocaleString()}
-                </p>
+                <div className="relative flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-black">
+                      คงเหลือ
+                    </p>
 
-                <p className="mt-1 text-xs text-black">
-                  บาท
-                </p>
+                    <p className="mt-1 text-xs text-black">
+                      ยอดคงเหลือสุทธิ
+                    </p>
+
+                    <p className="mt-4 truncate text-2xl font-extrabold text-blue-600 sm:text-3xl">
+                      {latestBalance.toLocaleString()}
+                    </p>
+
+                    <p className="mt-1 text-xs font-medium text-black">
+                      บาท
+                    </p>
+                  </div>
+
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                    <FaWallet />
+                  </div>
+                </div>
               </div>
             </section>
 
@@ -1185,7 +1213,7 @@ function Transactions() {
                         className="rounded-2xl border border-gray-100 bg-gray-50 p-4"
                       >
                         <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
                             <FaCreditCard />
                           </div>
 
@@ -1275,24 +1303,34 @@ function Transactions() {
 
         {loading ? (
           <div className="flex flex-col items-center justify-center px-5 py-16">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-green-100 border-t-green-600" />
+            <div className="relative flex h-16 w-16 items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-4 border-green-100" />
+
+              <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-green-600" />
+
+              <FaWallet className="text-xl text-green-600" />
+            </div>
 
             <p className="mt-5 text-sm font-semibold text-black">
               กำลังโหลดข้อมูล...
+            </p>
+
+            <p className="mt-1 text-xs text-black">
+              กรุณารอสักครู่
             </p>
           </div>
         ) : filteredTransactions.length ===
           0 ? (
           <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
             <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100">
-              <FaReceipt className="text-3xl text-gray-400" />
+              <FaReceipt className="text-3xl text-black" />
             </div>
 
             <h3 className="mt-5 text-base font-bold text-black">
               ไม่พบรายการ
             </h3>
 
-            <p className="mt-1 text-sm text-black">
+            <p className="mt-1 max-w-sm text-sm text-black">
               ไม่พบรายการรายรับรายจ่ายในช่วงเวลาที่เลือก
             </p>
 
@@ -1300,7 +1338,7 @@ function Transactions() {
               onClick={
                 handleClearFilter
               }
-              className="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white"
+              className="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 active:scale-[0.98]"
             >
               <FaTimes />
               ล้างตัวกรอง
@@ -1319,23 +1357,23 @@ function Transactions() {
                       transaction.income
                     ) > 0;
 
+                  const rowKey =
+                    transaction.id ||
+                    `${transaction.date}-${transaction.categoryId}-${transaction.accountTypesId}-${index}`;
+
                   const accountName =
                     getAccountName(
                       transaction
                     );
 
-                  const rowKey =
-                    transaction.id ||
-                    `${transaction.date}-${transaction.categoryId}-${transaction.accountTypesId}-${index}`;
-
                   return (
                     <div
                       key={rowKey}
-                      className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm"
+                      className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition active:scale-[0.99]"
                     >
                       <div className="flex items-start gap-3">
                         <div
-                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
+                          className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${
                             isIncome
                               ? "bg-green-100 text-green-600"
                               : "bg-red-100 text-red-600"
@@ -1351,7 +1389,7 @@ function Transactions() {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
                             <div className="min-w-0">
-                              <h3 className="break-words text-sm font-bold text-black">
+                              <h3 className="truncate text-sm font-bold text-black">
                                 {transaction.categoryName ||
                                   "-"}
                               </h3>
@@ -1363,7 +1401,7 @@ function Transactions() {
                               </p>
                             </div>
 
-                            <div className="shrink-0 text-right">
+                            <div className="flex-shrink-0 text-right">
                               {isIncome ? (
                                 <p className="text-sm font-extrabold text-green-600">
                                   +
@@ -1380,7 +1418,7 @@ function Transactions() {
                                 </p>
                               )}
 
-                              <p className="text-[10px] text-black">
+                              <p className="text-[10px] font-medium text-black">
                                 บาท
                               </p>
                             </div>
@@ -1388,9 +1426,9 @@ function Transactions() {
                         </div>
                       </div>
 
-                      <div className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-100 pt-3">
+                      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-gray-100 pt-3">
                         <div>
-                          <p className="text-[10px] text-black">
+                          <p className="text-[10px] font-medium text-black">
                             ประเภท
                           </p>
 
@@ -1401,7 +1439,7 @@ function Transactions() {
                         </div>
 
                         <div>
-                          <p className="text-[10px] text-black">
+                          <p className="text-[10px] font-medium text-black">
                             หมวดหมู่
                           </p>
 
@@ -1412,7 +1450,7 @@ function Transactions() {
                         </div>
 
                         <div>
-                          <p className="text-[10px] text-black">
+                          <p className="text-[10px] font-medium text-black">
                             ช่องทาง
                           </p>
 
@@ -1423,7 +1461,7 @@ function Transactions() {
                         </div>
 
                         <div>
-                          <p className="text-[10px] text-black">
+                          <p className="text-[10px] font-medium text-black">
                             คงเหลือ
                           </p>
 
@@ -1437,7 +1475,7 @@ function Transactions() {
                         </div>
 
                         <div className="col-span-2">
-                          <p className="text-[10px] text-black">
+                          <p className="text-[10px] font-medium text-black">
                             หมายเหตุ
                           </p>
 
@@ -1455,7 +1493,7 @@ function Transactions() {
                               transaction
                             )
                           }
-                          className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-yellow-50 text-sm font-semibold text-yellow-700"
+                          className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-yellow-50 text-sm font-semibold text-yellow-700 transition hover:bg-yellow-100 active:scale-[0.98]"
                         >
                           <FaEdit />
                           แก้ไข
@@ -1467,7 +1505,7 @@ function Transactions() {
                               transaction.id
                             )
                           }
-                          className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-red-50 text-sm font-semibold text-red-600"
+                          className="flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-red-50 text-sm font-semibold text-red-600 transition hover:bg-red-100 active:scale-[0.98]"
                         >
                           <FaTrash />
                           ลบ
@@ -1483,39 +1521,39 @@ function Transactions() {
               <table className="min-w-[1180px] w-full">
                 <thead>
                   <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="px-5 py-4 text-left text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">
                       วันที่
                     </th>
 
-                    <th className="px-5 py-4 text-left text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">
                       รายการ
                     </th>
 
-                    <th className="px-5 py-4 text-left text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">
                       ช่องทาง
                     </th>
 
-                    <th className="px-5 py-4 text-right text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">
                       รายรับ
                     </th>
 
-                    <th className="px-5 py-4 text-right text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">
                       รายจ่าย
                     </th>
 
-                    <th className="px-5 py-4 text-right text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-right text-xs font-bold text-black">
                       คงเหลือ
                     </th>
 
-                    <th className="px-5 py-4 text-left text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-left text-xs font-bold text-black">
                       หมายเหตุ
                     </th>
 
-                    <th className="px-5 py-4 text-center text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-center text-xs font-bold text-black">
                       แก้ไข
                     </th>
 
-                    <th className="px-5 py-4 text-center text-xs font-bold text-black">
+                    <th className="whitespace-nowrap px-5 py-4 text-center text-xs font-bold text-black">
                       ลบ
                     </th>
                   </tr>
@@ -1544,7 +1582,7 @@ function Transactions() {
                       return (
                         <tr
                           key={rowKey}
-                          className="border-b border-gray-100 hover:bg-green-50/40"
+                          className="border-b border-gray-100 transition-colors hover:bg-green-50/40"
                         >
                           <td className="whitespace-nowrap px-5 py-4 text-sm font-medium text-black">
                             {formatThaiDate(
@@ -1555,7 +1593,7 @@ function Transactions() {
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-3">
                               <div
-                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+                                className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg ${
                                   isIncome
                                     ? "bg-green-100 text-green-600"
                                     : "bg-red-100 text-red-600"
@@ -1584,7 +1622,7 @@ function Transactions() {
 
                           <td className="px-5 py-4">
                             <div className="flex items-start gap-2">
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                                 <FaCreditCard />
                               </div>
 
@@ -1605,7 +1643,9 @@ function Transactions() {
                                 ).toLocaleString()}
                               </span>
                             ) : (
-                              <span>-</span>
+                              <span className="text-black">
+                                -
+                              </span>
                             )}
                           </td>
 
@@ -1620,7 +1660,9 @@ function Transactions() {
                                 ).toLocaleString()}
                               </span>
                             ) : (
-                              <span>-</span>
+                              <span className="text-black">
+                                -
+                              </span>
                             )}
                           </td>
 
@@ -1648,7 +1690,7 @@ function Transactions() {
                                     transaction
                                   )
                                 }
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
+                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-50 text-yellow-600 transition hover:bg-yellow-100 hover:text-yellow-700 active:scale-95"
                                 title="แก้ไข"
                               >
                                 <FaEdit />
@@ -1664,7 +1706,7 @@ function Transactions() {
                                     transaction.id
                                   )
                                 }
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600 hover:bg-red-100"
+                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50 text-red-600 transition hover:bg-red-100 hover:text-red-700 active:scale-95"
                                 title="ลบ"
                               >
                                 <FaTrash />
@@ -1689,7 +1731,9 @@ function Transactions() {
           setEditTransaction(null);
         }}
         onSuccess={handleSuccess}
-        editTransaction={editTransaction}
+        editTransaction={
+          editTransaction
+        }
       />
     </div>
   );
