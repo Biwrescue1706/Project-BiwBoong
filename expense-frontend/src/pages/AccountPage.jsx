@@ -17,7 +17,11 @@ const AccountPage = () => {
             const response = await api.get("/account-types");
 
             if (response.data?.success) {
-                setAccountTypes(response.data.data || []);
+                setAccountTypes(
+                    Array.isArray(response.data.data)
+                        ? response.data.data
+                        : []
+                );
             } else {
                 setAccountTypes([]);
             }
@@ -26,7 +30,9 @@ const AccountPage = () => {
             Swal.fire({
                 icon: "error",
                 title: "เกิดข้อผิดพลาด",
-                text: error.response?.data?.message || "ไม่สามารถโหลดข้อมูลประเภทบัญชีได้"
+                text:
+                    error.response?.data?.message ||
+                    "ไม่สามารถโหลดข้อมูลช่องทางบัญชีได้",
             });
         } finally {
             setLoading(false);
@@ -57,7 +63,23 @@ const AccountPage = () => {
         if (!accountTypeName) {
             Swal.fire({
                 icon: "warning",
-                title: "กรุณากรอกชื่อประเภทบัญชี"
+                title: "กรุณากรอกชื่อช่องทางบัญชี",
+            });
+            return;
+        }
+
+        const duplicate = accountTypes.some(
+            (item) =>
+                String(item.name || "").trim().toLowerCase() ===
+                    accountTypeName.toLowerCase() &&
+                String(item.id) !== String(editingId)
+        );
+
+        if (duplicate) {
+            Swal.fire({
+                icon: "warning",
+                title: "มีช่องทางบัญชีนี้อยู่แล้ว",
+                text: `ไม่สามารถใช้ชื่อ "${accountTypeName}" ซ้ำได้`,
             });
             return;
         }
@@ -67,25 +89,25 @@ const AccountPage = () => {
 
             if (editingId) {
                 await api.patch(`/account-types/${editingId}`, {
-                    name: accountTypeName
+                    name: accountTypeName,
                 });
 
                 await Swal.fire({
                     icon: "success",
-                    title: "แก้ไขประเภทบัญชีสำเร็จ",
+                    title: "แก้ไขช่องทางบัญชีสำเร็จ",
                     timer: 1200,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 });
             } else {
                 await api.post("/account-types", {
-                    name: accountTypeName
+                    name: accountTypeName,
                 });
 
                 await Swal.fire({
                     icon: "success",
-                    title: "เพิ่มประเภทบัญชีสำเร็จ",
+                    title: "เพิ่มช่องทางบัญชีสำเร็จ",
                     timer: 1200,
-                    showConfirmButton: false
+                    showConfirmButton: false,
                 });
             }
 
@@ -93,10 +115,13 @@ const AccountPage = () => {
             await fetchAccountTypes();
         } catch (error) {
             console.error(error);
+
             Swal.fire({
                 icon: "error",
                 title: "ไม่สำเร็จ",
-                text: error.response?.data?.message || "ไม่สามารถบันทึกข้อมูลได้"
+                text:
+                    error.response?.data?.message ||
+                    "ไม่สามารถบันทึกข้อมูลได้",
             });
         } finally {
             setSaving(false);
@@ -112,12 +137,12 @@ const AccountPage = () => {
     const handleDelete = async (accountType) => {
         const result = await Swal.fire({
             icon: "warning",
-            title: "ลบประเภทบัญชี?",
+            title: "ลบช่องทางบัญชี?",
             text: `ต้องการลบ "${accountType.name}" หรือไม่`,
             showCancelButton: true,
             confirmButtonText: "ลบ",
             cancelButtonText: "ยกเลิก",
-            confirmButtonColor: "#dc2626"
+            confirmButtonColor: "#dc2626",
         });
 
         if (!result.isConfirmed) {
@@ -129,18 +154,21 @@ const AccountPage = () => {
 
             await Swal.fire({
                 icon: "success",
-                title: "ลบประเภทบัญชีสำเร็จ",
+                title: "ลบช่องทางบัญชีสำเร็จ",
                 timer: 1200,
-                showConfirmButton: false
+                showConfirmButton: false,
             });
 
             await fetchAccountTypes();
         } catch (error) {
             console.error(error);
+
             Swal.fire({
                 icon: "error",
                 title: "ลบไม่สำเร็จ",
-                text: error.response?.data?.message || "ไม่สามารถลบข้อมูลได้"
+                text:
+                    error.response?.data?.message ||
+                    "ไม่สามารถลบข้อมูลได้",
             });
         }
     };
@@ -151,10 +179,11 @@ const AccountPage = () => {
                 <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800 md:text-3xl">
-                            ประเภทบัญชี
+                            ช่องทางบัญชี
                         </h1>
+
                         <p className="mt-1 text-sm text-gray-500">
-                            จัดการประเภทบัญชีเงินของคุณ
+                            จัดการช่องทางที่ใช้รับและจ่ายเงิน
                         </p>
                     </div>
 
@@ -164,7 +193,7 @@ const AccountPage = () => {
                         className="flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-cyan-700"
                     >
                         <Plus size={20} />
-                        เพิ่มประเภทบัญชี
+                        เพิ่มช่องทางบัญชี
                     </button>
                 </div>
 
@@ -173,10 +202,13 @@ const AccountPage = () => {
                         <div className="mb-5 flex items-center justify-between">
                             <div>
                                 <h2 className="text-lg font-bold text-gray-800">
-                                    {editingId ? "แก้ไขประเภทบัญชี" : "เพิ่มประเภทบัญชี"}
+                                    {editingId
+                                        ? "แก้ไขช่องทางบัญชี"
+                                        : "เพิ่มช่องทางบัญชี"}
                                 </h2>
+
                                 <p className="mt-1 text-sm text-gray-500">
-                                    กรอกชื่อประเภทบัญชี
+                                    กรอกชื่อช่องทางบัญชี
                                 </p>
                             </div>
 
@@ -192,14 +224,16 @@ const AccountPage = () => {
                         <form onSubmit={handleSubmit}>
                             <div>
                                 <label className="mb-2 block text-sm font-medium text-gray-700">
-                                    ชื่อประเภทบัญชี
+                                    ชื่อช่องทางบัญชี
                                 </label>
 
                                 <input
                                     type="text"
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="เช่น เงินสด, เงินในบัญชี"
+                                    onChange={(e) =>
+                                        setName(e.target.value)
+                                    }
+                                    placeholder="เช่น เงินสด, ธนาคารกสิกรไทย 123-4-56789-0"
                                     className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
                                 />
                             </div>
@@ -221,8 +255,8 @@ const AccountPage = () => {
                                     {saving
                                         ? "กำลังบันทึก..."
                                         : editingId
-                                            ? "บันทึกการแก้ไข"
-                                            : "เพิ่มประเภทบัญชี"}
+                                          ? "บันทึกการแก้ไข"
+                                          : "เพิ่มช่องทางบัญชี"}
                                 </button>
                             </div>
                         </form>
@@ -231,8 +265,9 @@ const AccountPage = () => {
 
                 <div className="mb-4">
                     <h2 className="text-lg font-bold text-gray-800">
-                        รายการประเภทบัญชี
+                        รายการช่องทางบัญชี
                     </h2>
+
                     <p className="text-sm text-gray-500">
                         ทั้งหมด {accountTypes.length} รายการ
                     </p>
@@ -241,6 +276,7 @@ const AccountPage = () => {
                 {loading ? (
                     <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
                         <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-cyan-600" />
+
                         <p className="mt-4 text-sm text-gray-500">
                             กำลังโหลดข้อมูล...
                         </p>
@@ -252,11 +288,11 @@ const AccountPage = () => {
                         </div>
 
                         <h3 className="mt-4 text-lg font-semibold text-gray-800">
-                            ยังไม่มีประเภทบัญชี
+                            ยังไม่มีช่องทางบัญชี
                         </h3>
 
                         <p className="mt-1 text-sm text-gray-500">
-                            เริ่มต้นด้วยการเพิ่มประเภทบัญชี
+                            เริ่มต้นด้วยการเพิ่มช่องทางบัญชี
                         </p>
 
                         <button
@@ -265,7 +301,7 @@ const AccountPage = () => {
                             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white transition hover:bg-cyan-700"
                         >
                             <Plus size={19} />
-                            เพิ่มประเภทบัญชี
+                            เพิ่มช่องทางบัญชี
                         </button>
                     </div>
                 ) : (
@@ -287,7 +323,7 @@ const AccountPage = () => {
                                             </h3>
 
                                             <p className="mt-1 text-xs text-gray-400">
-                                                ประเภทบัญชี
+                                                ช่องทางบัญชี
                                             </p>
                                         </div>
                                     </div>
@@ -295,7 +331,9 @@ const AccountPage = () => {
                                     <div className="flex shrink-0 gap-1">
                                         <button
                                             type="button"
-                                            onClick={() => handleEdit(accountType)}
+                                            onClick={() =>
+                                                handleEdit(accountType)
+                                            }
                                             className="rounded-lg p-2 text-gray-400 transition hover:bg-cyan-50 hover:text-cyan-600"
                                             title="แก้ไข"
                                         >
@@ -304,7 +342,9 @@ const AccountPage = () => {
 
                                         <button
                                             type="button"
-                                            onClick={() => handleDelete(accountType)}
+                                            onClick={() =>
+                                                handleDelete(accountType)
+                                            }
                                             className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
                                             title="ลบ"
                                         >
@@ -322,4 +362,3 @@ const AccountPage = () => {
 };
 
 export default AccountPage;
-
