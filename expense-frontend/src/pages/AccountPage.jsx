@@ -14,6 +14,7 @@ const AccountPage = () => {
     const fetchAccountTypes = async () => {
         try {
             setLoading(true);
+
             const response = await api.get("/account-types");
 
             if (response.data?.success) {
@@ -27,6 +28,7 @@ const AccountPage = () => {
             }
         } catch (error) {
             console.error(error);
+
             Swal.fire({
                 icon: "error",
                 title: "เกิดข้อผิดพลาด",
@@ -70,8 +72,9 @@ const AccountPage = () => {
 
         const duplicate = accountTypes.some(
             (item) =>
-                String(item.name || "").trim().toLowerCase() ===
-                    accountTypeName.toLowerCase() &&
+                String(item.name || "")
+                    .trim()
+                    .toLowerCase() === accountTypeName.toLowerCase() &&
                 String(item.id) !== String(editingId)
         );
 
@@ -230,9 +233,7 @@ const AccountPage = () => {
                                 <input
                                     type="text"
                                     value={name}
-                                    onChange={(e) =>
-                                        setName(e.target.value)
-                                    }
+                                    onChange={(e) => setName(e.target.value)}
                                     placeholder="เช่น เงินสด, ธนาคารกสิกรไทย 123-4-56789-0"
                                     className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
                                 />
@@ -255,8 +256,8 @@ const AccountPage = () => {
                                     {saving
                                         ? "กำลังบันทึก..."
                                         : editingId
-                                          ? "บันทึกการแก้ไข"
-                                          : "เพิ่มช่องทางบัญชี"}
+                                            ? "บันทึกการแก้ไข"
+                                            : "เพิ่มช่องทางบัญชี"}
                                 </button>
                             </div>
                         </form>
