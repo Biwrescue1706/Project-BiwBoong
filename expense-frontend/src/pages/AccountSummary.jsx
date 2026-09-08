@@ -14,7 +14,6 @@ function AccountSummary() {
     const currentDate = new Date();
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState([]);
-    const [accountTypes, setAccountTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedDay, setSelectedDay] = useState("all");
     const [selectedMonth, setSelectedMonth] = useState("all");
@@ -45,16 +44,13 @@ function AccountSummary() {
         try {
             setLoading(true);
 
-            const [transactionRes, accountRes, accountTypeRes] =
-                await Promise.all([
-                    api.get("/transactions"),
-                    api.get("/accounts"),
-                    api.get("/account-types"),
-                ]);
+            const [transactionRes, accountRes] = await Promise.all([
+                api.get("/transactions"),
+                api.get("/accounts"),
+            ]);
 
             const transactionResponse = transactionRes.data;
             const accountResponse = accountRes.data;
-            const accountTypeResponse = accountTypeRes.data;
 
             const transactionData =
                 transactionResponse.data?.transactions ||
@@ -68,22 +64,12 @@ function AccountSummary() {
                 accountResponse.accounts ||
                 [];
 
-            const accountTypeData =
-                accountTypeResponse.data?.accountTypes ||
-                accountTypeResponse.data ||
-                accountTypeResponse.accountTypes ||
-                [];
-
             setTransactions(
                 Array.isArray(transactionData) ? transactionData : []
             );
 
             setAccounts(
                 Array.isArray(accountData) ? accountData : []
-            );
-
-            setAccountTypes(
-                Array.isArray(accountTypeData) ? accountTypeData : []
             );
         } catch (err) {
             errorAlert(
@@ -95,72 +81,6 @@ function AccountSummary() {
         }
     };
 
-    // ตรวจสอบว่าเป็น UUID หรือไม่
-    const isUUID = (value) => {
-        return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-            String(value || "").trim()
-        );
-    };
-
-    const getAccountTypeName = (id) => {
-        if (!id) return "";
-
-        const accountType = accountTypes.find(
-            (item) => String(item.id) === String(id)
-        );
-
-        return accountType?.name || "";
-    };
-
-    const getAccountName = (account) => {
-        const accountId = account?.accountTypesId;
-        const accountName = String(account?.name || "").trim();
-
-        if (accountId) {
-            const typeName = getAccountTypeName(accountId);
-
-            if (typeName) {
-                return typeName;
-            }
-        }
-
-        if (accountName && !isUUID(accountName)) {
-            return accountName;
-        }
-
-        if (isUUID(accountName)) {
-            const typeName = getAccountTypeName(accountName);
-
-            if (typeName) {
-                return typeName;
-            }
-        }
-
-        return "ไม่ระบุช่องทาง";
-    };
-
-    const getTransactionAccountName = (transaction) => {
-        const typeId = transaction?.accountTypesId;
-
-        if (typeId) {
-            const typeName = getAccountTypeName(typeId);
-
-            if (typeName) {
-                return typeName;
-            }
-        }
-
-        const transactionName = String(
-            transaction?.accountTypeName || ""
-        ).trim();
-
-        if (transactionName && !isUUID(transactionName)) {
-            return transactionName;
-        }
-
-        return "ไม่ระบุช่องทาง";
-    };
-
     const years = useMemo(() => {
         const yearSet = new Set();
 
@@ -168,14 +88,10 @@ function AccountSummary() {
             if (!item.date) return;
 
             const year = Number(
-                String(item.date)
-                    .substring(0, 10)
-                    .split("-")[0]
+                String(item.date).substring(0, 10).split("-")[0]
             );
 
-            if (!isNaN(year)) {
-                yearSet.add(year);
-            }
+            if (!isNaN(year)) yearSet.add(year);
         });
 
         yearSet.add(currentDate.getFullYear());
@@ -233,10 +149,7 @@ function AccountSummary() {
                 return true;
             }
 
-            if (
-                selectedDay === "today" &&
-                itemDate !== today
-            ) {
+            if (selectedDay === "today" && itemDate !== today) {
                 return false;
             }
 
@@ -274,97 +187,37 @@ function AccountSummary() {
         today,
     ]);
 
+    // ใช้ Accounts เป็นตัวหลัก และจับ Transactions ด้วย Accounts.id
     const accountSummary = useMemo(() => {
-        const map = new Map();
+        return accounts.map((account) => {
+            const accountId = String(account.id || "").trim();
 
-        accountTypes.forEach((accountType) => {
-            const name = String(
-                accountType.name || "ไม่ระบุช่องทาง"
-            ).trim();
-
-            const key = String(accountType.id);
-
-            map.set(key, {
-                id: key,
-                name,
-                balance: 0,
-                income: 0,
-                expense: 0,
-            });
-        });
-
-        accounts.forEach((account) => {
-            const name = getAccountName(account);
-
-            const accountTypeId = String(
-                account.accountTypesId ||
-                (isUUID(account.name) ? account.name : "")
+            const accountTransactions = filteredTransactions.filter(
+                (transaction) =>
+                    String(transaction.accountTypesId || "").trim() === accountId
             );
 
-            const key = accountTypeId || name.toLowerCase();
-
-            if (!map.has(key)) {
-                map.set(key, {
-                    id: key,
-                    name,
-                    balance: 0,
-                    income: 0,
-                    expense: 0,
-                });
-            }
-
-            const item = map.get(key);
-
-            if (account.balance !== undefined) {
-                item.balance += Number(account.balance || 0);
-            }
-
-            if (name && name !== "ไม่ระบุช่องทาง") {
-                item.name = name;
-            }
-        });
-
-        filteredTransactions.forEach((transaction) => {
-            const name = getTransactionAccountName(transaction);
-
-            const accountTypeId = String(
-                transaction.accountTypesId || ""
+            const income = accountTransactions.reduce(
+                (sum, transaction) =>
+                    sum + Number(transaction.income || 0),
+                0
             );
 
-            const key =
-                accountTypeId || name.toLowerCase();
+            const expense = accountTransactions.reduce(
+                (sum, transaction) =>
+                    sum + Number(transaction.expense || 0),
+                0
+            );
 
-            if (!map.has(key)) {
-                map.set(key, {
-                    id: key,
-                    name,
-                    balance: 0,
-                    income: 0,
-                    expense: 0,
-                });
-            }
-
-            const item = map.get(key);
-
-            if (name && name !== "ไม่ระบุช่องทาง") {
-                item.name = name;
-            }
-
-            item.income += Number(transaction.income || 0);
-            item.expense += Number(transaction.expense || 0);
+            return {
+                id: account.id,
+                name: account.name || "ไม่ระบุชื่อบัญชี",
+                balance: Number(account.balance || 0),
+                income,
+                expense,
+            };
         });
-
-        return Array.from(map.values()).filter(
-            (account) =>
-                account.name &&
-                !isUUID(account.name)
-        );
-    }, [
-        accounts,
-        accountTypes,
-        filteredTransactions,
-        accountTypes,
-    ]);
+    }, [accounts, filteredTransactions]);
 
     const total = useMemo(() => {
         return accountSummary.reduce(
@@ -383,14 +236,15 @@ function AccountSummary() {
     }, [accountSummary]);
 
     const formatMoney = (value) =>
-        Number(value || 0).toLocaleString("th-TH");
+        Number(value || 0).toLocaleString("th-TH", {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+        });
 
     const formatDate = (date) => {
         if (!date) return "-";
 
-        const parts = String(date)
-            .substring(0, 10)
-            .split("-");
+        const parts = String(date).substring(0, 10).split("-");
 
         if (parts.length !== 3) return date;
 
@@ -504,39 +358,26 @@ function AccountSummary() {
                     <div className="w-full lg:w-auto">
                         <div className="rounded-2xl bg-white/10 p-2 backdrop-blur-md">
                             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                                <div>
-                                    <select
-                                        value={selectedDay}
-                                        onChange={(e) =>
-                                            handleDayChange(e.target.value)
-                                        }
-                                        className="h-11 w-full rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
-                                    >
-                                        <option value="all">
-                                            วัน: ทั้งหมด
-                                        </option>
+                                <select
+                                    value={selectedDay}
+                                    onChange={(e) =>
+                                        handleDayChange(e.target.value)
+                                    }
+                                    className="h-11 w-full rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
+                                >
+                                    <option value="all">วัน: ทั้งหมด</option>
+                                    <option value="today">วันนี้</option>
+                                    <option value="range">ระหว่างวัน</option>
 
-                                        <option value="today">
-                                            วันนี้
+                                    {Array.from(
+                                        { length: 31 },
+                                        (_, i) => i + 1
+                                    ).map((day) => (
+                                        <option key={day} value={day}>
+                                            วันที่ {day}
                                         </option>
-
-                                        <option value="range">
-                                            ระหว่างวัน
-                                        </option>
-
-                                        {Array.from(
-                                            { length: 31 },
-                                            (_, i) => i + 1
-                                        ).map((day) => (
-                                            <option
-                                                key={day}
-                                                value={day}
-                                            >
-                                                วันที่ {day}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                    ))}
+                                </select>
 
                                 <select
                                     value={selectedMonth}
@@ -550,10 +391,7 @@ function AccountSummary() {
                                     </option>
 
                                     {availableMonths.map((month) => (
-                                        <option
-                                            key={month}
-                                            value={month}
-                                        >
+                                        <option key={month} value={month}>
                                             {monthNames[month - 1]}
                                         </option>
                                     ))}
@@ -567,10 +405,7 @@ function AccountSummary() {
                                     className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
                                 >
                                     {years.map((year) => (
-                                        <option
-                                            key={year}
-                                            value={year}
-                                        >
+                                        <option key={year} value={year}>
                                             พ.ศ. {year + 543}
                                         </option>
                                     ))}
