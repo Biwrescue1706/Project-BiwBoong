@@ -10,6 +10,7 @@ import {
   FaFilePdf,
   FaFilter,
   FaCalendarAlt,
+  FaWallet,
   FaReceipt,
   FaTimes,
   FaCreditCard,
@@ -49,10 +50,11 @@ function Transactions() {
     try {
       setLoading(true);
 
-      const [transactionData, accountRes] = await Promise.all([
-        getTransactions(),
-        api.get("/accounts"),
-      ]);
+      const [transactionData, accountRes] =
+        await Promise.all([
+          getTransactions(),
+          api.get("/accounts"),
+        ]);
 
       const accountResponse = accountRes.data;
 
@@ -106,7 +108,8 @@ function Transactions() {
 
   const loadUser = async () => {
     try {
-      const res = await api.get("/auth/profile");
+      const res =
+        await api.get("/auth/profile");
 
       setUser(res.data.user);
     } catch (err) {
@@ -141,7 +144,9 @@ function Transactions() {
 
   const getAccountName = (transaction) => {
     const accountId = String(
-      transaction.accountTypesId || ""
+      transaction.accountTypesId ||
+        transaction.accountTypeId ||
+        ""
     ).trim();
 
     return (
@@ -168,14 +173,17 @@ function Transactions() {
       return;
     }
 
-    const result = await confirmDelete();
+    const result =
+      await confirmDelete();
 
     if (!result.isConfirmed) return;
 
     try {
       await deleteTransaction(id);
 
-      successAlert("ลบรายการสำเร็จ");
+      successAlert(
+        "ลบรายการสำเร็จ"
+      );
 
       await loadTransactions();
     } catch (err) {
@@ -190,6 +198,42 @@ function Transactions() {
     await loadData();
   };
 
+  const handleStartDateChange = (
+    value
+  ) => {
+    setSelectedYear("");
+    setStartDate(value);
+  };
+
+  const handleEndDateChange = (
+    value
+  ) => {
+    setSelectedYear("");
+    setEndDate(value);
+  };
+
+  const handleYearChange = (year) => {
+    setSelectedYear(year);
+
+    if (year) {
+      setStartDate(
+        `${year}-01-01`
+      );
+      setEndDate(
+        `${year}-12-31`
+      );
+    } else {
+      setStartDate("");
+      setEndDate("");
+    }
+  };
+
+  const handleClearFilter = () => {
+    setSelectedYear("");
+    setStartDate("");
+    setEndDate("");
+  };
+
   const formatThaiDate = (date) => {
     if (!date) return "-";
 
@@ -198,8 +242,11 @@ function Transactions() {
       10
     );
 
-    const [year, month, day] =
-      value.split("-").map(Number);
+    const [
+      year,
+      month,
+      day,
+    ] = value.split("-").map(Number);
 
     const months = [
       "ม.ค.",
@@ -230,82 +277,63 @@ function Transactions() {
     } ${year + 543}`;
   };
 
-  const handleStartDateChange = (value) => {
-    setSelectedYear("");
-    setStartDate(value);
-  };
-
-  const handleEndDateChange = (value) => {
-    setSelectedYear("");
-    setEndDate(value);
-  };
-
-  const handleYearChange = (year) => {
-    setSelectedYear(year);
-
-    if (year) {
-      setStartDate(`${year}-01-01`);
-      setEndDate(`${year}-12-31`);
-    } else {
-      setStartDate("");
-      setEndDate("");
-    }
-  };
-
-  const handleClearFilter = () => {
-    setSelectedYear("");
-    setStartDate("");
-    setEndDate("");
-  };
-
   const availableYears = useMemo(() => {
     const years = transactions
       .map((transaction) =>
         transaction.date
-          ? String(transaction.date).substring(
-              0,
-              4
-            )
+          ? String(
+              transaction.date
+            ).substring(0, 4)
           : null
       )
       .filter(Boolean);
 
-    return [...new Set(years)].sort(
-      (a, b) => Number(b) - Number(a)
+    return [
+      ...new Set(years),
+    ].sort(
+      (a, b) =>
+        Number(b) - Number(a)
     );
   }, [transactions]);
 
-  const filteredTransactions = useMemo(() => {
-    let result = [...transactions];
+  const filteredTransactions =
+    useMemo(() => {
+      let result = [
+        ...transactions,
+      ];
 
-    if (startDate) {
-      result = result.filter(
-        (transaction) =>
-          String(
-            transaction.date || ""
-          ).substring(0, 10) >= startDate
+      if (startDate) {
+        result = result.filter(
+          (transaction) =>
+            String(
+              transaction.date || ""
+            ).substring(0, 10) >=
+            startDate
+        );
+      }
+
+      if (endDate) {
+        result = result.filter(
+          (transaction) =>
+            String(
+              transaction.date || ""
+            ).substring(0, 10) <=
+            endDate
+        );
+      }
+
+      return result.sort((a, b) =>
+        String(
+          a.date || ""
+        ).localeCompare(
+          String(b.date || "")
+        )
       );
-    }
-
-    if (endDate) {
-      result = result.filter(
-        (transaction) =>
-          String(
-            transaction.date || ""
-          ).substring(0, 10) <= endDate
-      );
-    }
-
-    return result.sort((a, b) =>
-      String(a.date || "").localeCompare(
-        String(b.date || "")
-      )
-    );
-  }, [
-    transactions,
-    startDate,
-    endDate,
-  ]);
+    }, [
+      transactions,
+      startDate,
+      endDate,
+    ]);
 
   const totalIncome = useMemo(() => {
     return filteredTransactions.reduce(
@@ -330,14 +358,19 @@ function Transactions() {
   }, [filteredTransactions]);
 
   const latestBalance = useMemo(() => {
-    if (!filteredTransactions.length) {
+    if (
+      filteredTransactions.length ===
+      0
+    ) {
       return 0;
     }
 
     const sorted = [
       ...filteredTransactions,
     ].sort((a, b) =>
-      String(a.date || "").localeCompare(
+      String(
+        a.date || ""
+      ).localeCompare(
         String(b.date || "")
       )
     );
@@ -350,7 +383,7 @@ function Transactions() {
   }, [filteredTransactions]);
 
   const accountSummary = useMemo(() => {
-    const map = new Map();
+    const summary = new Map();
 
     accounts.forEach((account) => {
       const id = String(
@@ -363,26 +396,29 @@ function Transactions() {
 
       if (!id || !name) return;
 
-      map.set(id, {
-        id,
-        name,
-        income: 0,
-        expense: 0,
-        balance: 0,
-      });
+      if (!summary.has(id)) {
+        summary.set(id, {
+          id,
+          name,
+          income: 0,
+          expense: 0,
+          balance: 0,
+        });
+      }
     });
 
     filteredTransactions.forEach(
       (transaction) => {
         const accountId = String(
-          transaction.accountTypesId || ""
+          transaction.accountTypesId ||
+            transaction.accountTypeId ||
+            ""
         ).trim();
 
         if (!accountId) return;
 
-        const account = map.get(
-          accountId
-        );
+        const account =
+          summary.get(accountId);
 
         if (!account) return;
 
@@ -401,7 +437,7 @@ function Transactions() {
     );
 
     return Array.from(
-      map.values()
+      summary.values()
     ).filter(
       (account) =>
         account.income !== 0 ||
@@ -454,17 +490,16 @@ function Transactions() {
       errorAlert(
         "วันที่เริ่มต้นต้องไม่มากกว่าวันที่สิ้นสุด"
       );
-
       return;
     }
 
     if (
-      !filteredTransactions.length
+      filteredTransactions.length ===
+      0
     ) {
       errorAlert(
         "ไม่มีข้อมูลในช่วงวันที่หรือปีที่เลือก"
       );
-
       return;
     }
 
@@ -544,7 +579,8 @@ function Transactions() {
         (selectedYear
           ? `${selectedYear}-12-31`
           : pdfTransactions[
-              pdfTransactions.length - 1
+              pdfTransactions.length -
+                1
             ]?.date || "");
 
       const today = new Date()
@@ -935,7 +971,9 @@ function Transactions() {
             </button>
 
             <button
-              onClick={handleExportPDF}
+              onClick={
+                handleExportPDF
+              }
               disabled={
                 loading ||
                 filteredTransactions.length ===
@@ -1105,7 +1143,7 @@ function Transactions() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+              <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm sm:col-span-2 lg:col-span-1">
                 <p className="text-sm font-semibold text-black">
                   คงเหลือ
                 </p>
@@ -1151,7 +1189,7 @@ function Transactions() {
                             <FaCreditCard />
                           </div>
 
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="break-words text-sm font-bold leading-snug text-black">
                               {account.name}
                             </p>
