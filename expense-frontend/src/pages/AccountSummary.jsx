@@ -12,24 +12,47 @@ import {
 
 function AccountSummary() {
     const currentDate = new Date();
+
     const [transactions, setTransactions] = useState([]);
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
+
     const [selectedDay, setSelectedDay] = useState("all");
     const [selectedMonth, setSelectedMonth] = useState("all");
-    const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+    const [selectedYear, setSelectedYear] = useState(
+        currentDate.getFullYear()
+    );
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
     const thaiMonthNames = [
-        "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
-        "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค.",
+        "ม.ค.",
+        "ก.พ.",
+        "มี.ค.",
+        "เม.ย.",
+        "พ.ค.",
+        "มิ.ย.",
+        "ก.ค.",
+        "ส.ค.",
+        "ก.ย.",
+        "ต.ค.",
+        "พ.ย.",
+        "ธ.ค.",
     ];
 
     const monthNames = [
-        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน",
-        "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม",
-        "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม",
     ];
 
     const today = `${currentDate.getFullYear()}-${String(
@@ -65,11 +88,15 @@ function AccountSummary() {
                 [];
 
             setTransactions(
-                Array.isArray(transactionData) ? transactionData : []
+                Array.isArray(transactionData)
+                    ? transactionData
+                    : []
             );
 
             setAccounts(
-                Array.isArray(accountData) ? accountData : []
+                Array.isArray(accountData)
+                    ? accountData
+                    : []
             );
         } catch (err) {
             errorAlert(
@@ -88,15 +115,21 @@ function AccountSummary() {
             if (!item.date) return;
 
             const year = Number(
-                String(item.date).substring(0, 10).split("-")[0]
+                String(item.date)
+                    .substring(0, 10)
+                    .split("-")[0]
             );
 
-            if (!isNaN(year)) yearSet.add(year);
+            if (!isNaN(year)) {
+                yearSet.add(year);
+            }
         });
 
         yearSet.add(currentDate.getFullYear());
 
-        return Array.from(yearSet).sort((a, b) => b - a);
+        return Array.from(yearSet).sort(
+            (a, b) => b - a
+        );
     }, [transactions]);
 
     const availableMonths = useMemo(() => {
@@ -119,37 +152,56 @@ function AccountSummary() {
             }
         });
 
-        return Array.from(monthSet).sort((a, b) => a - b);
+        return Array.from(monthSet).sort(
+            (a, b) => a - b
+        );
     }, [transactions, selectedYear]);
 
     const filteredTransactions = useMemo(() => {
         return transactions.filter((item) => {
             if (!item.date) return false;
 
-            const itemDate = String(item.date).substring(0, 10);
-            const [year, month, day] = itemDate.split("-").map(Number);
+            const itemDate = String(item.date).substring(
+                0,
+                10
+            );
+
+            const [year, month, day] =
+                itemDate.split("-").map(Number);
 
             if (selectedDay === "range") {
                 if (
                     startDate &&
                     endDate &&
-                    (itemDate < startDate || itemDate > endDate)
+                    (itemDate < startDate ||
+                        itemDate > endDate)
                 ) {
                     return false;
                 }
 
-                if (startDate && !endDate && itemDate < startDate) {
+                if (
+                    startDate &&
+                    !endDate &&
+                    itemDate < startDate
+                ) {
                     return false;
                 }
 
-                if (endDate && !startDate && itemDate > endDate) {
+                if (
+                    endDate &&
+                    !startDate &&
+                    itemDate > endDate
+                ) {
                     return false;
                 }
 
                 return true;
             }
 
-            if (selectedDay === "today" && itemDate !== today) {
+            if (
+                selectedDay === "today" &&
+                itemDate !== today
+            ) {
                 return false;
             }
 
@@ -187,36 +239,77 @@ function AccountSummary() {
         today,
     ]);
 
-    // ใช้ Accounts เป็นตัวหลัก และจับ Transactions ด้วย Accounts.id
+    // ใช้ Accounts เป็นตัวหลักและรวม Transactions ตาม Accounts.id
     const accountSummary = useMemo(() => {
-        return accounts.map((account) => {
-            const accountId = String(account.id || "").trim();
+        const accountMap = new Map();
 
-            const accountTransactions = filteredTransactions.filter(
-                (transaction) =>
-                    String(transaction.accountTypesId || "").trim() === accountId
+        accounts.forEach((account) => {
+            const accountId = String(
+                account.id || ""
+            ).trim();
+
+            if (!accountId) return;
+
+            const accountName = String(
+                account.name || "ไม่ระบุชื่อบัญชี"
+            ).trim();
+
+            if (!accountMap.has(accountName)) {
+                accountMap.set(accountName, {
+                    id: accountName,
+                    name: accountName,
+                    accountIds: [],
+                    balance: 0,
+                    income: 0,
+                    expense: 0,
+                });
+            }
+
+            const item = accountMap.get(accountName);
+
+            if (!item.accountIds.includes(accountId)) {
+                item.accountIds.push(accountId);
+            }
+
+            item.balance += Number(
+                account.balance || 0
             );
-
-            const income = accountTransactions.reduce(
-                (sum, transaction) =>
-                    sum + Number(transaction.income || 0),
-                0
-            );
-
-            const expense = accountTransactions.reduce(
-                (sum, transaction) =>
-                    sum + Number(transaction.expense || 0),
-                0
-            );
-
-            return {
-                id: account.id,
-                name: account.name || "ไม่ระบุชื่อบัญชี",
-                balance: Number(account.balance || 0),
-                income,
-                expense,
-            };
         });
+
+        accountMap.forEach((account) => {
+            const accountIdSet = new Set(
+                account.accountIds
+            );
+
+            filteredTransactions.forEach(
+                (transaction) => {
+                    const transactionAccountId =
+                        String(
+                            transaction.accountTypesId ||
+                            ""
+                        ).trim();
+
+                    if (
+                        !transactionAccountId ||
+                        !accountIdSet.has(
+                            transactionAccountId
+                        )
+                    ) {
+                        return;
+                    }
+
+                    account.income += Number(
+                        transaction.income || 0
+                    );
+
+                    account.expense += Number(
+                        transaction.expense || 0
+                    );
+                }
+            );
+        });
+
+        return Array.from(accountMap.values());
     }, [accounts, filteredTransactions]);
 
     const total = useMemo(() => {
@@ -225,6 +318,7 @@ function AccountSummary() {
                 result.income += account.income;
                 result.expense += account.expense;
                 result.balance += account.balance;
+
                 return result;
             },
             {
@@ -236,15 +330,20 @@ function AccountSummary() {
     }, [accountSummary]);
 
     const formatMoney = (value) =>
-        Number(value || 0).toLocaleString("th-TH", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-        });
+        Number(value || 0).toLocaleString(
+            "th-TH",
+            {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+            }
+        );
 
     const formatDate = (date) => {
         if (!date) return "-";
 
-        const parts = String(date).substring(0, 10).split("-");
+        const parts = String(date)
+            .substring(0, 10)
+            .split("-");
 
         if (parts.length !== 3) return date;
 
@@ -252,7 +351,9 @@ function AccountSummary() {
         const month = Number(parts[1]);
         const day = Number(parts[2]);
 
-        return `${day} ${thaiMonthNames[month - 1]} ${year + 543}`;
+        return `${day} ${
+            thaiMonthNames[month - 1]
+        } ${year + 543}`;
     };
 
     const selectedDateText = useMemo(() => {
@@ -262,11 +363,15 @@ function AccountSummary() {
 
         if (selectedDay === "range") {
             if (startDate && endDate) {
-                return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+                return `${formatDate(
+                    startDate
+                )} - ${formatDate(endDate)}`;
             }
 
             if (startDate) {
-                return `ตั้งแต่ ${formatDate(startDate)}`;
+                return `ตั้งแต่ ${formatDate(
+                    startDate
+                )}`;
             }
 
             if (endDate) {
@@ -284,9 +389,15 @@ function AccountSummary() {
         text +=
             selectedMonth === "all"
                 ? " • ทุกเดือน"
-                : ` • ${monthNames[Number(selectedMonth) - 1]}`;
+                : ` • ${
+                      monthNames[
+                          Number(selectedMonth) - 1
+                      ]
+                  }`;
 
-        text += ` • พ.ศ. ${Number(selectedYear) + 543}`;
+        text += ` • พ.ศ. ${
+            Number(selectedYear) + 543
+        }`;
 
         return text;
     }, [
@@ -302,13 +413,22 @@ function AccountSummary() {
         setSelectedDay(value);
 
         if (value === "today") {
-            setSelectedYear(currentDate.getFullYear());
-            setSelectedMonth(currentDate.getMonth() + 1);
+            setSelectedYear(
+                currentDate.getFullYear()
+            );
+
+            setSelectedMonth(
+                currentDate.getMonth() + 1
+            );
+
             setStartDate(today);
             setEndDate(today);
         }
 
-        if (value !== "range" && value !== "today") {
+        if (
+            value !== "range" &&
+            value !== "today"
+        ) {
             setStartDate("");
             setEndDate("");
         }
@@ -361,19 +481,33 @@ function AccountSummary() {
                                 <select
                                     value={selectedDay}
                                     onChange={(e) =>
-                                        handleDayChange(e.target.value)
+                                        handleDayChange(
+                                            e.target.value
+                                        )
                                     }
                                     className="h-11 w-full rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
                                 >
-                                    <option value="all">วัน: ทั้งหมด</option>
-                                    <option value="today">วันนี้</option>
-                                    <option value="range">ระหว่างวัน</option>
+                                    <option value="all">
+                                        วัน: ทั้งหมด
+                                    </option>
+
+                                    <option value="today">
+                                        วันนี้
+                                    </option>
+
+                                    <option value="range">
+                                        ระหว่างวัน
+                                    </option>
 
                                     {Array.from(
                                         { length: 31 },
-                                        (_, i) => i + 1
+                                        (_, i) =>
+                                            i + 1
                                     ).map((day) => (
-                                        <option key={day} value={day}>
+                                        <option
+                                            key={day}
+                                            value={day}
+                                        >
                                             วันที่ {day}
                                         </option>
                                     ))}
@@ -382,7 +516,9 @@ function AccountSummary() {
                                 <select
                                     value={selectedMonth}
                                     onChange={(e) =>
-                                        handleMonthChange(e.target.value)
+                                        handleMonthChange(
+                                            e.target.value
+                                        )
                                     }
                                     className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
                                 >
@@ -390,44 +526,74 @@ function AccountSummary() {
                                         เดือน: ทั้งหมด
                                     </option>
 
-                                    {availableMonths.map((month) => (
-                                        <option key={month} value={month}>
-                                            {monthNames[month - 1]}
-                                        </option>
-                                    ))}
+                                    {availableMonths.map(
+                                        (month) => (
+                                            <option
+                                                key={month}
+                                                value={month}
+                                            >
+                                                {
+                                                    monthNames[
+                                                        month -
+                                                            1
+                                                    ]
+                                                }
+                                            </option>
+                                        )
+                                    )}
                                 </select>
 
                                 <select
                                     value={selectedYear}
                                     onChange={(e) =>
-                                        handleYearChange(e.target.value)
+                                        handleYearChange(
+                                            e.target.value
+                                        )
                                     }
                                     className="h-11 rounded-xl bg-white px-4 text-sm font-semibold text-gray-800 outline-none"
                                 >
-                                    {years.map((year) => (
-                                        <option key={year} value={year}>
-                                            พ.ศ. {year + 543}
-                                        </option>
-                                    ))}
+                                    {years.map(
+                                        (year) => (
+                                            <option
+                                                key={year}
+                                                value={year}
+                                            >
+                                                พ.ศ.{" "}
+                                                {year +
+                                                    543}
+                                            </option>
+                                        )
+                                    )}
                                 </select>
                             </div>
 
-                            {selectedDay === "range" && (
+                            {selectedDay ===
+                                "range" && (
                                 <div className="mt-2 grid grid-cols-2 gap-2">
                                     <input
                                         type="date"
-                                        value={startDate}
+                                        value={
+                                            startDate
+                                        }
                                         onChange={(e) =>
-                                            setStartDate(e.target.value)
+                                            setStartDate(
+                                                e.target
+                                                    .value
+                                            )
                                         }
                                         className="h-11 rounded-xl bg-white px-3 text-sm font-semibold text-gray-800 outline-none"
                                     />
 
                                     <input
                                         type="date"
-                                        value={endDate}
+                                        value={
+                                            endDate
+                                        }
                                         onChange={(e) =>
-                                            setEndDate(e.target.value)
+                                            setEndDate(
+                                                e.target
+                                                    .value
+                                            )
                                         }
                                         className="h-11 rounded-xl bg-white px-3 text-sm font-semibold text-gray-800 outline-none"
                                     />
@@ -511,75 +677,93 @@ function AccountSummary() {
                         </div>
                     ) : (
                         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                            {accountSummary.map((account) => (
-                                <div
-                                    key={account.id}
-                                    className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-                                >
-                                    <div className="flex items-start gap-3 border-b border-gray-100 bg-gray-50/70 p-4">
-                                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
-                                            <FaWallet />
+                            {accountSummary.map(
+                                (account) => (
+                                    <div
+                                        key={
+                                            account.id
+                                        }
+                                        className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                                    >
+                                        <div className="flex items-start gap-3 border-b border-gray-100 bg-gray-50/70 p-4">
+                                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+                                                <FaWallet />
+                                            </div>
+
+                                            <div className="min-w-0 flex-1">
+                                                <p className="whitespace-normal break-words [overflow-wrap:anywhere] text-base font-bold leading-6 text-gray-900">
+                                                    {
+                                                        account.name
+                                                    }
+                                                </p>
+
+                                                <p className="mt-1 text-xs text-gray-500">
+                                                    ช่องทางบัญชี
+                                                </p>
+                                            </div>
                                         </div>
 
-                                        <div className="min-w-0 flex-1">
-                                            <p className="whitespace-normal break-words [overflow-wrap:anywhere] text-base font-bold leading-6 text-gray-900">
-                                                {account.name}
-                                            </p>
+                                        <div className="grid grid-cols-3 gap-2 p-4">
+                                            <div className="min-w-0 rounded-xl bg-green-50 p-3">
+                                                <div className="flex items-center gap-1 text-xs font-semibold text-green-600">
+                                                    <FaArrowUp className="shrink-0" />
+                                                    <span>
+                                                        รายรับ
+                                                    </span>
+                                                </div>
 
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                ช่องทางบัญชี
-                                            </p>
+                                                <p className="mt-2 break-words text-sm font-extrabold text-green-600 sm:text-base">
+                                                    {formatMoney(
+                                                        account.income
+                                                    )}
+                                                </p>
+
+                                                <p className="text-[10px] text-gray-500">
+                                                    บาท
+                                                </p>
+                                            </div>
+
+                                            <div className="min-w-0 rounded-xl bg-red-50 p-3">
+                                                <div className="flex items-center gap-1 text-xs font-semibold text-red-500">
+                                                    <FaArrowDown className="shrink-0" />
+                                                    <span>
+                                                        รายจ่าย
+                                                    </span>
+                                                </div>
+
+                                                <p className="mt-2 break-words text-sm font-extrabold text-red-500 sm:text-base">
+                                                    {formatMoney(
+                                                        account.expense
+                                                    )}
+                                                </p>
+
+                                                <p className="text-[10px] text-gray-500">
+                                                    บาท
+                                                </p>
+                                            </div>
+
+                                            <div className="min-w-0 rounded-xl bg-blue-50 p-3">
+                                                <div className="flex items-center gap-1 text-xs font-semibold text-blue-600">
+                                                    <FaMoneyBillWave className="shrink-0" />
+                                                    <span>
+                                                        คงเหลือ
+                                                    </span>
+                                                </div>
+
+                                                <p className="mt-2 break-words text-sm font-extrabold text-blue-600 sm:text-base">
+                                                    {formatMoney(
+                                                        account.balance
+                                                    )}
+                                                </p>
+
+                                                <p className="text-[10px] text-gray-500">
+                                                    บาท
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div className="grid grid-cols-3 gap-2 p-4">
-                                        <div className="min-w-0 rounded-xl bg-green-50 p-3">
-                                            <div className="flex items-center gap-1 text-xs font-semibold text-green-600">
-                                                <FaArrowUp className="shrink-0" />
-                                                <span>รายรับ</span>
-                                            </div>
-
-                                            <p className="mt-2 break-words text-sm font-extrabold text-green-600 sm:text-base">
-                                                {formatMoney(account.income)}
-                                            </p>
-
-                                            <p className="text-[10px] text-gray-500">
-                                                บาท
-                                            </p>
-                                        </div>
-
-                                        <div className="min-w-0 rounded-xl bg-red-50 p-3">
-                                            <div className="flex items-center gap-1 text-xs font-semibold text-red-500">
-                                                <FaArrowDown className="shrink-0" />
-                                                <span>รายจ่าย</span>
-                                            </div>
-
-                                            <p className="mt-2 break-words text-sm font-extrabold text-red-500 sm:text-base">
-                                                {formatMoney(account.expense)}
-                                            </p>
-
-                                            <p className="text-[10px] text-gray-500">
-                                                บาท
-                                            </p>
-                                        </div>
-
-                                        <div className="min-w-0 rounded-xl bg-blue-50 p-3">
-                                            <div className="flex items-center gap-1 text-xs font-semibold text-blue-600">
-                                                <FaMoneyBillWave className="shrink-0" />
-                                                <span>คงเหลือ</span>
-                                            </div>
-
-                                            <p className="mt-2 break-words text-sm font-extrabold text-blue-600 sm:text-base">
-                                                {formatMoney(account.balance)}
-                                            </p>
-
-                                            <p className="text-[10px] text-gray-500">
-                                                บาท
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            )}
                         </div>
                     )}
                 </div>
