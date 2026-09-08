@@ -10,7 +10,6 @@ import {
   FaFilePdf,
   FaFilter,
   FaCalendarAlt,
-  FaWallet,
   FaReceipt,
   FaTimes,
   FaCreditCard,
@@ -91,7 +90,9 @@ function Transactions() {
       const data = await getTransactions();
 
       setTransactions(
-        Array.isArray(data) ? data : []
+        Array.isArray(data)
+          ? data
+          : []
       );
     } catch (err) {
       console.error(err);
@@ -132,9 +133,7 @@ function Transactions() {
 
       if (!id || !name) return;
 
-      if (!map.has(id)) {
-        map.set(id, name);
-      }
+      map.set(id, name);
     });
 
     return map;
@@ -142,17 +141,11 @@ function Transactions() {
 
   const getAccountName = (transaction) => {
     const accountId = String(
-      transaction.accountTypesId ||
-        transaction.accountTypeId ||
-        ""
+      transaction.accountTypesId || ""
     ).trim();
 
-    if (accountId && accountMap.has(accountId)) {
-      return accountMap.get(accountId);
-    }
-
     return (
-      transaction.accountTypeName ||
+      accountMap.get(accountId) ||
       "ไม่ระบุช่องทาง"
     );
   };
@@ -160,7 +153,8 @@ function Transactions() {
   const handleEdit = (transaction) => {
     setEditTransaction({
       ...transaction,
-      accountTypeName: getAccountName(transaction),
+      accountTypeName:
+        getAccountName(transaction),
     });
 
     setModalOpen(true);
@@ -199,7 +193,10 @@ function Transactions() {
   const formatThaiDate = (date) => {
     if (!date) return "-";
 
-    const value = String(date).substring(0, 10);
+    const value = String(date).substring(
+      0,
+      10
+    );
 
     const [year, month, day] =
       value.split("-").map(Number);
@@ -284,20 +281,18 @@ function Transactions() {
     if (startDate) {
       result = result.filter(
         (transaction) =>
-          String(transaction.date || "").substring(
-            0,
-            10
-          ) >= startDate
+          String(
+            transaction.date || ""
+          ).substring(0, 10) >= startDate
       );
     }
 
     if (endDate) {
       result = result.filter(
         (transaction) =>
-          String(transaction.date || "").substring(
-            0,
-            10
-          ) <= endDate
+          String(
+            transaction.date || ""
+          ).substring(0, 10) <= endDate
       );
     }
 
@@ -315,7 +310,10 @@ function Transactions() {
   const totalIncome = useMemo(() => {
     return filteredTransactions.reduce(
       (sum, transaction) =>
-        sum + Number(transaction.income || 0),
+        sum +
+        Number(
+          transaction.income || 0
+        ),
       0
     );
   }, [filteredTransactions]);
@@ -323,7 +321,10 @@ function Transactions() {
   const totalExpense = useMemo(() => {
     return filteredTransactions.reduce(
       (sum, transaction) =>
-        sum + Number(transaction.expense || 0),
+        sum +
+        Number(
+          transaction.expense || 0
+        ),
       0
     );
   }, [filteredTransactions]);
@@ -333,13 +334,18 @@ function Transactions() {
       return 0;
     }
 
-    const lastTransaction =
-      filteredTransactions[
-        filteredTransactions.length - 1
-      ];
+    const sorted = [
+      ...filteredTransactions,
+    ].sort((a, b) =>
+      String(a.date || "").localeCompare(
+        String(b.date || "")
+      )
+    );
 
     return Number(
-      lastTransaction.balance || 0
+      sorted[
+        sorted.length - 1
+      ]?.balance || 0
     );
   }, [filteredTransactions]);
 
@@ -357,42 +363,25 @@ function Transactions() {
 
       if (!id || !name) return;
 
-      const key = name.toLowerCase();
-
-      if (!map.has(key)) {
-        map.set(key, {
-          id,
-          name,
-          accountIds: [id],
-          income: 0,
-          expense: 0,
-          balance: 0,
-        });
-      } else {
-        const existing = map.get(key);
-
-        if (!existing.accountIds.includes(id)) {
-          existing.accountIds.push(id);
-        }
-      }
+      map.set(id, {
+        id,
+        name,
+        income: 0,
+        expense: 0,
+        balance: 0,
+      });
     });
 
     filteredTransactions.forEach(
       (transaction) => {
-        const transactionAccountId =
-          String(
-            transaction.accountTypesId ||
-              transaction.accountTypeId ||
-              ""
-          ).trim();
+        const accountId = String(
+          transaction.accountTypesId || ""
+        ).trim();
 
-        if (!transactionAccountId) return;
+        if (!accountId) return;
 
-        const account = [...map.values()].find(
-          (item) =>
-            item.accountIds.includes(
-              transactionAccountId
-            )
+        const account = map.get(
+          accountId
         );
 
         if (!account) return;
@@ -411,7 +400,9 @@ function Transactions() {
       }
     );
 
-    return Array.from(map.values()).filter(
+    return Array.from(
+      map.values()
+    ).filter(
       (account) =>
         account.income !== 0 ||
         account.expense !== 0
@@ -421,10 +412,15 @@ function Transactions() {
     filteredTransactions,
   ]);
 
-  const arrayBufferToBase64 = (buffer) => {
+  const arrayBufferToBase64 = (
+    buffer
+  ) => {
     let binary = "";
 
-    const bytes = new Uint8Array(buffer);
+    const bytes = new Uint8Array(
+      buffer
+    );
+
     const chunkSize = 0x8000;
 
     for (
@@ -432,10 +428,14 @@ function Transactions() {
       i < bytes.length;
       i += chunkSize
     ) {
-      const chunk = bytes.subarray(
-        i,
-        Math.min(i + chunkSize, bytes.length)
-      );
+      const chunk =
+        bytes.subarray(
+          i,
+          Math.min(
+            i + chunkSize,
+            bytes.length
+          )
+        );
 
       binary += String.fromCharCode(
         ...chunk
@@ -458,7 +458,9 @@ function Transactions() {
       return;
     }
 
-    if (!filteredTransactions.length) {
+    if (
+      !filteredTransactions.length
+    ) {
       errorAlert(
         "ไม่มีข้อมูลในช่วงวันที่หรือปีที่เลือก"
       );
@@ -481,11 +483,9 @@ function Transactions() {
         format: "a4",
       });
 
-      const fontUrl =
-        "/fonts/THSarabunNew.ttf";
-
-      const response =
-        await fetch(fontUrl);
+      const response = await fetch(
+        "/fonts/THSarabunNew.ttf"
+      );
 
       if (!response.ok) {
         throw new Error(
@@ -497,7 +497,9 @@ function Transactions() {
         await response.arrayBuffer();
 
       const fontBase64 =
-        arrayBufferToBase64(fontBuffer);
+        arrayBufferToBase64(
+          fontBuffer
+        );
 
       pdf.addFileToVFS(
         "THSarabunNew.ttf",
@@ -523,7 +525,9 @@ function Transactions() {
       const pdfTransactions = [
         ...filteredTransactions,
       ].sort((a, b) =>
-        String(a.date || "").localeCompare(
+        String(
+          a.date || ""
+        ).localeCompare(
           String(b.date || "")
         )
       );
@@ -532,7 +536,8 @@ function Transactions() {
         startDate ||
         (selectedYear
           ? `${selectedYear}-01-01`
-          : pdfTransactions[0]?.date || "");
+          : pdfTransactions[0]
+              ?.date || "");
 
       const reportEndDate =
         endDate ||
@@ -542,10 +547,9 @@ function Transactions() {
               pdfTransactions.length - 1
             ]?.date || "");
 
-      const today =
-        new Date()
-          .toISOString()
-          .split("T")[0];
+      const today = new Date()
+        .toISOString()
+        .split("T")[0];
 
       const tableData =
         pdfTransactions.map(
@@ -555,15 +559,19 @@ function Transactions() {
             ),
             transaction.categoryName ||
               "-",
-            getAccountName(transaction),
-            Number(transaction.income || 0) >
-            0
+            getAccountName(
+              transaction
+            ),
+            Number(
+              transaction.income || 0
+            ) > 0
               ? Number(
                   transaction.income
                 ).toLocaleString()
               : "-",
-            Number(transaction.expense || 0) >
-            0
+            Number(
+              transaction.expense || 0
+            ) > 0
               ? Number(
                   transaction.expense
                 ).toLocaleString()
@@ -723,7 +731,11 @@ function Transactions() {
           fontStyle: "normal",
           fontSize: 12,
           cellPadding: 2.5,
-          textColor: [0, 0, 0],
+          textColor: [
+            0,
+            0,
+            0,
+          ],
           lineColor: [
             180,
             180,
@@ -793,17 +805,23 @@ function Transactions() {
             return;
           }
 
-          if (data.column.index === 3) {
+          if (
+            data.column.index === 3
+          ) {
             data.cell.styles.textColor =
               [22, 163, 74];
           }
 
-          if (data.column.index === 4) {
+          if (
+            data.column.index === 4
+          ) {
             data.cell.styles.textColor =
               [220, 38, 38];
           }
 
-          if (data.column.index === 5) {
+          if (
+            data.column.index === 5
+          ) {
             data.cell.styles.textColor =
               [37, 99, 235];
           }
@@ -842,7 +860,8 @@ function Transactions() {
 
       if (selectedYear) {
         fileName += `_พ.ศ.${
-          Number(selectedYear) + 543
+          Number(selectedYear) +
+          543
         }`;
       } else if (
         startDate ||
@@ -905,7 +924,9 @@ function Transactions() {
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <button
               onClick={() =>
-                navigate("/add-transaction")
+                navigate(
+                  "/add-transaction"
+                )
               }
               className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-green-700 shadow-lg transition hover:bg-green-50 sm:w-auto"
             >
@@ -917,7 +938,8 @@ function Transactions() {
               onClick={handleExportPDF}
               disabled={
                 loading ||
-                filteredTransactions.length === 0
+                filteredTransactions.length ===
+                  0
               }
               className="group inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-red-600 shadow-lg transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
@@ -1049,7 +1071,8 @@ function Transactions() {
       </section>
 
       {!loading &&
-        filteredTransactions.length > 0 && (
+        filteredTransactions.length >
+          0 && (
           <>
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-2xl border border-green-100 bg-white p-5 shadow-sm">
@@ -1097,7 +1120,8 @@ function Transactions() {
               </div>
             </section>
 
-            {accountSummary.length > 0 && (
+            {accountSummary.length >
+              0 && (
               <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
                 <div className="flex items-center gap-3 border-b border-gray-100 p-4 sm:p-5 md:p-6">
                   <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
@@ -1119,7 +1143,7 @@ function Transactions() {
                   {accountSummary.map(
                     (account) => (
                       <div
-                        key={account.name}
+                        key={account.id}
                         className="rounded-2xl border border-gray-100 bg-gray-50 p-4"
                       >
                         <div className="flex items-start gap-3">
@@ -1219,7 +1243,8 @@ function Transactions() {
               กำลังโหลดข้อมูล...
             </p>
           </div>
-        ) : filteredTransactions.length === 0 ? (
+        ) : filteredTransactions.length ===
+          0 ? (
           <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
             <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100">
               <FaReceipt className="text-3xl text-gray-400" />
@@ -1247,7 +1272,10 @@ function Transactions() {
           <>
             <div className="space-y-3 p-4 md:hidden">
               {filteredTransactions.map(
-                (transaction, index) => {
+                (
+                  transaction,
+                  index
+                ) => {
                   const isIncome =
                     Number(
                       transaction.income
@@ -1457,7 +1485,10 @@ function Transactions() {
 
                 <tbody>
                   {filteredTransactions.map(
-                    (transaction, index) => {
+                    (
+                      transaction,
+                      index
+                    ) => {
                       const accountName =
                         getAccountName(
                           transaction
@@ -1466,6 +1497,11 @@ function Transactions() {
                       const rowKey =
                         transaction.id ||
                         `${transaction.date}-${transaction.categoryId}-${transaction.accountTypesId}-${index}`;
+
+                      const isIncome =
+                        Number(
+                          transaction.income
+                        ) > 0;
 
                       return (
                         <tr
@@ -1482,16 +1518,12 @@ function Transactions() {
                             <div className="flex items-center gap-3">
                               <div
                                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                                  Number(
-                                    transaction.income
-                                  ) > 0
+                                  isIncome
                                     ? "bg-green-100 text-green-600"
                                     : "bg-red-100 text-red-600"
                                 }`}
                               >
-                                {Number(
-                                  transaction.income
-                                ) > 0 ? (
+                                {isIncome ? (
                                   <FaArrowUp />
                                 ) : (
                                   <FaArrowDown />
