@@ -7,7 +7,7 @@ const AccountPage = () => {
     const [accountTypes, setAccountTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [showForm, setShowForm] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [name, setName] = useState("");
 
@@ -45,16 +45,24 @@ const AccountPage = () => {
         fetchAccountTypes();
     }, []);
 
-    const resetForm = () => {
-        setName("");
+    const closeModal = () => {
+        if (saving) return;
+
+        setShowModal(false);
         setEditingId(null);
-        setShowForm(false);
+        setName("");
     };
 
-    const openAddForm = () => {
-        setName("");
+    const openAddModal = () => {
         setEditingId(null);
-        setShowForm(true);
+        setName("");
+        setShowModal(true);
+    };
+
+    const openEditModal = (accountType) => {
+        setEditingId(accountType.id);
+        setName(accountType.name || "");
+        setShowModal(true);
     };
 
     const handleSubmit = async (e) => {
@@ -91,9 +99,21 @@ const AccountPage = () => {
             setSaving(true);
 
             if (editingId) {
-                await api.patch(`/account-types/${editingId}`, {
-                    name: accountTypeName,
-                });
+                const response = await api.patch(
+                    `/account-types/${editingId}`,
+                    {
+                        name: accountTypeName,
+                    }
+                );
+
+                if (!response.data?.success) {
+                    throw new Error(
+                        response.data?.message ||
+                            "ไม่สามารถแก้ไขช่องทางบัญชีได้"
+                    );
+                }
+
+                closeModal();
 
                 await Swal.fire({
                     icon: "success",
@@ -102,9 +122,18 @@ const AccountPage = () => {
                     showConfirmButton: false,
                 });
             } else {
-                await api.post("/account-types", {
+                const response = await api.post("/account-types", {
                     name: accountTypeName,
                 });
+
+                if (!response.data?.success) {
+                    throw new Error(
+                        response.data?.message ||
+                            "ไม่สามารถเพิ่มช่องทางบัญชีได้"
+                    );
+                }
+
+                closeModal();
 
                 await Swal.fire({
                     icon: "success",
@@ -114,7 +143,6 @@ const AccountPage = () => {
                 });
             }
 
-            resetForm();
             await fetchAccountTypes();
         } catch (error) {
             console.error(error);
@@ -124,17 +152,12 @@ const AccountPage = () => {
                 title: "ไม่สำเร็จ",
                 text:
                     error.response?.data?.message ||
+                    error.message ||
                     "ไม่สามารถบันทึกข้อมูลได้",
             });
         } finally {
             setSaving(false);
         }
-    };
-
-    const handleEdit = (accountType) => {
-        setEditingId(accountType.id);
-        setName(accountType.name || "");
-        setShowForm(true);
     };
 
     const handleDelete = async (accountType) => {
@@ -148,12 +171,19 @@ const AccountPage = () => {
             confirmButtonColor: "#dc2626",
         });
 
-        if (!result.isConfirmed) {
-            return;
-        }
+        if (!result.isConfirmed) return;
 
         try {
-            await api.delete(`/account-types/${accountType.id}`);
+            const response = await api.delete(
+                `/account-types/${accountType.id}`
+            );
+
+            if (!response.data?.success) {
+                throw new Error(
+                    response.data?.message ||
+                        "ไม่สามารถลบช่องทางบัญชีได้"
+                );
+            }
 
             await Swal.fire({
                 icon: "success",
@@ -171,6 +201,7 @@ const AccountPage = () => {
                 title: "ลบไม่สำเร็จ",
                 text:
                     error.response?.data?.message ||
+                    error.message ||
                     "ไม่สามารถลบข้อมูลได้",
             });
         }
@@ -192,86 +223,12 @@ const AccountPage = () => {
 
                     <button
                         type="button"
-                        onClick={openAddForm}
+                        onClick={openAddModal}
                         className="flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white shadow-sm transition hover:bg-cyan-700"
                     >
                         <Plus size={20} />
                         เพิ่มช่องทางบัญชี
                     </button>
-                </div>
-
-                {showForm && (
-                    <div className="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100">
-                        <div className="mb-5 flex items-center justify-between">
-                            <div>
-                                <h2 className="text-lg font-bold text-gray-800">
-                                    {editingId
-                                        ? "แก้ไขช่องทางบัญชี"
-                                        : "เพิ่มช่องทางบัญชี"}
-                                </h2>
-
-                                <p className="mt-1 text-sm text-gray-500">
-                                    กรอกชื่อช่องทางบัญชี
-                                </p>
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={resetForm}
-                                className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit}>
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-gray-700">
-                                    ชื่อช่องทางบัญชี
-                                </label>
-
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="เช่น เงินสด, ธนาคารกสิกรไทย 123-4-56789-0"
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-3 outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100"
-                                />
-                            </div>
-
-                            <div className="mt-5 flex justify-end gap-3">
-                                <button
-                                    type="button"
-                                    onClick={resetForm}
-                                    className="rounded-xl border border-gray-200 px-5 py-3 font-medium text-gray-600 transition hover:bg-gray-50"
-                                >
-                                    ยกเลิก
-                                </button>
-
-                                <button
-                                    type="submit"
-                                    disabled={saving}
-                                    className="rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-60"
-                                >
-                                    {saving
-                                        ? "กำลังบันทึก..."
-                                        : editingId
-                                            ? "บันทึกการแก้ไข"
-                                            : "เพิ่มช่องทางบัญชี"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                )}
-
-                <div className="mb-4">
-                    <h2 className="text-lg font-bold text-gray-800">
-                        รายการช่องทางบัญชี
-                    </h2>
-
-                    <p className="text-sm text-gray-500">
-                        ทั้งหมด {accountTypes.length} รายการ
-                    </p>
                 </div>
 
                 {loading ? (
@@ -298,7 +255,7 @@ const AccountPage = () => {
 
                         <button
                             type="button"
-                            onClick={openAddForm}
+                            onClick={openAddModal}
                             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-5 py-3 font-medium text-white transition hover:bg-cyan-700"
                         >
                             <Plus size={19} />
@@ -306,58 +263,147 @@ const AccountPage = () => {
                         </button>
                     </div>
                 ) : (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {accountTypes.map((accountType) => (
-                            <div
-                                key={accountType.id}
-                                className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-0.5 hover:shadow-md"
-                            >
-                                <div className="flex items-center justify-between gap-3">
-                                    <div className="flex min-w-0 items-center gap-3">
-                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
-                                            <Wallet size={25} />
+                    <>
+                        <div className="mb-4">
+                            <h2 className="text-lg font-bold text-gray-800">
+                                รายการช่องทางบัญชี
+                            </h2>
+
+                            <p className="text-sm text-gray-500">
+                                ทั้งหมด {accountTypes.length} รายการ
+                            </p>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {accountTypes.map((accountType) => (
+                                <div
+                                    key={accountType.id}
+                                    className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-gray-100 transition hover:-translate-y-0.5 hover:shadow-md"
+                                >
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="flex min-w-0 items-center gap-3">
+                                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600">
+                                                <Wallet size={25} />
+                                            </div>
+
+                                            <div className="min-w-0">
+                                                <h3 className="truncate font-semibold text-gray-800">
+                                                    {accountType.name}
+                                                </h3>
+
+                                                <p className="mt-1 text-xs text-gray-400">
+                                                    ช่องทางบัญชี
+                                                </p>
+                                            </div>
                                         </div>
 
-                                        <div className="min-w-0">
-                                            <h3 className="truncate font-semibold text-gray-800">
-                                                {accountType.name}
-                                            </h3>
+                                        <div className="flex shrink-0 gap-1">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    openEditModal(accountType)
+                                                }
+                                                className="rounded-lg p-2 text-gray-400 transition hover:bg-cyan-50 hover:text-cyan-600"
+                                                title="แก้ไข"
+                                            >
+                                                <Pencil size={17} />
+                                            </button>
 
-                                            <p className="mt-1 text-xs text-gray-400">
-                                                ช่องทางบัญชี
-                                            </p>
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    handleDelete(accountType)
+                                                }
+                                                className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                                                title="ลบ"
+                                            >
+                                                <Trash2 size={17} />
+                                            </button>
                                         </div>
-                                    </div>
-
-                                    <div className="flex shrink-0 gap-1">
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleEdit(accountType)
-                                            }
-                                            className="rounded-lg p-2 text-gray-400 transition hover:bg-cyan-50 hover:text-cyan-600"
-                                            title="แก้ไข"
-                                        >
-                                            <Pencil size={17} />
-                                        </button>
-
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                handleDelete(accountType)
-                                            }
-                                            className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
-                                            title="ลบ"
-                                        >
-                                            <Trash2 size={17} />
-                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
+
+            {showModal && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget) {
+                            closeModal();
+                        }
+                    }}
+                >
+                    <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl">
+                        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+                            <div>
+                                <h2 className="text-lg font-bold text-gray-800">
+                                    {editingId
+                                        ? "แก้ไขช่องทางบัญชี"
+                                        : "เพิ่มช่องทางบัญชี"}
+                                </h2>
+
+                                <p className="mt-1 text-xs text-gray-500">
+                                    {editingId
+                                        ? "แก้ไขชื่อช่องทางบัญชี"
+                                        : "เพิ่มช่องทางที่ใช้รับและจ่ายเงิน"}
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={closeModal}
+                                disabled={saving}
+                                className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-5">
+                            <label className="mb-2 block text-sm font-semibold text-gray-700">
+                                ชื่อช่องทางบัญชี
+                            </label>
+
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="เช่น เงินสด"
+                                autoFocus
+                                disabled={saving}
+                                className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-800 outline-none transition placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 disabled:bg-gray-100"
+                            />
+
+                            <div className="mt-5 flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={closeModal}
+                                    disabled={saving}
+                                    className="flex-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    ยกเลิก
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    disabled={saving}
+                                    className="flex-1 rounded-xl bg-cyan-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    {saving
+                                        ? "กำลังบันทึก..."
+                                        : editingId
+                                          ? "บันทึกการแก้ไข"
+                                          : "เพิ่มช่องทางบัญชี"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
