@@ -8,8 +8,11 @@ import {
   FaCog,
   FaShieldAlt,
   FaWallet,
+  FaSignOutAlt,
+  FaDownload,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 function Settings() {
   const navigate = useNavigate();
@@ -65,10 +68,55 @@ function Settings() {
     },
   ];
 
+  // ออกจากระบบ
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      console.error("Logout Error:", err);
+    } finally {
+      navigate("/", { replace: true });
+    }
+  };
+
+  // ติดตั้งแอป
+  const handleInstallApp = async () => {
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true;
+
+    if (isStandalone) {
+      alert("แอปถูกติดตั้งอยู่แล้ว");
+      return;
+    }
+
+    const promptEvent = window.__deferredPrompt;
+
+    if (!promptEvent) {
+      alert(
+        'ยังไม่พร้อมติดตั้งแอป\n\nหากต้องการติดตั้ง ให้เปิดเมนู "⋮" ของ Chrome แล้วเลือก "ติดตั้งแอป"',
+      );
+      return;
+    }
+
+    try {
+      promptEvent.prompt();
+
+      const { outcome } = await promptEvent.userChoice;
+
+      console.log("PWA install:", outcome);
+
+      window.__deferredPrompt = null;
+    } catch (error) {
+      console.error("PWA Install Error:", error);
+    }
+  };
+
   return (
     <div className="min-h-full bg-slate-50/60 px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
       <div className="mx-auto w-full max-w-5xl">
-        <section className=" relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-5 text-white shadow-lg shadow-green-600/10 sm:p-6 md:p-7 " >
+        {/* Header */}
+        <section className="relative mb-5 overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-5 text-white shadow-lg shadow-green-600/10 sm:p-6 md:p-7">
           <div className="pointer-events-none absolute -right-16 -top-20 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
 
           <div className="pointer-events-none absolute -bottom-20 right-1/3 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
@@ -76,10 +124,10 @@ function Settings() {
           <div className="relative flex items-center gap-4">
             <div
               className="
-            flex h-12 w-12 flex-shrink-0 items-center justify-center
-            rounded-2xl bg-white/15 text-xl backdrop-blur-sm
-            sm:h-14 sm:w-14 sm:text-2xl
-          "
+                flex h-12 w-12 flex-shrink-0 items-center justify-center
+                rounded-2xl bg-white/15 text-xl backdrop-blur-sm
+                sm:h-14 sm:w-14 sm:text-2xl
+              "
             >
               <FaCog />
             </div>
@@ -87,9 +135,9 @@ function Settings() {
             <div>
               <h1
                 className="
-              text-2xl font-extrabold tracking-tight
-              sm:text-3xl
-            "
+                  text-2xl font-extrabold tracking-tight
+                  sm:text-3xl
+                "
               >
                 ตั้งค่า
               </h1>
@@ -101,6 +149,7 @@ function Settings() {
           </div>
         </section>
 
+        {/* Settings Menu */}
         <section className="grid gap-4 md:grid-cols-2">
           {menus.map((menu) => (
             <button
@@ -108,31 +157,31 @@ function Settings() {
               type="button"
               onClick={() => navigate(menu.path)}
               className="
-            group relative flex min-h-[112px] w-full items-center
-            gap-4 overflow-hidden rounded-2xl border border-gray-100
-            bg-white p-4 text-left shadow-sm transition-all duration-300
-            hover:-translate-y-1 hover:border-gray-200 hover:shadow-lg
-            active:scale-[0.99] sm:p-5
-          "
+                group relative flex min-h-[112px] w-full items-center
+                gap-4 overflow-hidden rounded-2xl border border-gray-100
+                bg-white p-4 text-left shadow-sm transition-all duration-300
+                hover:-translate-y-1 hover:border-gray-200 hover:shadow-lg
+                active:scale-[0.99] sm:p-5
+              "
             >
               <div
                 className="
-              pointer-events-none absolute -right-10 -top-10 h-28 w-28
-              rounded-full bg-gray-50 transition-transform duration-500
-              group-hover:scale-150
-            "
+                  pointer-events-none absolute -right-10 -top-10 h-28 w-28
+                  rounded-full bg-gray-50 transition-transform duration-500
+                  group-hover:scale-150
+                "
               />
 
               <div
                 className={`
-              relative flex h-12 w-12 flex-shrink-0 items-center
-              justify-center rounded-xl text-lg transition-all duration-300
-              sm:h-14 sm:w-14 sm:text-xl
-              ${menu.iconClass}
-              ${menu.hoverClass}
-              group-hover:text-white
-              group-hover:shadow-lg
-            `}
+                  relative flex h-12 w-12 flex-shrink-0 items-center
+                  justify-center rounded-xl text-lg transition-all duration-300
+                  sm:h-14 sm:w-14 sm:text-xl
+                  ${menu.iconClass}
+                  ${menu.hoverClass}
+                  group-hover:text-white
+                  group-hover:shadow-lg
+                `}
               >
                 {menu.icon}
               </div>
@@ -140,18 +189,18 @@ function Settings() {
               <div className="relative min-w-0 flex-1">
                 <h2
                   className="
-                text-base font-bold text-black
-                sm:text-lg
-              "
+                    text-base font-bold text-black
+                    sm:text-lg
+                  "
                 >
                   {menu.title}
                 </h2>
 
                 <p
                   className="
-                mt-1 text-xs font-medium leading-5 text-black
-                sm:text-sm
-              "
+                    mt-1 text-xs font-medium leading-5 text-black
+                    sm:text-sm
+                  "
                 >
                   {menu.description}
                 </p>
@@ -159,35 +208,36 @@ function Settings() {
 
               <div
                 className="
-              relative flex h-9 w-9 flex-shrink-0 items-center
-              justify-center rounded-full bg-gray-50 text-black
-              transition-all duration-300
-              group-hover:bg-green-50 group-hover:text-green-600
-            "
+                  relative flex h-9 w-9 flex-shrink-0 items-center
+                  justify-center rounded-full bg-gray-50 text-black
+                  transition-all duration-300
+                  group-hover:bg-green-50 group-hover:text-green-600
+                "
               >
                 <FaChevronRight
                   className="
-                text-xs transition-transform duration-300
-                group-hover:translate-x-0.5
-              "
+                    text-xs transition-transform duration-300
+                    group-hover:translate-x-0.5
+                  "
                 />
               </div>
             </button>
           ))}
         </section>
 
+        {/* Account Info */}
         <section
           className="
-        mt-5 overflow-hidden rounded-2xl border border-green-100
-        bg-green-50/70 p-4 sm:p-5
-      "
+            mt-5 overflow-hidden rounded-2xl border border-green-100
+            bg-green-50/70 p-4 sm:p-5
+          "
         >
           <div className="flex items-start gap-3">
             <div
               className="
-            flex h-10 w-10 flex-shrink-0 items-center justify-center
-            rounded-xl bg-green-100 text-green-600
-          "
+                flex h-10 w-10 flex-shrink-0 items-center justify-center
+                rounded-xl bg-green-100 text-green-600
+              "
             >
               <FaShieldAlt />
             </div>
@@ -204,9 +254,49 @@ function Settings() {
             </div>
           </div>
         </section>
+
+        {/* Mobile / Tablet Actions */}
+        <section className="mt-5 grid gap-3 lg:hidden">
+          {/* Logout */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="
+              flex w-full items-center justify-center gap-3
+              rounded-2xl bg-red-500 px-5 py-4
+              font-semibold text-white shadow-sm
+              transition-all duration-200
+              hover:bg-red-600 hover:shadow-md
+              active:scale-[0.98]
+            "
+          >
+            <FaSignOutAlt className="text-lg" />
+            <span>ออกจากระบบ</span>
+          </button>
+
+          {/* Install App */}
+          <button
+            type="button"
+            onClick={handleInstallApp}
+            className="
+              flex w-full items-center justify-center gap-3
+              rounded-2xl border-2 border-green-500
+              bg-green-50 px-5 py-4
+              font-semibold text-green-600
+              transition-all duration-200
+              hover:bg-green-500 hover:text-white
+              active:scale-[0.98]
+            "
+          >
+            <FaDownload className="text-lg" />
+            <span>ติดตั้งแอป</span>
+          </button>
+        </section>
+
+        {/* Bottom spacing สำหรับ BottomNav */}
+        <div className="h-24 lg:hidden" />
       </div>
     </div>
-
   );
 }
 
