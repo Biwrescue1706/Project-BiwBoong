@@ -1,3 +1,5 @@
+// expense-frontend/src/components/Sidebar.jsx
+
 import {
   FaChartPie,
   FaMoneyBillWave,
@@ -60,8 +62,11 @@ function Sidebar({ open, setOpen, user }) {
 
     try {
       promptEvent.prompt();
+
       const { outcome } = await promptEvent.userChoice;
+
       console.log("PWA install:", outcome);
+
       window.__deferredPrompt = null;
     } catch (error) {
       console.error("PWA Install Error:", error);
@@ -80,7 +85,9 @@ function Sidebar({ open, setOpen, user }) {
 
   const displayName =
     user?.fullName ||
-    `${user?.prefix || ""}${user?.firstName || ""} ${user?.lastName || ""}`.trim() ||
+    `${user?.prefix || ""}${user?.firstName || ""} ${
+      user?.lastName || ""
+    }`.trim() ||
     user?.username ||
     "ผู้ใช้งาน";
 
@@ -93,6 +100,7 @@ function Sidebar({ open, setOpen, user }) {
 
   return (
     <>
+      {/* Overlay สำหรับหน้าจอเล็ก */}
       {open && (
         <div
           className="fixed inset-0 z-30 bg-black/40 lg:hidden"
@@ -100,10 +108,13 @@ function Sidebar({ open, setOpen, user }) {
         />
       )}
 
+      {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-40 flex h-screen w-64 transform flex-col bg-slate-900 text-white transition-transform duration-300 lg:static lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed left-0 top-0 z-40 flex h-screen w-64 transform flex-col bg-slate-900 text-white transition-transform duration-300 lg:static lg:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
+        {/* Header */}
         <div className="flex h-16 items-center justify-between border-b border-slate-700 px-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-500">
@@ -118,10 +129,14 @@ function Sidebar({ open, setOpen, user }) {
               <h2 className="text-base font-bold text-white">
                 บันทึกค่าใช้จ่าย
               </h2>
-              <p className="text-xs text-slate-400">รายรับรายจ่าย</p>
+
+              <p className="text-xs text-slate-400">
+                รายรับรายจ่าย
+              </p>
             </div>
           </div>
 
+          {/* ปุ่มปิด Sidebar บนจอเล็ก */}
           <button
             onClick={() => setOpen(false)}
             className="text-white transition hover:text-red-400 lg:hidden"
@@ -130,6 +145,7 @@ function Sidebar({ open, setOpen, user }) {
           </button>
         </div>
 
+        {/* User Profile */}
         <div className="px-4 pt-5">
           <div className="flex items-center gap-3 rounded-xl bg-slate-100 p-3">
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-500 font-bold uppercase text-white">
@@ -152,10 +168,12 @@ function Sidebar({ open, setOpen, user }) {
           </div>
         </div>
 
+        {/* Menu Title */}
         <div className="px-5 pb-2 pt-5 text-xs uppercase tracking-wider text-slate-500">
           เมนูหลัก
         </div>
 
+        {/* Menu */}
         <nav className="flex-1 space-y-2 overflow-y-auto px-3">
           {menus.map((menu) => (
             <NavLink
@@ -163,19 +181,23 @@ function Sidebar({ open, setOpen, user }) {
               to={menu.path}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${isActive
-                  ? "bg-green-500 text-white shadow-lg"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                `flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
+                  isActive
+                    ? "bg-green-500 text-white shadow-lg"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
                 }`
               }
             >
               {menu.icon}
+
               <span>{menu.name}</span>
             </NavLink>
           ))}
         </nav>
 
+        {/* Bottom Buttons */}
         <div className="border-t border-slate-700 p-5">
+          {/* Logout */}
           <button
             onClick={handleLogout}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 py-3 font-medium text-white transition hover:bg-red-600"
@@ -184,6 +206,7 @@ function Sidebar({ open, setOpen, user }) {
             ออกจากระบบ
           </button>
 
+          {/* Install App */}
           <button
             type="button"
             onClick={handleInstallApp}
