@@ -1,5 +1,4 @@
 // expense-frontend/src/components/Layout.jsx
-
 import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
@@ -8,7 +7,6 @@ import BottomNav from "./BottomNav";
 import api from "../api/axios";
 
 function Layout() {
-  const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -26,28 +24,18 @@ function Layout() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <Sidebar
-        open={open}
-        setOpen={setOpen}
-        user={user}
-      />
+      <Sidebar user={user} />
 
-      {/* Main */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <Navbar
-          setOpen={setOpen}
-          user={user}
-        />
+        <Navbar user={user} />
 
-        <main className="flex-1 overflow-y-auto bg-gray-100 p-6 pb-24 lg:pb-6">
+        <main className="flex-1 overflow-y-auto bg-gray-100 p-4 pb-24 sm:p-6 lg:pb-6">
           <div className="mx-auto w-full max-w-7xl">
             <Outlet />
           </div>
         </main>
       </div>
 
-      {/* Bottom Navigation สำหรับหน้าจอเล็ก */}
       <BottomNav />
     </div>
   );
