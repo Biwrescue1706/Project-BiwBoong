@@ -1,205 +1,141 @@
 (function () {
   const drawer = document.getElementById("navDrawer");
   const backdrop = document.getElementById("backdrop");
-  const toggleEl = document.getElementById("navToggle");
+  const toggle = document.getElementById("navToggle");
   const closeBtn = document.getElementById("drawerClose");
-  const installBtn = document.getElementById("installAppBtn");
 
-  if (!drawer || !backdrop || !toggleEl) return;
+  const installDesktop = document.getElementById(
+    "installAppBtnDesktop"
+  );
 
-  let lastFocused = null;
+  const installMobile = document.getElementById(
+    "installAppBtnMobile"
+  );
+
+  if (!drawer || !backdrop || !toggle) return;
+
   let deferredPrompt = null;
 
-  const hiddenClasses = [
-    "-translate-x-full",
-    "opacity-0",
-    "pointer-events-none",
-  ];
-
-  const showClasses = [
-    "translate-x-0",
-    "opacity-100",
-    "pointer-events-auto",
-  ];
-
-  function setAriaExpanded(isOpen) {
-    toggleEl.setAttribute("aria-expanded", String(isOpen));
-    drawer.setAttribute("aria-hidden", String(!isOpen));
-  }
-
   function openDrawer() {
-    if (drawer.classList.contains("translate-x-0")) return;
+    drawer.classList.remove("-translate-x-full", "opacity-0");
+    drawer.classList.add("translate-x-0", "opacity-100");
 
-    lastFocused = document.activeElement;
-
-    drawer.classList.remove(...hiddenClasses);
-    drawer.classList.add(...showClasses);
-
-    backdrop.hidden = false;
     backdrop.classList.remove("hidden");
-    backdrop.classList.add("opacity-100");
 
     document.body.classList.add("overflow-hidden");
 
-    setAriaExpanded(true);
-
-    const firstFocusable = drawer.querySelector(
-      'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
-    );
-
-    firstFocusable?.focus();
-
-    document.addEventListener("keydown", trapFocus);
+    toggle.setAttribute("aria-expanded", "true");
+    drawer.setAttribute("aria-hidden", "false");
   }
 
   function closeDrawer() {
-    if (drawer.classList.contains("-translate-x-full")) return;
+    drawer.classList.remove("translate-x-0", "opacity-100");
+    drawer.classList.add("-translate-x-full", "opacity-0");
 
-    drawer.classList.remove(...showClasses);
-    drawer.classList.add(...hiddenClasses);
-
-    backdrop.classList.remove("opacity-100");
     backdrop.classList.add("hidden");
-    backdrop.hidden = true;
 
     document.body.classList.remove("overflow-hidden");
 
-    setAriaExpanded(false);
-
-    document.removeEventListener("keydown", trapFocus);
-
-    if (lastFocused && typeof lastFocused.focus === "function") {
-      lastFocused.focus();
-    }
+    toggle.setAttribute("aria-expanded", "false");
+    drawer.setAttribute("aria-hidden", "true");
   }
 
-  function trapFocus(e) {
-    if (drawer.classList.contains("-translate-x-full")) return;
-
-    if (e.key === "Escape") {
-      e.preventDefault();
-      closeDrawer();
-      return;
-    }
-
-    if (e.key !== "Tab") return;
-
-    const focusables = drawer.querySelectorAll(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    );
-
-    if (!focusables.length) return;
-
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
-
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
-
-  function handleToggleActivate(e) {
-    if (e.type === "keydown") {
-      if (e.key !== "Enter" && e.key !== " ") return;
-      e.preventDefault();
-    }
-
-    if (drawer.classList.contains("translate-x-0")) {
-      closeDrawer();
-    } else {
-      openDrawer();
-    }
-  }
-
-  toggleEl.addEventListener("click", handleToggleActivate);
-  toggleEl.addEventListener("keydown", handleToggleActivate);
+  toggle.addEventListener("click", openDrawer);
 
   closeBtn?.addEventListener("click", closeDrawer);
+
   backdrop.addEventListener("click", closeDrawer);
 
-  window.addEventListener("beforeinstallprompt", (event) => {
-    event.preventDefault();
-    deferredPrompt = event;
-
-    if (installBtn) {
-      installBtn.classList.remove("hidden");
-      installBtn.classList.add("flex");
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      closeDrawer();
     }
   });
 
-  installBtn?.addEventListener("click", async () => {
+  /* ==================== PWA INSTALL ==================== */
+
+  window.addEventListener("beforeinstallprompt", function (event) {
+    event.preventDefault();
+
+    deferredPrompt = event;
+
+    // Desktop
+    if (installDesktop) {
+      installDesktop.classList.remove("hidden");
+      installDesktop.classList.add("flex");
+    }
+
+    // Mobile
+    if (installMobile) {
+      installMobile.classList.remove("hidden");
+      installMobile.classList.add("flex");
+    }
+  });
+
+  async function installApp() {
     if (!deferredPrompt) return;
 
     deferredPrompt.prompt();
 
-    await deferredPrompt.userChoice;
+    const result = await deferredPrompt.userChoice;
+
+    console.log("PWA install:", result.outcome);
 
     deferredPrompt = null;
 
-    installBtn.classList.add("hidden");
-    installBtn.classList.remove("flex");
+    if (installDesktop) {
+      installDesktop.classList.add("hidden");
+      installDesktop.classList.remove("flex");
+    }
 
-    closeDrawer();
-  });
+    if (installMobile) {
+      installMobile.classList.add("hidden");
+      installMobile.classList.remove("flex");
+    }
+  }
 
-  window.addEventListener("appinstalled", () => {
+  installDesktop?.addEventListener("click", installApp);
+
+  installMobile?.addEventListener("click", installApp);
+
+  window.addEventListener("appinstalled", function () {
     deferredPrompt = null;
 
-    if (installBtn) {
-      installBtn.classList.add("hidden");
-      installBtn.classList.remove("flex");
+    if (installDesktop) {
+      installDesktop.classList.add("hidden");
+      installDesktop.classList.remove("flex");
+    }
+
+    if (installMobile) {
+      installMobile.classList.add("hidden");
+      installMobile.classList.remove("flex");
     }
   });
 
-  let startX = 0;
-  let startY = 0;
-  let touching = false;
+  /* ==================== ACTIVE MENU ==================== */
 
-  drawer.addEventListener(
-    "touchstart",
-    (e) => {
-      if (drawer.classList.contains("-translate-x-full")) return;
+  const currentPath = window.location.pathname;
 
-      const touch = e.touches[0];
+  document.querySelectorAll(".mobile-nav-item").forEach(function (item) {
+    const href = item.getAttribute("href");
 
-      startX = touch.clientX;
-      startY = touch.clientY;
-      touching = true;
-    },
-    { passive: true }
-  );
+    if (!href) return;
 
-  drawer.addEventListener(
-    "touchmove",
-    (e) => {
-      if (!touching) return;
-
-      const touch = e.touches[0];
-
-      const dx = touch.clientX - startX;
-      const dy = touch.clientY - startY;
-
-      if (dx < -60 && Math.abs(dy) < 40) {
-        touching = false;
-        closeDrawer();
-      }
-    },
-    { passive: true }
-  );
-
-  drawer.addEventListener("touchend", () => {
-    touching = false;
+    if (
+      (href === "/" && currentPath === "/") ||
+      (href !== "/" && currentPath === href)
+    ) {
+      item.classList.remove("text-gray-500");
+      item.classList.add(
+        "bg-green-100",
+        "text-green-700"
+      );
+    }
   });
 
-  drawer.classList.remove(...showClasses);
-  drawer.classList.add(...hiddenClasses);
+  /* ==================== CLOSE DRAWER AFTER CLICK ==================== */
 
-  backdrop.classList.add("hidden");
-  backdrop.hidden = true;
-
-  setAriaExpanded(false);
+  drawer.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", closeDrawer);
+  });
 })();

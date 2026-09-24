@@ -120,13 +120,26 @@
           Google Calendar – BiwBong
         </h2>
 
+        <!-- Desktop -->
         <div
-          class="mx-auto mt-6 max-w-6xl overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200"
+          class="mx-auto mt-6 hidden max-w-6xl overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200 md:block"
         >
           <iframe
             src="https://calendar.google.com/calendar/embed?src=bewrockgame1%40gmail.com&ctz=Asia%2FBangkok"
             title="Google Calendar – BiwBong"
-            class="h-[500px] w-full sm:h-[650px] lg:h-[700px]"
+            class="h-[650px] w-full lg:h-[700px]"
+            loading="lazy"
+          ></iframe>
+        </div>
+
+        <!-- Mobile -->
+        <div
+          class="mx-auto mt-6 overflow-hidden rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-200 md:hidden"
+        >
+          <iframe
+            src="https://calendar.google.com/calendar/embed?src=bewrockgame1%40gmail.com&ctz=Asia%2FBangkok&mode=AGENDA"
+            title="Google Calendar – BiwBong"
+            class="h-[500px] w-full"
             loading="lazy"
           ></iframe>
         </div>
@@ -140,10 +153,10 @@
     </footer>
 
     <script>
-      fetch("/nav.html")
+      fetch("./nav.html")
         .then((response) => {
           if (!response.ok) {
-            throw new Error();
+            throw new Error("ไม่พบ nav.html : HTTP " + response.status);
           }
 
           return response.text();
@@ -153,9 +166,20 @@
 
           const script = document.createElement("script");
           script.src = "/JS/nav.js";
+
+          script.onload = () => {
+            console.log("โหลด nav.js สำเร็จ");
+          };
+
+          script.onerror = () => {
+            console.error("ไม่สามารถโหลด /JS/nav.js ได้");
+          };
+
           document.body.appendChild(script);
         })
-        .catch(() => {});
+        .catch((error) => {
+          console.error("ไม่สามารถโหลด nav.html ได้:", error);
+        });
     </script>
 
     <script>
