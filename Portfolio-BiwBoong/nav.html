@@ -1,0 +1,230 @@
+<!-- ========================= TOP NAV ========================= -->
+<nav
+  id="topNav"
+  class="sticky top-0 z-50 hidden bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg md:block"
+>
+  <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
+
+    <!-- Logo -->
+    <img
+      src="/images/logo.png"
+      alt="logo"
+      id="navToggle"
+      role="button"
+      tabindex="0"
+      aria-controls="navDrawer"
+      aria-expanded="false"
+      class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
+    />
+
+    <h1 class="text-xl font-bold sm:text-2xl">
+      ประวัติส่วนตัว
+    </h1>
+
+  </div>
+
+  <!-- Drawer -->
+  <div
+    id="navDrawer"
+    aria-hidden="true"
+    class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+  >
+
+    <!-- Header -->
+    <div
+      class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+    >
+      <span class="flex items-center text-lg font-bold">
+
+        <img
+          src="/images/logo.png"
+          alt="หน้าแรก"
+          class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
+        />
+
+        เมนู
+      </span>
+
+      <button
+        id="drawerClose"
+        class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
+        aria-label="ปิดเมนู"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Menu -->
+    <div class="flex flex-col gap-1 p-4">
+
+      <a
+        href="/"
+        class="rounded-xl bg-gradient-to-r from-green-600 to-teal-600 px-4 py-3 font-semibold text-white shadow-md"
+      >
+        ประวัติส่วนตัว
+      </a>
+
+      <a
+        href="/education"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        การศึกษา
+      </a>
+
+      <a
+        href="/certificate"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        เกียรติบัตร
+      </a>
+
+      <a
+        href="/hobbies"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        กิจกรรมยามว่าง
+      </a>
+
+      <a
+        href="/portfolio"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        ผลงาน
+      </a>
+
+      <a
+        href="/work"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        ประวัติการทำงาน
+      </a>
+
+      <a
+        href="/contact"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        ติดต่อฉัน
+      </a>
+
+      <a
+        href="/action"
+        class="rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+      >
+        ดาวน์โหลด
+      </a>
+
+    </div>
+  </div>
+</nav>
+
+
+<!-- ========================= MOBILE BOTTOM NAV ========================= -->
+<nav
+  id="bottomNav"
+  class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.12)] md:hidden"
+>
+  <div
+    class="mx-auto grid max-w-lg grid-cols-4 gap-1 px-2 py-2"
+  >
+
+    <!-- หน้าแรก -->
+    <a
+      href="/"
+      class="flex flex-col items-center justify-center rounded-xl px-1 py-2 text-green-600"
+    >
+      <span class="text-xl">⌂</span>
+      <span class="mt-1 text-[11px] font-semibold">
+        หน้าหลัก
+      </span>
+    </a>
+
+    <!-- การศึกษา -->
+    <a
+      href="/education"
+      class="flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+    >
+      <span class="text-xl">🎓</span>
+      <span class="mt-1 text-[11px] font-medium">
+        การศึกษา
+      </span>
+    </a>
+
+    <!-- ผลงาน -->
+    <a
+      href="/portfolio"
+      class="flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+    >
+      <span class="text-xl">💼</span>
+      <span class="mt-1 text-[11px] font-medium">
+        ผลงาน
+      </span>
+    </a>
+
+    <!-- เมนู -->
+    <button
+      id="mobileMenuButton"
+      type="button"
+      class="flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
+    >
+      <span class="text-xl">☰</span>
+      <span class="mt-1 text-[11px] font-medium">
+        เมนู
+      </span>
+    </button>
+
+  </div>
+</nav>
+
+
+<!-- ========================= MOBILE MENU ========================= -->
+<div
+  id="mobileMenu"
+  class="fixed bottom-[76px] left-2 right-2 z-50 hidden rounded-2xl bg-white p-3 shadow-2xl ring-1 ring-gray-200 md:hidden"
+>
+
+  <div class="grid grid-cols-2 gap-2">
+
+    <a
+      href="/certificate"
+      class="rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 hover:bg-green-50 hover:text-green-600"
+    >
+      เกียรติบัตร
+    </a>
+
+    <a
+      href="/hobbies"
+      class="rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 hover:bg-green-50 hover:text-green-600"
+    >
+      กิจกรรมยามว่าง
+    </a>
+
+    <a
+      href="/work"
+      class="rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 hover:bg-green-50 hover:text-green-600"
+    >
+      ประวัติการทำงาน
+    </a>
+
+    <a
+      href="/contact"
+      class="rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 hover:bg-green-50 hover:text-green-600"
+    >
+      ติดต่อฉัน
+    </a>
+
+    <a
+      href="/action"
+      class="rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 hover:bg-green-50 hover:text-green-600"
+    >
+      ดาวน์โหลด
+    </a>
+
+  </div>
+</div>
+
+
+<!-- ========================= BACKDROP ========================= -->
+<div
+  id="backdrop"
+  class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
+></div>

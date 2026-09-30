@@ -1,188 +1,501 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const toggle = document.getElementById("navToggle");
-  const drawer = document.getElementById("navDrawer");
-  const closeBtn = document.getElementById("drawerClose");
-  const backdrop = document.getElementById("backdrop");
+document.addEventListener("DOMContentLoaded", async () => {
+  const navContainer = document.getElementById("nav-container");
 
-  if (!toggle || !drawer || !backdrop) return;
-
-  const FOCUSABLE =
-    'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
-
-  let lastFocused = null;
-
-  // =========================
-  // Focus Helpers
-  // =========================
-
-  function firstFocusable() {
-    const list = drawer.querySelectorAll(FOCUSABLE);
-    return list.length ? list[0] : null;
+  if (!navContainer) {
+    console.error("ไม่พบ #nav-container");
+    return;
   }
 
-  function focusables() {
-    return Array.from(drawer.querySelectorAll(FOCUSABLE)).filter(
-      (el) =>
-        !el.hasAttribute("disabled") &&
-        el.tabIndex !== -1 &&
-        isVisible(el)
-    );
+  try {
+    const response = await fetch("/nav.html");
+
+    if (!response.ok) {
+      throw new Error(
+        `โหลด nav.html ไม่สำเร็จ: ${response.status}`
+      );
+    }
+
+    const html = await response.text();
+
+    navContainer.innerHTML = html;
+
+    setupNavbar();
+
+  } catch (error) {
+    console.error("Navbar Error:", error);
   }
+});
 
-  function isVisible(el) {
-    const rects = el.getClientRects();
 
-    return (
-      !!rects.length &&
-      window.getComputedStyle(el).visibility !== "hidden"
-    );
-  }
+/* =========================================================
+   SETUP NAVBAR
+========================================================= */
 
-  // =========================
-  // Open Drawer
-  // =========================
+function setupNavbar() {
+
+  const navToggle =
+    document.getElementById("navToggle");
+
+  const navDrawer =
+    document.getElementById("navDrawer");
+
+  const drawerClose =
+    document.getElementById("drawerClose");
+
+  const backdrop =
+    document.getElementById("backdrop");
+
+  const mobileMenuButton =
+    document.getElementById("mobileMenuButton");
+
+  const mobileMenu =
+    document.getElementById("mobileMenu");
+
+
+  /* =========================================================
+     DRAWER
+  ========================================================= */
 
   function openDrawer() {
-    lastFocused = document.activeElement;
 
-    // Drawer: เลื่อนเข้ามา
-    drawer.classList.remove("-translate-x-full");
-    drawer.classList.add("translate-x-0");
+    if (!navDrawer || !backdrop) return;
 
-    drawer.setAttribute("aria-hidden", "false");
+    navDrawer.classList.remove("-translate-x-full");
+    navDrawer.classList.add("translate-x-0");
 
-    // Logo
-    toggle.setAttribute("aria-expanded", "true");
+    navDrawer.setAttribute(
+      "aria-hidden",
+      "false"
+    );
 
-    // Backdrop
+    if (navToggle) {
+      navToggle.setAttribute(
+        "aria-expanded",
+        "true"
+      );
+    }
+
     backdrop.classList.remove("hidden");
 
-    // ให้ browser render ก่อนเริ่ม fade
-    requestAnimationFrame(() => {
+    setTimeout(() => {
+
       backdrop.classList.remove("opacity-0");
       backdrop.classList.add("opacity-100");
-    });
 
-    // ป้องกัน body scroll
-    document.body.classList.add("overflow-hidden");
-
-    // Focus เมนูแรก
-    const first = firstFocusable();
-    first?.focus();
-
-    // Keyboard events
-    document.addEventListener("keydown", onKeydown);
-    document.addEventListener("focus", trapFocus, true);
+    }, 10);
   }
 
-  // =========================
-  // Close Drawer
-  // =========================
 
   function closeDrawer() {
-    // Drawer: เลื่อนออก
-    drawer.classList.remove("translate-x-0");
-    drawer.classList.add("-translate-x-full");
 
-    drawer.setAttribute("aria-hidden", "true");
+    if (!navDrawer || !backdrop) return;
 
-    // Logo
-    toggle.setAttribute("aria-expanded", "false");
+    navDrawer.classList.remove("translate-x-0");
+    navDrawer.classList.add("-translate-x-full");
 
-    // Backdrop fade out
+    navDrawer.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    if (navToggle) {
+
+      navToggle.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+    }
+
     backdrop.classList.remove("opacity-100");
     backdrop.classList.add("opacity-0");
 
-    // รอ transition แล้วค่อย hidden
-    const onFadeOut = () => {
+    setTimeout(() => {
+
       backdrop.classList.add("hidden");
-      backdrop.removeEventListener("transitionend", onFadeOut);
-    };
 
-    backdrop.addEventListener("transitionend", onFadeOut);
-
-    // เปิด scroll กลับ
-    document.body.classList.remove("overflow-hidden");
-
-    // Remove events
-    document.removeEventListener("keydown", onKeydown);
-    document.removeEventListener("focus", trapFocus, true);
-
-    // คืน focus ให้โลโก้
-    lastFocused?.focus();
+    }, 300);
   }
 
-  // =========================
-  // Keyboard
-  // =========================
 
-  function onKeydown(e) {
-    // ESC = ปิด
-    if (e.key === "Escape") {
-      e.preventDefault();
-      closeDrawer();
-      return;
-    }
+  /* =========================================================
+     MOBILE MENU
+  ========================================================= */
 
-    // TAB = Focus Trap
-    if (e.key === "Tab" && drawer.classList.contains("translate-x-0")) {
-      const nodes = focusables();
+  function toggleMobileMenu() {
 
-      if (!nodes.length) return;
+    if (!mobileMenu) return;
 
-      const first = nodes[0];
-      const last = nodes[nodes.length - 1];
+    mobileMenu.classList.toggle("hidden");
+  }
 
-      // Shift + Tab จากตัวแรก
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
+
+  /* =========================================================
+     LOGO
+  ========================================================= */
+
+  if (navToggle) {
+
+    navToggle.addEventListener(
+      "click",
+      openDrawer
+    );
+
+
+    navToggle.addEventListener(
+      "keydown",
+      (event) => {
+
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          openDrawer();
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     CLOSE DRAWER
+  ========================================================= */
+
+  if (drawerClose) {
+
+    drawerClose.addEventListener(
+      "click",
+      closeDrawer
+    );
+
+  }
+
+
+  /* =========================================================
+     BACKDROP
+  ========================================================= */
+
+  if (backdrop) {
+
+    backdrop.addEventListener(
+      "click",
+      closeDrawer
+    );
+
+  }
+
+
+  /* =========================================================
+     MOBILE MENU BUTTON
+  ========================================================= */
+
+  if (mobileMenuButton) {
+
+    mobileMenuButton.addEventListener(
+      "click",
+      toggleMobileMenu
+    );
+
+  }
+
+
+  /* =========================================================
+     ESC
+  ========================================================= */
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (event.key === "Escape") {
+
+        closeDrawer();
+
+        if (mobileMenu) {
+          mobileMenu.classList.add("hidden");
+        }
+
       }
 
-      // Tab จากตัวสุดท้าย
-      else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
+    }
+  );
+
+
+  /* =========================================================
+     NAVIGATION
+  ========================================================= */
+
+  const links =
+    document.querySelectorAll(
+      "#navDrawer a, #bottomNav a, #mobileMenu a"
+    );
+
+
+  links.forEach((link) => {
+
+    link.addEventListener(
+      "click",
+      (event) => {
+
+        const href =
+          link.getAttribute("href");
+
+        if (!href) return;
+
+        /*
+          ไม่ยุ่งกับ external link
+        */
+
+        if (
+          href.startsWith("http://") ||
+          href.startsWith("https://") ||
+          href.startsWith("#")
+        ) {
+          return;
+        }
+
+
+        event.preventDefault();
+
+        navigateToPage(href);
+
+
       }
-    }
-  }
+    );
 
-  // =========================
-  // Focus Trap
-  // =========================
-
-  function trapFocus(e) {
-    if (!drawer.classList.contains("translate-x-0")) return;
-
-    if (!drawer.contains(e.target)) {
-      e.stopPropagation();
-      firstFocusable()?.focus();
-    }
-  }
-
-  // =========================
-  // Logo Click
-  // =========================
-
-  toggle.addEventListener("click", openDrawer);
-
-  // Enter / Space
-  toggle.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      openDrawer();
-    }
   });
 
-  // =========================
-  // Close Button
-  // =========================
 
-  closeBtn?.addEventListener("click", closeDrawer);
+  /* =========================================================
+     ACTIVE MENU
+  ========================================================= */
 
-  // =========================
-  // Click Backdrop
-  // =========================
+  setActivePage();
 
-  backdrop.addEventListener("click", closeDrawer);
-});
+}
+
+
+
+/* =========================================================
+   NAVIGATE
+========================================================= */
+
+function navigateToPage(href) {
+
+  const isLocalhost =
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1";
+
+
+  /*
+    เอา / ด้านหน้าออก
+  */
+
+  let page =
+    href.replace(/^\/+/, "");
+
+
+  /*
+    หน้าแรก
+  */
+
+  if (
+    page === "" ||
+    page === "index" ||
+    page === "index.html"
+  ) {
+
+    if (isLocalhost) {
+
+      window.location.href =
+        "/index.html";
+
+    } else {
+
+      window.location.href =
+        "/";
+
+    }
+
+    return;
+  }
+
+
+  /*
+    Localhost / Live Server
+
+    /education
+       ↓
+    /education.html
+  */
+
+  if (isLocalhost) {
+
+    if (!page.endsWith(".html")) {
+
+      page += ".html";
+
+    }
+
+    window.location.href =
+      "/" + page;
+
+    return;
+  }
+
+
+  /*
+    Netlify
+
+    /education.html
+       ↓
+    /education
+  */
+
+  page =
+    page.replace(/\.html$/, "");
+
+
+  window.location.href =
+    "/" + page;
+
+}
+
+
+
+/* =========================================================
+   ACTIVE PAGE
+========================================================= */
+
+function setActivePage() {
+
+  const links =
+    document.querySelectorAll(
+      "#navDrawer a, #bottomNav a, #mobileMenu a"
+    );
+
+
+  let currentPath =
+    window.location.pathname;
+
+
+  /*
+    ลบ /
+  */
+
+  currentPath =
+    currentPath.replace(/^\/+/, "");
+
+
+  /*
+    ลบ /
+    ท้าย URL
+  */
+
+  currentPath =
+    currentPath.replace(/\/+$/, "");
+
+
+  /*
+    ลบ .html
+  */
+
+  currentPath =
+    currentPath.replace(/\.html$/, "");
+
+
+  /*
+    หน้าแรก
+  */
+
+  if (
+    currentPath === "" ||
+    currentPath === "index"
+  ) {
+
+    currentPath = "index";
+
+  }
+
+
+  links.forEach((link) => {
+
+    const href =
+      link.getAttribute("href");
+
+    if (!href) return;
+
+
+    let page =
+      href.replace(/^\/+/, "");
+
+
+    page =
+      page.replace(/\.html$/, "");
+
+
+    if (page === "") {
+      page = "index";
+    }
+
+
+    /*
+      เอา class active เดิมออก
+    */
+
+    link.classList.remove(
+      "bg-gradient-to-r",
+      "from-green-600",
+      "to-teal-600",
+      "text-white",
+      "font-semibold",
+      "shadow-md",
+      "text-green-600"
+    );
+
+
+    /*
+      Drawer
+    */
+
+    if (
+      page === currentPath &&
+      link.closest("#navDrawer")
+    ) {
+
+      link.classList.add(
+        "bg-gradient-to-r",
+        "from-green-600",
+        "to-teal-600",
+        "text-white",
+        "font-semibold",
+        "shadow-md"
+      );
+
+    }
+
+
+    /*
+      Bottom Navigation
+    */
+
+    if (
+      page === currentPath &&
+      link.closest("#bottomNav")
+    ) {
+
+      link.classList.add(
+        "text-green-600"
+      );
+
+    }
+
+  });
+
+}
