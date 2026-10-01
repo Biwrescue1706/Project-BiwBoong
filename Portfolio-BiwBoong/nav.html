@@ -1,108 +1,74 @@
 <!-- ========================= TOP NAV ========================= -->
 <nav
   id="topNav"
-  class="sticky top-0 z-50 hidden bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-lg md:block"
+  class="sticky top-0 z-50 hidden bg-gradient-to-r from-green-700 to-teal-600 text-white shadow-md md:block"
 >
-  <div class="mx-auto flex max-w-6xl items-center px-4 py-4">
-    <!-- Logo -->
-    <img
-      src="/images/logo.png"
-      alt="logo"
-      id="navToggle"
-      role="button"
-      tabindex="0"
-      aria-controls="navDrawer"
-      aria-expanded="false"
-      class="mr-3 h-10 w-10 cursor-pointer rounded-full bg-white object-contain p-1 shadow-md transition duration-300 hover:scale-110"
-    />
-
-    <h1 class="text-xl font-bold sm:text-2xl">ประวัติส่วนตัว</h1>
-  </div>
-
-  <!-- ========================= DRAWER ========================= -->
   <div
-    id="navDrawer"
-    aria-hidden="true"
-    class="fixed left-0 top-0 z-[60] h-full w-80 max-w-[85vw] -translate-x-full bg-white text-gray-800 shadow-2xl transition-transform duration-300"
+    class="mx-auto flex min-h-[64px] max-w-7xl items-center justify-center px-3"
   >
-    <!-- Header -->
     <div
-      class="flex items-center justify-between bg-gradient-to-r from-green-600 to-teal-600 px-5 py-4 text-white"
+      class="flex w-full items-center justify-center gap-1 overflow-x-auto whitespace-nowrap"
     >
-      <span class="flex items-center text-lg font-bold">
-        <img
-          src="/images/logo.png"
-          alt="หน้าแรก"
-          class="mr-2 h-8 w-8 rounded-full bg-white object-contain p-1"
-        />
-
-        เมนู
-      </span>
-
-      <button
-        id="drawerClose"
-        type="button"
-        class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 text-xl transition hover:bg-white/30"
-        aria-label="ปิดเมนู"
-      >
-        ✕
-      </button>
-    </div>
-
-    <!-- Menu -->
-    <div class="flex flex-col gap-1 p-4">
+      <!-- หน้าหลัก -->
       <a
         href="/"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         ประวัติส่วนตัว
       </a>
 
+      <!-- การศึกษา -->
       <a
         href="/education"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         การศึกษา
       </a>
 
+      <!-- เกียรติบัตร -->
       <a
         href="/certificate"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         เกียรติบัตร
       </a>
 
+      <!-- กิจกรรม -->
       <a
         href="/hobbies"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         กิจกรรมยามว่าง
       </a>
 
+      <!-- ผลงาน -->
       <a
         href="/portfolio"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         ผลงาน
       </a>
 
+      <!-- ประวัติการทำงาน -->
       <a
         href="/work"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         ประวัติการทำงาน
       </a>
 
+      <!-- ติดต่อ -->
       <a
         href="/contact"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         ติดต่อฉัน
       </a>
 
+      <!-- ดาวน์โหลด -->
       <a
         href="/action"
-        class="drawer-link rounded-xl px-4 py-3 font-medium transition hover:bg-green-50 hover:text-green-600"
+        class="top-nav-item rounded-md px-3 py-3 text-sm font-medium transition hover:bg-black/10 hover:text-white lg:px-4"
       >
         ดาวน์โหลด
       </a>
@@ -116,13 +82,12 @@
   class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white shadow-[0_-4px_15px_rgba(0,0,0,0.12)] md:hidden"
 >
   <div class="mx-auto grid max-w-lg grid-cols-6 gap-1 px-2 py-2">
-    <!-- หน้าแรก -->
+    <!-- หน้าหลัก -->
     <a
       href="/"
       class="bottom-nav-item flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> ⌂ </span>
-
+      <span class="text-xl">⌂</span>
       <span class="mt-1 text-[10px] font-semibold"> หน้าหลัก </span>
     </a>
 
@@ -131,8 +96,7 @@
       href="/education"
       class="bottom-nav-item flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> 🎓 </span>
-
+      <span class="text-xl">🎓</span>
       <span class="mt-1 text-[10px] font-medium"> การศึกษา </span>
     </a>
 
@@ -141,18 +105,16 @@
       href="/certificate"
       class="bottom-nav-item flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> 🏆 </span>
-
+      <span class="text-xl">🏆</span>
       <span class="mt-1 text-[10px] font-medium"> เกียรติบัตร </span>
     </a>
 
-    <!-- กิจกรรมยามว่าง -->
+    <!-- กิจกรรม -->
     <a
       href="/hobbies"
       class="bottom-nav-item flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> 🎮 </span>
-
+      <span class="text-xl">🎮</span>
       <span class="mt-1 text-[10px] font-medium"> กิจกรรม </span>
     </a>
 
@@ -161,19 +123,17 @@
       href="/portfolio"
       class="bottom-nav-item flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> 💼 </span>
-
+      <span class="text-xl">💼</span>
       <span class="mt-1 text-[10px] font-medium"> ผลงาน </span>
     </a>
 
-    <!-- เมนู -->
+    <!-- เมนูเพิ่มเติม -->
     <button
       id="mobileMenuButton"
       type="button"
       class="flex flex-col items-center justify-center rounded-xl px-1 py-2 text-gray-600 transition hover:bg-green-50 hover:text-green-600"
     >
-      <span class="text-xl"> ☰ </span>
-
+      <span class="text-xl">☰</span>
       <span class="mt-1 text-[10px] font-medium"> เมนู </span>
     </button>
   </div>
@@ -185,7 +145,6 @@
   class="fixed bottom-[76px] left-2 right-2 z-50 hidden rounded-2xl bg-white p-3 shadow-2xl ring-1 ring-gray-200 md:hidden"
 >
   <div class="grid grid-cols-2 gap-2">
-    <!-- ประวัติการทำงาน -->
     <a
       href="/work"
       class="mobile-menu-link rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-600"
@@ -193,7 +152,6 @@
       ประวัติการทำงาน
     </a>
 
-    <!-- ติดต่อฉัน -->
     <a
       href="/contact"
       class="mobile-menu-link rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-600"
@@ -201,7 +159,6 @@
       ติดต่อฉัน
     </a>
 
-    <!-- ดาวน์โหลด -->
     <a
       href="/action"
       class="mobile-menu-link rounded-xl bg-gray-50 px-4 py-3 text-center font-medium text-gray-700 transition hover:bg-green-50 hover:text-green-600"
@@ -210,9 +167,3 @@
     </a>
   </div>
 </div>
-
-<!-- ========================= BACKDROP ========================= -->
-<div
-  id="backdrop"
-  class="fixed inset-0 z-40 hidden bg-black/50 opacity-0 backdrop-blur-sm transition-opacity duration-300"
-></div>
