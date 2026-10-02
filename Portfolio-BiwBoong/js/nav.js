@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     navContainer.innerHTML = html;
 
     setupNavbar();
-
   } catch (error) {
     console.error("Navbar Error:", error);
   }
@@ -33,161 +32,63 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function setupNavbar() {
 
-  const navToggle =
-    document.getElementById("navToggle");
-
-  const navDrawer =
-    document.getElementById("navDrawer");
-
-  const drawerClose =
-    document.getElementById("drawerClose");
-
-  const backdrop =
-    document.getElementById("backdrop");
-
   const mobileMenuButton =
     document.getElementById("mobileMenuButton");
 
   const mobileMenu =
     document.getElementById("mobileMenu");
 
-
-  /* =========================================================
-     DRAWER
-  ========================================================= */
-
-  function openDrawer() {
-
-    if (!navDrawer || !backdrop) return;
-
-    navDrawer.classList.remove("-translate-x-full");
-    navDrawer.classList.add("translate-x-0");
-
-    navDrawer.setAttribute(
-      "aria-hidden",
-      "false"
-    );
-
-    if (navToggle) {
-      navToggle.setAttribute(
-        "aria-expanded",
-        "true"
-      );
-    }
-
-    backdrop.classList.remove("hidden");
-
-    setTimeout(() => {
-
-      backdrop.classList.remove("opacity-0");
-      backdrop.classList.add("opacity-100");
-
-    }, 10);
-  }
-
-
-  function closeDrawer() {
-
-    if (!navDrawer || !backdrop) return;
-
-    navDrawer.classList.remove("translate-x-0");
-    navDrawer.classList.add("-translate-x-full");
-
-    navDrawer.setAttribute(
-      "aria-hidden",
-      "true"
-    );
-
-    if (navToggle) {
-
-      navToggle.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
-    }
-
-    backdrop.classList.remove("opacity-100");
-    backdrop.classList.add("opacity-0");
-
-    setTimeout(() => {
-
-      backdrop.classList.add("hidden");
-
-    }, 300);
-  }
+  const backdrop =
+    document.getElementById("backdrop");
 
 
   /* =========================================================
      MOBILE MENU
   ========================================================= */
 
+  function openMobileMenu() {
+
+    if (!mobileMenu) return;
+
+    mobileMenu.classList.remove("hidden");
+
+    if (backdrop) {
+      backdrop.classList.remove("hidden");
+
+      setTimeout(() => {
+        backdrop.classList.remove("opacity-0");
+        backdrop.classList.add("opacity-100");
+      }, 10);
+    }
+  }
+
+
+  function closeMobileMenu() {
+
+    if (!mobileMenu) return;
+
+    mobileMenu.classList.add("hidden");
+
+    if (backdrop) {
+      backdrop.classList.remove("opacity-100");
+      backdrop.classList.add("opacity-0");
+
+      setTimeout(() => {
+        backdrop.classList.add("hidden");
+      }, 300);
+    }
+  }
+
+
   function toggleMobileMenu() {
 
     if (!mobileMenu) return;
 
-    mobileMenu.classList.toggle("hidden");
-  }
-
-
-  /* =========================================================
-     LOGO
-  ========================================================= */
-
-  if (navToggle) {
-
-    navToggle.addEventListener(
-      "click",
-      openDrawer
-    );
-
-
-    navToggle.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          openDrawer();
-
-        }
-
-      }
-    );
-
-  }
-
-
-  /* =========================================================
-     CLOSE DRAWER
-  ========================================================= */
-
-  if (drawerClose) {
-
-    drawerClose.addEventListener(
-      "click",
-      closeDrawer
-    );
-
-  }
-
-
-  /* =========================================================
-     BACKDROP
-  ========================================================= */
-
-  if (backdrop) {
-
-    backdrop.addEventListener(
-      "click",
-      closeDrawer
-    );
-
+    if (mobileMenu.classList.contains("hidden")) {
+      openMobileMenu();
+    } else {
+      closeMobileMenu();
+    }
   }
 
 
@@ -196,12 +97,22 @@ function setupNavbar() {
   ========================================================= */
 
   if (mobileMenuButton) {
-
     mobileMenuButton.addEventListener(
       "click",
       toggleMobileMenu
     );
+  }
 
+
+  /* =========================================================
+     BACKDROP
+  ========================================================= */
+
+  if (backdrop) {
+    backdrop.addEventListener(
+      "click",
+      closeMobileMenu
+    );
   }
 
 
@@ -209,65 +120,59 @@ function setupNavbar() {
      ESC
   ========================================================= */
 
-  document.addEventListener(
-    "keydown",
-    (event) => {
+  document.addEventListener("keydown", (event) => {
 
-      if (event.key === "Escape") {
-
-        closeDrawer();
-
-        if (mobileMenu) {
-          mobileMenu.classList.add("hidden");
-        }
-
-      }
-
+    if (event.key === "Escape") {
+      closeMobileMenu();
     }
-  );
+
+  });
 
 
   /* =========================================================
      NAVIGATION
   ========================================================= */
 
-  const links =
-    document.querySelectorAll(
-      "#navDrawer a, #bottomNav a, #mobileMenu a"
-    );
+  const links = document.querySelectorAll(
+    "#topNav a, #bottomNav a, #mobileMenu a"
+  );
 
 
   links.forEach((link) => {
 
-    link.addEventListener(
-      "click",
-      (event) => {
+    link.addEventListener("click", (event) => {
 
-        const href =
-          link.getAttribute("href");
+      const href = link.getAttribute("href");
 
-        if (!href) return;
-
-        /*
-          ไม่ยุ่งกับ external link
-        */
-
-        if (
-          href.startsWith("http://") ||
-          href.startsWith("https://") ||
-          href.startsWith("#")
-        ) {
-          return;
-        }
+      if (!href) return;
 
 
-        event.preventDefault();
+      /*
+        ไม่ยุ่งกับ External Link
+      */
 
-        navigateToPage(href);
-
-
+      if (
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("#")
+      ) {
+        return;
       }
-    );
+
+
+      event.preventDefault();
+
+
+      /*
+        ปิด Mobile Menu ก่อนเปลี่ยนหน้า
+      */
+
+      closeMobileMenu();
+
+
+      navigateToPage(href);
+
+    });
 
   });
 
@@ -279,7 +184,6 @@ function setupNavbar() {
   setActivePage();
 
 }
-
 
 
 /* =========================================================
@@ -297,8 +201,7 @@ function navigateToPage(href) {
     เอา / ด้านหน้าออก
   */
 
-  let page =
-    href.replace(/^\/+/, "");
+  let page = href.replace(/^\/+/, "");
 
 
   /*
@@ -313,13 +216,11 @@ function navigateToPage(href) {
 
     if (isLocalhost) {
 
-      window.location.href =
-        "/index.html";
+      window.location.href = "/index.html";
 
     } else {
 
-      window.location.href =
-        "/";
+      window.location.href = "/";
 
     }
 
@@ -331,20 +232,17 @@ function navigateToPage(href) {
     Localhost / Live Server
 
     /education
-       ↓
+         ↓
     /education.html
   */
 
   if (isLocalhost) {
 
     if (!page.endsWith(".html")) {
-
       page += ".html";
-
     }
 
-    window.location.href =
-      "/" + page;
+    window.location.href = "/" + page;
 
     return;
   }
@@ -354,19 +252,15 @@ function navigateToPage(href) {
     Netlify
 
     /education.html
-       ↓
+         ↓
     /education
   */
 
-  page =
-    page.replace(/\.html$/, "");
+  page = page.replace(/\.html$/, "");
 
-
-  window.location.href =
-    "/" + page;
+  window.location.href = "/" + page;
 
 }
-
 
 
 /* =========================================================
@@ -375,39 +269,22 @@ function navigateToPage(href) {
 
 function setActivePage() {
 
-  const links =
-    document.querySelectorAll(
-      "#navDrawer a, #bottomNav a, #mobileMenu a"
-    );
-
-
-  let currentPath =
-    window.location.pathname;
+  const links = document.querySelectorAll(
+    "#topNav a, #bottomNav a, #mobileMenu a"
+  );
 
 
   /*
-    ลบ /
+    URL ปัจจุบัน
   */
 
-  currentPath =
-    currentPath.replace(/^\/+/, "");
+  let currentPath = window.location.pathname;
 
 
-  /*
-    ลบ /
-    ท้าย URL
-  */
-
-  currentPath =
-    currentPath.replace(/\/+$/, "");
-
-
-  /*
-    ลบ .html
-  */
-
-  currentPath =
-    currentPath.replace(/\.html$/, "");
+  currentPath = currentPath
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/\.html$/, "");
 
 
   /*
@@ -418,26 +295,24 @@ function setActivePage() {
     currentPath === "" ||
     currentPath === "index"
   ) {
-
     currentPath = "index";
-
   }
 
 
   links.forEach((link) => {
 
-    const href =
-      link.getAttribute("href");
+    const href = link.getAttribute("href");
 
     if (!href) return;
 
 
-    let page =
-      href.replace(/^\/+/, "");
+    /*
+      แปลง href ให้เป็นชื่อหน้า
+    */
 
-
-    page =
-      page.replace(/\.html$/, "");
+    let page = href
+      .replace(/^\/+/, "")
+      .replace(/\.html$/, "");
 
 
     if (page === "") {
@@ -446,7 +321,7 @@ function setActivePage() {
 
 
     /*
-      เอา class active เดิมออก
+      ล้าง Active เดิม
     */
 
     link.classList.remove(
@@ -460,13 +335,13 @@ function setActivePage() {
     );
 
 
-    /*
-      Drawer
-    */
+    /* =====================================================
+       TOP NAV
+    ===================================================== */
 
     if (
       page === currentPath &&
-      link.closest("#navDrawer")
+      link.classList.contains("top-nav-item")
     ) {
 
       link.classList.add(
@@ -481,17 +356,38 @@ function setActivePage() {
     }
 
 
-    /*
-      Bottom Navigation
-    */
+    /* =====================================================
+       MOBILE BOTTOM NAV
+    ===================================================== */
 
     if (
       page === currentPath &&
-      link.closest("#bottomNav")
+      link.classList.contains("bottom-nav-item")
     ) {
 
       link.classList.add(
         "text-green-600"
+      );
+
+    }
+
+
+    /* =====================================================
+       MOBILE MENU
+    ===================================================== */
+
+    if (
+      page === currentPath &&
+      link.classList.contains("mobile-menu-link")
+    ) {
+
+      link.classList.add(
+        "bg-gradient-to-r",
+        "from-green-600",
+        "to-teal-600",
+        "text-white",
+        "font-semibold",
+        "shadow-md"
       );
 
     }
