@@ -28,13 +28,7 @@ const menuItems = [
         shortLabel: 'ประวัติยืม',
         path: '/borrow-history',
         icon: '◷',
-    },
-    {
-        label: 'ประวัติการคืน',
-        shortLabel: 'ประวัติคืน',
-        path: '/return',
-        icon: '↶',
-    },
+    }
 ];
 
 function getDisplayName(user) {
@@ -243,8 +237,8 @@ export default function Navbar() {
                                 onClick={() => goTo(item.path)}
                                 aria-current={active ? 'page' : undefined}
                                 className={`flex min-w-0 flex-col items-center justify-center gap-1 transition ${active
-                                        ? 'text-emerald-700'
-                                        : 'text-slate-500 hover:text-emerald-700'
+                                    ? 'text-emerald-700'
+                                    : 'text-slate-500 hover:text-emerald-700'
                                     }`}
                             >
                                 <span
@@ -359,8 +353,8 @@ export default function Navbar() {
                                     onClick={() => goTo(item.path)}
                                     aria-current={active ? 'page' : undefined}
                                     className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left font-medium transition ${active
-                                            ? 'bg-emerald-400 text-[#12352f] shadow-sm'
-                                            : 'text-emerald-50 hover:bg-white/10'
+                                        ? 'bg-emerald-400 text-[#12352f] shadow-sm'
+                                        : 'text-emerald-50 hover:bg-white/10'
                                         }`}
                                 >
                                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-xl">

@@ -451,7 +451,7 @@ export default function Dashboard() {
                         <button
                             type="button"
                             onClick={handleAdd}
-                            className="rounded-xl bg-green-700 px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-green-800"
+                            className="rounded-2xl bg-green-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-green-800"
                         >
                             <Plus size={20} /> เพิ่มอุปกรณ์
                         </button>   

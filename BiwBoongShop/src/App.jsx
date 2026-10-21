@@ -12,6 +12,9 @@ import Dashboard from './pages/Dashboard.jsx';
 import Borrow from './pages/Borrow.jsx';
 import { fetchUserProfile } from './services/auth.js';
 import Profile from './pages/Profile.jsx';
+import BorrowHistory from './pages/BorrowHistory.jsx';
+import ForgotPassword from './pages/ForgotPassword.jsx';
+import ResetPassword from './pages/ResetPassword.jsx';
 
 function AuthGuard({ children, guestOnly = false }) {
   const [status, setStatus] = useState('checking');
@@ -107,12 +110,31 @@ function AppRoutes() {
       />
 
       <Route
+        path="/borrow-history"
+        element={
+          <AuthGuard>
+            <BorrowHistory />
+          </AuthGuard>
+        }
+      />
+
+      <Route
         path="/profile"
         element={
           <AuthGuard>
             <Profile />
           </AuthGuard>
         }
+      />
+
+      <Route
+        path="/forgot-password"
+        element={<ForgotPassword />}
+      />
+
+      <Route
+        path="/reset-password"
+        element={<ResetPassword />}
       />
 
       <Route
