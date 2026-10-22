@@ -89,7 +89,6 @@ function CalendarIcon() {
 export default function Home() {
     return (
         <div className="relative min-h-screen w-full min-w-0 overflow-x-clip bg-[#080b19] font-sarabun text-white">
-            <Navbar />
 
             {/* Ambient background */}
             <div
