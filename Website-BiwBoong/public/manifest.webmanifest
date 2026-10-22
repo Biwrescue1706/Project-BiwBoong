@@ -1,0 +1,12 @@
+
+{
+  "name": "BiwBong",
+  "short_name": "BiwBong",
+  "description": "ศูนย์รวมลิงก์และตารางเรียนของ BiwBong",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f9fafb",
+  "theme_color": "#16a34a",
+  "icons": []
+}
