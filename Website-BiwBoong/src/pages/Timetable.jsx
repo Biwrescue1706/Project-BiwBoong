@@ -133,7 +133,6 @@ function NoticeIcon() {
 export default function Timetable() {
     return (
         <div className="relative isolate min-h-screen w-full min-w-0 overflow-x-clip bg-[#080b19] font-sarabun text-slate-100">
-            <Navbar />
 
             {/* Aurora Background */}
             <div
@@ -311,16 +310,6 @@ export default function Timetable() {
 
             </main>
 
-            {/* Footer */}
-            <footer className="mt-8 hidden border-t border-indigo-100 bg-white px-4 py-6 text-center sm:block">
-                <p className="text-sm font-medium text-slate-400">
-                    © 2025 - 2026 เว็บไซต์ของฉัน สงวนลิขสิทธิ์.
-                </p>
-
-                <p className="mt-1 text-xs font-medium tracking-wide text-slate-500">
-                    PERSONAL ACADEMIC SPACE · BIWBONG
-                </p>
-            </footer>
         </div>
     );
 }

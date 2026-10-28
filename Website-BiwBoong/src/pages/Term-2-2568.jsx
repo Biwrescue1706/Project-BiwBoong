@@ -1,3 +1,4 @@
+//src/pages/Term-2-2568.jsx
 
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,8 +21,10 @@ const days = [
                 title: "เครือข่ายอินเทอร์เน็ตของอุปกรณ์อัจฉริยะ",
                 start: "09:00",
                 end: "13:00",
-                room: "ตามข้อมูลในตารางเรียนต้นฉบับ",
-                teacher: "ตามข้อมูลในตารางเรียนต้นฉบับ",
+                room: "S.001 R.592",
+                teacher: "ดร.เด่นเดช",
+                startSlot: 1,
+                span: 8,
                 color: "violet",
             },
         ],
@@ -35,8 +38,10 @@ const days = [
                 title: "ความมั่นคงในระบบสารสนเทศ",
                 start: "09:00",
                 end: "12:00",
-                room: "ตามข้อมูลในตารางเรียนต้นฉบับ",
-                teacher: "ตามข้อมูลในตารางเรียนต้นฉบับ",
+                room: "S.001 R.51104 ",
+                teacher: "ผศ.ดร.ชัยพร",
+                startSlot: 1,
+                span: 6,
                 color: "cyan",
             },
         ],
@@ -50,12 +55,38 @@ const days = [
                 title: "โครงงานวิศวกรรมคอมพิวเตอร์ 2",
                 start: "13:30",
                 end: "16:30",
-                room: "ตามข้อมูลในตารางเรียนต้นฉบับ",
-                teacher: "ตามข้อมูลในตารางเรียนต้นฉบับ",
+                room: "S.312 R.585",
+                teacher: "อ.สนายุ",
+                startSlot: 10,
+                span: 6,
                 color: "emerald",
             },
         ],
     },
+];
+
+const timeSlots = [
+    "09:00",
+    "09:30",
+    "10:00",
+    "10:30",
+    "11:00",
+    "11:30",
+    "12:00",
+    "12:30",
+    "13:00",
+    "13:30",
+    "14:00",
+    "14:30",
+    "15:00",
+    "15:30",
+    "16:00",
+];
+
+const teachers = [
+    "ดร.เด่นเดช รักษ์รัตน์ตรัย",
+    "ผศ.ดร.ชัยพร เขมะภาตะพันธ์",
+    "อ.สนายุ จินตนาวรรณกุล",
 ];
 
 const colorStyles = {
@@ -101,7 +132,9 @@ function CourseCard({ course }) {
                 <p className="flex items-start gap-2">
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
                     <span>
-                        <span className="text-slate-400">ห้องเรียน: </span>
+                        <span className="text-slate-400">
+                            ห้องเรียน:{" "}
+                        </span>
                         {course.room}
                     </span>
                 </p>
@@ -109,12 +142,152 @@ function CourseCard({ course }) {
                 <p className="flex items-start gap-2">
                     <GraduationCap className="mt-0.5 h-4 w-4 shrink-0 text-slate-400" />
                     <span>
-                        <span className="text-slate-400">อาจารย์: </span>
+                        <span className="text-slate-400">
+                            อาจารย์:{" "}
+                        </span>
                         {course.teacher}
                     </span>
                 </p>
             </div>
         </article>
+    );
+}
+
+/* ตารางเรียนแบบ Grid สำหรับแท็บเล็ตและคอมพิวเตอร์ */
+function DesktopSchedule() {
+    return (
+        <section className="mx-auto mt-8 w-full max-w-[1200px]">
+            <div className="mb-4">
+                <h2 className="text-xl font-extrabold text-white">
+                    ตารางเรียนรายสัปดาห์
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-400">
+                    ภาคเรียนที่ 2 ปีการศึกษา 2568
+                </p>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/[0.025] p-2 shadow-xl sm:p-3">
+                <div className="min-w-[760px]">
+                    {/* หัวตารางเวลา */}
+                    <div className="grid grid-cols-[48px_repeat(15,minmax(0,1fr))] gap-1 border-b border-dashed border-white/10 p-1">
+                        <div className="flex min-h-10 items-center justify-center rounded-md bg-emerald-300/10 text-[10px] font-bold text-emerald-200">
+                            วัน
+                        </div>
+
+                        {timeSlots.map((time, index) => (
+                            <div
+                                key={time}
+                                className="flex min-h-10 flex-col items-center justify-center rounded-md bg-cyan-300/[0.06] px-0.5 text-center text-[9px] font-semibold text-slate-300 sm:text-[10px]"
+                            >
+                                <span>{time}</span>
+
+                                <span className="text-slate-500">
+                                    {timeSlots[index + 1] || "16:30"}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* แถวรายวัน */}
+                    {days.map((day) => (
+                        <div
+                            key={day.short}
+                            className="grid min-h-[100px] grid-cols-[48px_repeat(15,minmax(0,1fr))] gap-1 border-b border-dashed border-white/10 p-1 last:border-b-0"
+                        >
+                            <div className="flex items-center justify-center rounded-md bg-emerald-300/10 text-xs font-extrabold text-emerald-200">
+                                {day.short}
+                            </div>
+
+                            {day.courses.map((course) => {
+                                const color = colorStyles[course.color];
+
+                                return (
+                                    <article
+                                        key={`${day.short}-${course.code}`}
+                                        style={{
+                                            gridColumn: `${course.startSlot + 1} / span ${course.span}`,
+                                            gridRow: "1",
+                                        }}
+                                        className={`min-w-0 self-stretch overflow-hidden rounded-md border border-white/10 border-l-2 ${color.card} p-1.5 shadow-sm sm:p-2`}
+                                    >
+                                        <span
+                                            className={`inline-block max-w-full truncate rounded px-1 py-0.5 text-[9px] font-extrabold sm:text-[10px] ${color.badge}`}
+                                        >
+                                            {course.code}
+                                        </span>
+
+                                        <h3 className="mt-1 break-words text-[10px] font-bold leading-snug text-white sm:text-xs">
+                                            {course.title}
+                                        </h3>
+
+                                        <p className="mt-1 break-words text-[9px] leading-relaxed text-slate-400 sm:text-[10px]">
+                                            เวลา : {course.start}–{course.end} น.
+                                        </p>
+
+                                        <p className="mt-1 break-words text-[9px] leading-relaxed text-slate-400 sm:text-[10px]">
+                                            ห้องเรียน : {course.room}
+                                        </p>
+
+                                        <p className="mt-1 break-words text-[9px] leading-relaxed text-slate-400 sm:text-[10px]">
+                                            อาจารย์ : {course.teacher}
+                                        </p>
+                                    </article>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+/* ตารางเรียนแบบการ์ดสำหรับมือถือ */
+function MobileSchedule() {
+    return (
+        <section className="mx-auto mt-8 max-w-[1200px]">
+            <div className="mb-5 rounded-2xl border border-white/10 bg-white/[0.035] p-4">
+                <h2 className="font-bold text-cyan-200">
+                    ตารางเรียนรายสัปดาห์
+                </h2>
+
+                <p className="mt-1 text-sm text-slate-400">
+                    ภาคเรียนที่ 2 ปีการศึกษา 2568
+                </p>
+            </div>
+
+            <div className="space-y-6">
+                {days.map((day) => (
+                    <section key={day.short}>
+                        <div className="mb-3 flex items-center gap-3">
+                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-300/20 bg-emerald-300/10 font-bold text-emerald-200">
+                                {day.short}
+                            </div>
+
+                            <div>
+                                <h3 className="font-bold text-white">
+                                    {day.day}
+                                </h3>
+
+                                <p className="text-xs text-slate-400">
+                                    {day.courses.length} รายวิชา
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3">
+                            {day.courses.map((course) => (
+                                <CourseCard
+                                    key={`${day.short}-${course.code}`}
+                                    course={course}
+                                />
+                            ))}
+                        </div>
+                    </section>
+                ))}
+            </div>
+        </section>
     );
 }
 
@@ -153,7 +326,7 @@ function StudentInformation() {
                     </p>
 
                     <p className="mt-1 text-[11px] text-slate-400">
-                        ผู้จัดทำตารางเรียน
+                        ๑๑ มกราคม ๒๕๖9
                     </p>
                 </div>
             </div>
@@ -181,10 +354,12 @@ export default function Term2_2568() {
                 className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
             >
                 <div className="absolute -left-40 top-20 h-96 w-96 rounded-full bg-violet-600/15 blur-[120px]" />
+
                 <div className="absolute -right-40 top-1/3 h-96 w-96 rounded-full bg-cyan-400/10 blur-[120px]" />
             </div>
 
             <div className="mx-auto w-full max-w-[1200px]">
+                {/* Back button */}
                 <button
                     type="button"
                     onClick={() => navigate(-1)}
@@ -194,7 +369,7 @@ export default function Term2_2568() {
                     ย้อนกลับ
                 </button>
 
-                {/* Dashboard Header */}
+                {/* Header */}
                 <section>
                     <div className="relative isolate overflow-hidden rounded-[30px] bg-gradient-to-br from-[#30216f] via-[#4438a7] to-[#6555eb] p-6 shadow-2xl shadow-violet-950/20 sm:p-8 lg:p-10">
                         <div
@@ -223,8 +398,9 @@ export default function Term2_2568() {
                             </h1>
 
                             <p className="mt-4 max-w-2xl text-sm leading-7 text-indigo-100/90 sm:text-base">
-                                ตรวจสอบตารางเรียนรายสัปดาห์ พร้อมรายละเอียดรายวิชา
-                                เวลาเรียน และข้อมูลห้องเรียน
+                                ตรวจสอบตารางเรียนรายสัปดาห์
+                                พร้อมรายละเอียดรายวิชา เวลาเรียน
+                                และข้อมูลห้องเรียน
                             </p>
 
                             <div className="mt-6 flex flex-wrap gap-2">
@@ -247,7 +423,10 @@ export default function Term2_2568() {
                             </div>
 
                             <div>
-                                <p className="text-xs text-slate-500">รายวิชาทั้งหมด</p>
+                                <p className="text-xs text-slate-500">
+                                    รายวิชาทั้งหมด
+                                </p>
+
                                 <p className="mt-1 text-2xl font-extrabold">
                                     {totalCourses}
                                     <span className="ml-1 text-sm font-medium text-slate-500">
@@ -263,7 +442,10 @@ export default function Term2_2568() {
                             </div>
 
                             <div>
-                                <p className="text-xs text-slate-500">วันที่มีเรียน</p>
+                                <p className="text-xs text-slate-500">
+                                    วันที่มีเรียน
+                                </p>
+
                                 <p className="mt-1 text-2xl font-extrabold">
                                     {studyDays}
                                     <span className="ml-1 text-sm font-medium text-slate-500">
@@ -279,7 +461,10 @@ export default function Term2_2568() {
                             </div>
 
                             <div>
-                                <p className="text-xs text-slate-500">ระยะเวลาภาคเรียน</p>
+                                <p className="text-xs text-slate-500">
+                                    ระยะเวลาภาคเรียน
+                                </p>
+
                                 <p className="mt-1 text-sm font-extrabold sm:text-base">
                                     12 ม.ค. – 10 พ.ค. 2569
                                 </p>
@@ -287,7 +472,7 @@ export default function Term2_2568() {
                         </div>
                     </div>
 
-                    {/* Faculty Information */}
+                    {/* Faculty information */}
                     <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-white to-cyan-50 p-5 text-slate-900 shadow-lg shadow-black/10 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                         <div className="flex min-w-0 items-start gap-3">
                             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white shadow-lg">
@@ -312,50 +497,46 @@ export default function Term2_2568() {
                     </div>
                 </section>
 
-                {/* Weekly Timetable */}
-                <section className="mt-8">
-                    <div className="mb-5">
-                        <h2 className="text-xl font-extrabold text-white">
-                            ตารางเรียนรายสัปดาห์
-                        </h2>
+                {/* ตารางเรียน: Grid สำหรับแท็บเล็ตและจอใหญ่ */}
+                <div className="hidden min-[768px]:block">
+                    <DesktopSchedule />
+                </div>
 
-                        <p className="mt-1 text-sm text-slate-400">
-                            ภาคเรียนที่ 2 ปีการศึกษา 2568
-                        </p>
-                    </div>
+                {/* ตารางเรียน: การ์ดสำหรับมือถือ */}
+                <div className="min-[768px]:hidden">
+                    <MobileSchedule />
+                </div>
 
-                    <div className="space-y-7">
-                        {days.map((day) => (
-                            <section key={day.short}>
-                                <div className="mb-3 flex items-center gap-3">
-                                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-300/20 bg-emerald-300/10 font-bold text-emerald-200">
-                                        {day.short}
-                                    </div>
+                                {/* Teacher list */}
+                <section className="mx-auto mt-6 max-w-[1200px] rounded-2xl border border-white/10 bg-white/[0.045] p-5 shadow-lg shadow-black/10 sm:p-6">
+                    <div className="flex items-start gap-3">
+                        <div className="rounded-xl bg-cyan-300/10 p-2.5 text-cyan-200">
+                            <GraduationCap className="h-5 w-5" />
+                        </div>
 
-                                    <div>
-                                        <h3 className="font-bold text-white">{day.day}</h3>
-                                        <p className="text-sm text-slate-400">
-                                            {day.courses.length} รายวิชา
-                                        </p>
-                                    </div>
-                                </div>
+                        <div className="min-w-0">
+                            <h2 className="font-bold text-white">
+                                อาจารย์ผู้สอน
+                            </h2>
 
-                                <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                                    {day.courses.map((course) => (
-                                        <CourseCard
-                                            key={`${day.short}-${course.code}`}
-                                            course={course}
-                                        />
-                                    ))}
-                                </div>
-                            </section>
-                        ))}
+                            <div className="mt-3 flex flex-wrap gap-2">
+                                {teachers.map((teacher) => (
+                                    <span
+                                        key={teacher}
+                                        className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-300"
+                                    >
+                                        {teacher}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                {/* Student Information */}
+                {/* Student information */}
                 <StudentInformation />
 
+                {/* Link to current timetable */}
                 <div className="mt-3 text-center">
                     <button
                         type="button"
@@ -367,17 +548,6 @@ export default function Term2_2568() {
                     </button>
                 </div>
 
-                {/* Footer */}
-                <footer className="mt-8 hidden border-t border-indigo-100 bg-white px-4 py-6 text-center sm:block">
-                    <p className="text-xs font-medium text-slate-400 sm:text-sm">
-                        © 2025 - 2026 เว็บไซต์ของฉัน สงวนลิขสิทธิ์.
-                    </p>
-
-                    <p className="mt-1 text-[10px] text-slate-300">
-                        DESIGNED FOR COMPUTER ENGINEERING STUDENT
-                    </p>
-                </footer>
-                
             </div>
         </main>
     );

@@ -391,15 +391,6 @@ export default function Term1_2566() {
                     </button>
                 </div>
 
-                <footer className="mt-8 hidden border-t border-indigo-100 bg-white px-4 py-6 text-center sm:block">
-                    <p className="text-xs font-medium text-slate-400 sm:text-sm">
-                        © 2025 - 2026 เว็บไซต์ของฉัน สงวนลิขสิทธิ์.
-                    </p>
-
-                    <p className="mt-1 text-[10px] text-slate-300">
-                        DESIGNED FOR COMPUTER ENGINEERING STUDENT
-                    </p>
-                </footer>
             </div>
         </main>
     );
