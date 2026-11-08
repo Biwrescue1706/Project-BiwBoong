@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import Swal from 'sweetalert2';
 import {
@@ -13,6 +12,8 @@ import {
     ShieldCheck,
     ArrowUpRight,
     X,
+    LockKeyhole,
+    User,
     CircleUserRound,
 } from 'lucide-react';
 
@@ -48,6 +49,24 @@ function escapeHTML(value) {
         "'": '&#39;',
     })[char]);
 }
+
+const inputClass = `
+    swal2-input !m-0 !mt-1 !h-11 !w-full !max-w-none
+    !rounded-xl !border !border-slate-200 !bg-slate-50
+    !px-3 !text-sm !text-slate-700 !shadow-none
+    placeholder:!text-slate-400
+    focus:!border-emerald-400 focus:!bg-white
+    focus:!ring-4 focus:!ring-emerald-50
+`;
+
+const popupClass = {
+    popup: '!w-[calc(100%-24px)] !max-w-[460px] !rounded-3xl !p-5 !shadow-2xl sm:!p-7',
+    title: '!mb-1 !text-xl !font-bold !text-slate-800',
+    htmlContainer: '!m-0 !overflow-visible !text-left',
+    actions: '!mt-6 !w-full !flex-row !gap-2',
+    confirmButton: '!m-0 !rounded-xl !bg-emerald-600 !px-5 !py-3 !text-sm !font-semibold !text-white !shadow-none hover:!bg-emerald-700 focus:!ring-4 focus:!ring-emerald-100',
+    cancelButton: '!m-0 !rounded-xl !bg-slate-100 !px-5 !py-3 !text-sm !font-semibold !text-slate-600 !shadow-none hover:!bg-slate-200',
+};
 
 export default function Profile() {
     const [users, setUsers] = useState([]);
@@ -92,58 +111,98 @@ export default function Profile() {
         const result = await Swal.fire({
             title: 'เพิ่มสมาชิกใหม่',
             html: `
-                <div style="text-align:left;margin-top:15px;">
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        Username
-                    </label>
-                    <input
-                        id="reg-username"
-                        class="swal2-input"
-                        placeholder="กำหนด Username"
-                        autocomplete="off"
-                        style="box-sizing:border-box;width:100%;margin:0 0 17px;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
+                <div class="mb-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="10" cy="7" r="4"/>
+                                <line x1="19" y1="8" x2="19" y2="14"/>
+                                <line x1="22" y1="11" x2="16" y2="11"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-emerald-900">สร้างบัญชีสมาชิก</p>
+                            <p class="mt-0.5 text-xs text-emerald-700">กรอกข้อมูลเพื่อเพิ่มสมาชิกเข้าสู่ระบบ</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        ชื่อจริง
-                    </label>
-                    <input
-                        id="reg-name"
-                        class="swal2-input"
-                        placeholder="กรอกชื่อจริง"
-                        autocomplete="name"
-                        style="box-sizing:border-box;width:100%;margin:0 0 17px;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label for="reg-username" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="5"/>
+                                    <path d="M20 21a8 8 0 0 0-16 0"/>
+                                </svg>
+                            </span>
+                            <input id="reg-username" class="${inputClass} !pl-10" placeholder="กำหนด Username" autocomplete="off" />
+                        </div>
+                    </div>
 
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        รหัสผ่าน
-                    </label>
-                    <input
-                        id="reg-password"
-                        type="password"
-                        class="swal2-input"
-                        placeholder="กำหนดรหัสผ่าน"
-                        autocomplete="new-password"
-                        style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
+                    <div>
+                        <label for="reg-name" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            ชื่อสมาชิก <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <input id="reg-name" class="${inputClass} !pl-10" placeholder="กรอกชื่อจริง" autocomplete="name" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="reg-password" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            รหัสผ่าน <span class="text-red-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                            </span>
+                            <input id="reg-password" type="password" class="${inputClass} !pl-10" placeholder="กำหนดรหัสผ่าน" autocomplete="new-password" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2.5">
+                        <span class="mt-0.5 text-amber-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 8v4m0 4h.01"/>
+                            </svg>
+                        </span>
+                        <p class="text-[11px] leading-relaxed text-amber-800">
+                            กรุณาตรวจสอบข้อมูลให้ถูกต้องก่อนกดเพิ่มสมาชิก
+                        </p>
+                    </div>
                 </div>
             `,
-            width: '430px',
-            padding: '28px',
+            width: '460px',
+            padding: '24px',
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'เพิ่มสมาชิก',
             cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#059669',
-            cancelButtonColor: '#64748b',
+            buttonsStyling: false,
+            customClass: popupClass,
             reverseButtons: true,
             didOpen: () => {
                 document.getElementById('reg-username')?.focus();
             },
             preConfirm: () => {
-                const username = document.getElementById('reg-username').value.trim();
-                const name = document.getElementById('reg-name').value.trim();
-                const password = document.getElementById('reg-password').value;
+                const username = document.getElementById('reg-username')?.value.trim();
+                const name = document.getElementById('reg-name')?.value.trim();
+                const password = document.getElementById('reg-password')?.value;
 
                 if (!username || !name || !password) {
                     Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบทุกช่อง');
@@ -185,60 +244,78 @@ export default function Profile() {
         const result = await Swal.fire({
             title: 'แก้ไขข้อมูลสมาชิก',
             html: `
-                <div style="text-align:left;margin-top:15px;">
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        Username
-                    </label>
-                    <input
-                        id="edit-username"
-                        class="swal2-input"
-                        autocomplete="off"
-                        style="box-sizing:border-box;width:100%;margin:0 0 17px;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
+                <div class="mb-5 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-blue-900">แก้ไขบัญชีสมาชิก</p>
+                            <p class="mt-0.5 truncate text-xs text-blue-700">@${escapeHTML(oldUsername)}</p>
+                        </div>
+                    </div>
+                </div>
 
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        ชื่อจริง
-                    </label>
-                    <input
-                        id="edit-name"
-                        class="swal2-input"
-                        autocomplete="name"
-                        style="box-sizing:border-box;width:100%;margin:0 0 17px;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label for="edit-username" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <input id="edit-username" class="${inputClass}" autocomplete="off" />
+                    </div>
 
-                    <label style="display:block;margin-bottom:7px;font-size:13px;font-weight:600;color:#475569;">
-                        รหัสผ่านใหม่
-                    </label>
-                    <input
-                        id="edit-password"
-                        type="password"
-                        class="swal2-input"
-                        placeholder="เว้นว่างหากไม่ต้องการเปลี่ยน"
-                        autocomplete="new-password"
-                        style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:14px;box-shadow:none;"
-                    />
-                    <p style="margin-top:8px;font-size:11px;color:#94a3b8;">
-                        หากไม่ต้องการเปลี่ยนรหัสผ่าน สามารถเว้นว่างไว้ได้
-                    </p>
+                    <div>
+                        <label for="edit-name" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            ชื่อสมาชิก <span class="text-red-500">*</span>
+                        </label>
+                        <input id="edit-name" class="${inputClass}" autocomplete="name" />
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4">
+                        <label for="edit-password" class="mb-1.5 block text-xs font-semibold text-slate-600">
+                            รหัสผ่านใหม่
+                        </label>
+                        <input id="edit-password" type="password" class="${inputClass}" placeholder="เว้นว่างหากไม่ต้องการเปลี่ยน" autocomplete="new-password" />
+                        <p class="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 8v4m0 4h.01"/>
+                            </svg>
+                            หากไม่เปลี่ยนรหัสผ่าน สามารถเว้นช่องนี้ไว้ได้
+                        </p>
+                    </div>
+
+                    <div class="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5">
+                        <p class="text-[11px] leading-relaxed text-blue-700">
+                            ข้อมูลเดิมจะแสดงในช่องกรอก สามารถแก้ไขเฉพาะส่วนที่ต้องการได้
+                        </p>
+                    </div>
                 </div>
             `,
-            width: '430px',
-            padding: '28px',
-            didOpen: () => {
-                document.getElementById('edit-username').value = oldUsername;
-                document.getElementById('edit-name').value = oldName;
-            },
+            width: '460px',
+            padding: '24px',
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'บันทึกการแก้ไข',
             cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#059669',
-            cancelButtonColor: '#64748b',
+            buttonsStyling: false,
+            customClass: {
+                ...popupClass,
+                confirmButton: '!m-0 !rounded-xl !bg-blue-600 !px-5 !py-3 !text-sm !font-semibold !text-white !shadow-none hover:!bg-blue-700 focus:!ring-4 focus:!ring-blue-100',
+            },
             reverseButtons: true,
+            didOpen: () => {
+                document.getElementById('edit-username').value = oldUsername;
+                document.getElementById('edit-name').value = oldName;
+                document.getElementById('edit-username')?.focus();
+            },
             preConfirm: () => {
-                const username = document.getElementById('edit-username').value.trim();
-                const name = document.getElementById('edit-name').value.trim();
-                const password = document.getElementById('edit-password').value;
+                const username = document.getElementById('edit-username')?.value.trim();
+                const name = document.getElementById('edit-name')?.value.trim();
+                const password = document.getElementById('edit-password')?.value;
 
                 if (!username || !name) {
                     Swal.showValidationMessage('กรุณากรอก Username และชื่อให้ครบ');
@@ -295,21 +372,29 @@ export default function Profile() {
         const result = await Swal.fire({
             title: 'ยืนยันการลบสมาชิก?',
             html: `
-                <div style="padding:10px 0;">
-                    <div style="width:60px;height:60px;margin:0 auto 15px;border-radius:16px;background:#fff1f0;display:flex;align-items:center;justify-content:center;color:#dc5252;font-size:30px;">
-                        !
+                <div class="py-2">
+                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 6h18"/>
+                            <path d="M8 6V4h8v2"/>
+                            <path d="m19 6-1 14H6L5 6"/>
+                            <path d="M10 11v5m4-5v5"/>
+                        </svg>
                     </div>
-                    <p style="font-size:14px;color:#64748b;margin-bottom:12px;">
+                    <p class="mb-3 text-sm text-slate-500">
                         คุณต้องการลบสมาชิกคนนี้ใช่หรือไม่
                     </p>
-                    <div style="background:#fff7f6;border:1px solid #ffe0dc;padding:13px;border-radius:12px;">
-                        <strong style="font-size:16px;color:#b94141;">
+                    <div class="rounded-xl border border-red-100 bg-red-50 p-4">
+                        <strong class="text-base font-bold text-red-700">
                             ${escapeHTML(user.name ?? '-')}
                         </strong>
-                        <p style="font-size:12px;color:#94a3b8;margin-top:5px;">
+                        <p class="mt-1 text-xs text-red-400">
                             @${escapeHTML(user.username ?? '-')}
                         </p>
                     </div>
+                    <p class="mt-3 text-xs text-slate-400">
+                        เมื่อลบแล้วจะไม่สามารถย้อนกลับได้
+                    </p>
                 </div>
             `,
             showCancelButton: true,
@@ -378,7 +463,6 @@ export default function Profile() {
             <Navbar />
 
             <main className="mx-auto max-w-[1450px] px-4 pb-24 pt-5 sm:px-6 sm:pt-7 md:pb-12 md:pt-24 lg:px-8">
-
                 <section className="mb-5 flex flex-col justify-between gap-4 lg:mb-7 lg:flex-row lg:items-end">
                     <div>
                         <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
@@ -402,10 +486,7 @@ export default function Profile() {
                             disabled={loading}
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-50"
                         >
-                            <RefreshCw
-                                size={17}
-                                className={loading ? 'animate-spin' : ''}
-                            />
+                            <RefreshCw size={17} className={loading ? 'animate-spin' : ''} />
                             รีเฟรช
                         </button>
 
@@ -492,7 +573,6 @@ export default function Profile() {
                 </section>
 
                 <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
-
                     <div className="flex flex-col gap-3 border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                             <div className="flex items-center gap-2">
