@@ -1,8 +1,10 @@
-
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { login, fetchUserProfile } from '../services/auth';
+import {
+    login,
+    fetchUserProfile,
+} from '../services/auth';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -46,40 +48,25 @@ export default function Login() {
     };
 
     return (
-        <main className="login-background flex min-h-screen items-center justify-center px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
-            <section className="login-card w-full max-w-md overflow-hidden rounded-3xl border border-white bg-white shadow-xl shadow-emerald-950/5 sm:rounded-[28px] md:max-w-5xl md:shadow-2xl md:shadow-emerald-950/10">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f2f6f3] px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
 
-                {/* Mobile Header */}
-                <div className="brand-panel relative overflow-hidden px-6 py-8 text-center text-white md:hidden">
-                    <div className="brand-pattern absolute inset-0 opacity-50" />
+            <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-emerald-200/50 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-40 -right-24 h-[480px] w-[480px] rounded-full bg-teal-200/40 blur-3xl" />
 
-                    <div className="relative z-10">
-                        <div className="mx-auto mb-4 flex h-[76px] w-[76px] items-center justify-center rounded-2xl border border-white/30 bg-white p-2 shadow-lg">
-                            <img
-                                src="/logo.png"
-                                alt="ตราสัญลักษณ์ระบบ"
-                                className="h-full w-full object-contain"
-                            />
-                        </div>
+            <section className="relative z-10 w-full max-w-5xl overflow-hidden rounded-[28px] border border-white bg-white shadow-[0_25px_80px_-25px_rgba(15,70,50,0.22)]">
 
-                        <h1 className="text-2xl font-semibold tracking-tight">
-                            ระบบจัดการอุปกรณ์
-                        </h1>
+                <div className="grid md:grid-cols-2">
 
-                        <p className="mt-2 text-sm font-light text-emerald-50">
-                            Equipment Management System
-                        </p>
-                    </div>
-                </div>
+                    <aside className="relative hidden min-h-[620px] flex-col justify-between overflow-hidden bg-[#087f68] p-9 text-white md:flex lg:p-12">
 
-                <div className="md:grid md:grid-cols-2">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#087f68] via-[#079477] to-[#24ad88]" />
 
-                    {/* Brand Panel */}
-                    <aside className="brand-panel relative hidden min-h-[600px] flex-col justify-between overflow-hidden p-8 text-white md:flex md:p-9 lg:p-12">
-                        <div className="brand-pattern absolute inset-0 opacity-50" />
+                        <div className="pointer-events-none absolute -right-24 -top-20 h-80 w-80 rounded-full border-[45px] border-white/[0.07]" />
+                        <div className="pointer-events-none absolute -bottom-24 -left-20 h-72 w-72 rounded-full border-[35px] border-white/[0.07]" />
+                        <div className="pointer-events-none absolute right-12 top-1/2 h-32 w-32 rounded-full bg-white/[0.05]" />
 
                         <div className="relative z-10">
-                            <div className="mb-10 flex h-[76px] w-[76px] items-center justify-center rounded-2xl border border-white/30 bg-white p-2 shadow-lg">
+                            <div className="mb-12 flex h-[82px] w-[82px] items-center justify-center rounded-2xl bg-white p-2.5 shadow-xl shadow-emerald-950/15">
                                 <img
                                     src="/logo.png"
                                     alt="ตราสัญลักษณ์ระบบ"
@@ -87,104 +74,113 @@ export default function Login() {
                                 />
                             </div>
 
-                            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-light text-emerald-50">
-                                <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                                ระบบบริหารจัดการภายใน
-                            </p>
+                            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-medium text-emerald-50 backdrop-blur-sm">
+                                <span className="h-2 w-2 rounded-full bg-lime-300" />
+                                EQUIPMENT MANAGEMENT
+                            </div>
 
-                            <h2 className="text-3xl font-semibold leading-relaxed lg:text-4xl">
+                            <h1 className="text-3xl font-bold leading-[1.4] tracking-tight lg:text-[38px]">
                                 จัดการอุปกรณ์
                                 <br />
-                                ได้อย่างเป็นระบบ
-                            </h2>
+                                ให้เป็นเรื่องง่าย
+                            </h1>
 
-                            <p className="mt-5 max-w-sm text-sm font-light leading-7 text-emerald-50/90 lg:text-base">
-                                ระบบสำหรับบริหารจัดการข้อมูลอุปกรณ์
-                                ช่วยให้การเข้าถึงข้อมูลและการดำเนินงานสะดวก
-                                รวดเร็ว และมีประสิทธิภาพยิ่งขึ้น
+                            <p className="mt-5 max-w-sm text-sm leading-7 text-emerald-50/90 lg:text-base">
+                                ระบบบริหารจัดการข้อมูลอุปกรณ์
+                                ที่ช่วยให้การทำงานเป็นระเบียบ
+                                ค้นหาข้อมูลได้สะดวก และตรวจสอบได้ในที่เดียว
                             </p>
 
-                            <div className="mt-9 space-y-4">
-                                <div className="flex items-center gap-3">
-                                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-lg">
+                            <div className="mt-10 space-y-5">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg">
                                         ✓
-                                    </span>
+                                    </div>
                                     <div>
-                                        <p className="text-sm font-medium">
-                                            จัดการข้อมูลอย่างเป็นระบบ
+                                        <p className="text-sm font-semibold">
+                                            ข้อมูลอยู่ในที่เดียว
                                         </p>
-                                        <p className="mt-0.5 text-xs font-light text-emerald-100/80">
-                                            เข้าถึงข้อมูลได้สะดวก
+                                        <p className="mt-1 text-xs text-emerald-100/75">
+                                            จัดเก็บและค้นหาได้สะดวก
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
-                                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/15 text-lg">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-lg">
                                         ◈
-                                    </span>
+                                    </div>
                                     <div>
-                                        <p className="text-sm font-medium">
-                                            ใช้งานง่ายทุกอุปกรณ์
+                                        <p className="text-sm font-semibold">
+                                            ใช้งานได้ทุกหน้าจอ
                                         </p>
-                                        <p className="mt-0.5 text-xs font-light text-emerald-100/80">
-                                            รองรับแท็บเล็ตและคอมพิวเตอร์
+                                        <p className="mt-1 text-xs text-emerald-100/75">
+                                            รองรับทั้งคอมพิวเตอร์และแท็บเล็ต
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="relative z-10 mt-10 border-t border-white/20 pt-5 text-xs font-light leading-6 text-emerald-100/80">
-                            Equipment Management System
-                            <br />
-                            ระบบบริหารจัดการเพื่อการทำงานที่มีประสิทธิภาพ
+                        <div className="relative z-10 border-t border-white/20 pt-5">
+                            <p className="text-xs font-medium text-emerald-50">
+                                Equipment Management System
+                            </p>
+                            <p className="mt-1 text-[11px] text-emerald-100/70">
+                                ระบบบริหารจัดการเพื่อการทำงานที่มีประสิทธิภาพ
+                            </p>
                         </div>
-
-                        <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full border border-white/10" />
-                        <div className="pointer-events-none absolute -bottom-16 -right-8 h-44 w-44 rounded-full border border-white/10" />
                     </aside>
 
-                    {/* Login Form */}
-                    <div className="flex flex-col justify-center px-6 py-8 sm:px-9 sm:py-10 md:px-8 md:py-12 lg:px-12">
+                    <div className="flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
 
-                        <div className="mb-8 hidden md:block">
-                            <p className="mb-2 text-sm font-medium tracking-wide text-emerald-700">
+                        <div className="mb-8 flex items-center gap-3 md:hidden">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-slate-100 bg-white p-2 shadow-sm">
+                                <img
+                                    src="/logo.png"
+                                    alt="ตราสัญลักษณ์ระบบ"
+                                    className="h-full w-full object-contain"
+                                />
+                            </div>
+
+                            <div>
+                                <p className="text-base font-bold text-slate-800">
+                                    ระบบจัดการอุปกรณ์
+                                </p>
+                                <p className="mt-1 text-[11px] text-slate-400">
+                                    Equipment Management System
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mb-8">
+                            <div className="mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.18em] text-emerald-700">
+                                <span className="h-[2px] w-6 rounded-full bg-emerald-500" />
                                 WELCOME BACK
-                            </p>
+                            </div>
 
-                            <h2 className="text-3xl font-semibold tracking-tight text-slate-900">
+                            <h2 className="text-3xl font-bold tracking-tight text-slate-800">
                                 เข้าสู่ระบบ
                             </h2>
 
                             <p className="mt-3 text-sm leading-6 text-slate-500">
-                                กรุณากรอกชื่อผู้ใช้และรหัสผ่านเพื่อดำเนินการต่อ
-                            </p>
-                        </div>
-
-                        <div className="mb-7 md:hidden">
-                            <h2 className="text-2xl font-semibold text-slate-900">
-                                ยินดีต้อนรับ
-                            </h2>
-
-                            <p className="mt-2 text-sm text-slate-500">
-                                เข้าสู่ระบบเพื่อเริ่มใช้งาน
+                                ยินดีต้อนรับกลับมา
+                                กรุณากรอกข้อมูลเพื่อเข้าใช้งานระบบ
                             </p>
                         </div>
 
                         <form onSubmit={handleSubmit} className="space-y-5">
 
-                            {/* Username */}
                             <div>
                                 <label
                                     htmlFor="username"
-                                    className="mb-2 block text-sm font-medium text-slate-700"
+                                    className="mb-2 block text-sm font-semibold text-slate-700"
                                 >
                                     ชื่อผู้ใช้
                                 </label>
 
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                <div className="group relative">
+                                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition group-focus-within:text-emerald-600">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="20"
@@ -210,22 +206,21 @@ export default function Login() {
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                         placeholder="กรอกชื่อผู้ใช้"
-                                        className="input-field w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-4 text-sm text-slate-800 placeholder:text-slate-400"
+                                        className="w-full rounded-xl border border-slate-200 bg-[#f8faf9] py-3.5 pl-12 pr-4 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-50"
                                     />
                                 </div>
                             </div>
 
-                            {/* Password */}
                             <div>
                                 <label
                                     htmlFor="password"
-                                    className="mb-2 block text-sm font-medium text-slate-700"
+                                    className="mb-2 block text-sm font-semibold text-slate-700"
                                 >
                                     รหัสผ่าน
                                 </label>
 
-                                <div className="relative">
-                                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                                <div className="group relative">
+                                    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition group-focus-within:text-emerald-600">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             width="20"
@@ -251,13 +246,13 @@ export default function Login() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="กรอกรหัสผ่าน"
-                                        className="input-field w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-12 pr-14 text-sm text-slate-800 placeholder:text-slate-400"
+                                        className="w-full rounded-xl border border-slate-200 bg-[#f8faf9] py-3.5 pl-12 pr-14 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-50"
                                     />
 
                                     <button
                                         type="button"
-                                        onClick={() => setShowPassword((prev) => !prev)}
-                                        className="absolute inset-y-0 right-0 flex items-center justify-center rounded-r-xl px-4 text-slate-400 transition hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-emerald-500"
+                                        onClick={() => setShowPassword(prev => !prev)}
+                                        className="absolute inset-y-0 right-0 flex items-center justify-center rounded-r-xl px-4 text-slate-400 transition hover:text-emerald-700 focus:outline-none"
                                         aria-label={showPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
                                         aria-pressed={showPassword}
                                     >
@@ -298,47 +293,57 @@ export default function Login() {
                                 </div>
                             </div>
 
-                            {/* Forgot Password */}
                             <div className="flex justify-end pt-0.5">
                                 <Link
                                     to="/forgot-password"
-                                    className="text-sm font-medium text-emerald-700 transition hover:text-emerald-900 hover:underline"
+                                    className="text-sm font-semibold text-emerald-700 transition hover:text-emerald-900 hover:underline"
                                 >
                                     ลืมรหัสผ่าน?
                                 </Link>
                             </div>
 
-                            {/* Login Button */}
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="login-button flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-base font-medium text-white shadow-lg shadow-emerald-700/10 focus:outline-none focus:ring-4 focus:ring-emerald-200 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#07866d] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-800/15 transition hover:-translate-y-0.5 hover:bg-[#06745f] hover:shadow-xl hover:shadow-emerald-800/20 focus:outline-none focus:ring-4 focus:ring-emerald-100 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0"
                             >
-                                {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
-
-                                {!loading && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="19"
-                                        height="19"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <path d="M5 12h14" />
-                                        <path d="m12 5 7 7-7 7" />
-                                    </svg>
+                                {loading ? (
+                                    <>
+                                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                                        กำลังเข้าสู่ระบบ...
+                                    </>
+                                ) : (
+                                    <>
+                                        เข้าสู่ระบบ
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="19"
+                                            height="19"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            className="transition-transform group-hover:translate-x-1"
+                                        >
+                                            <path d="M5 12h14" />
+                                            <path d="m12 5 7 7-7 7" />
+                                        </svg>
+                                    </>
                                 )}
                             </button>
                         </form>
 
-                        <div className="mt-8 border-t border-slate-100 pt-5 text-center">
+                        <div className="mt-9 border-t border-slate-100 pt-5 text-center">
+                            <div className="mb-3 flex items-center justify-center gap-2 text-xs text-slate-400">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                                ระบบพร้อมให้บริการ
+                            </div>
+
                             <p className="text-xs leading-6 text-slate-400">
                                 ระบบจัดการอุปกรณ์
-                                <span className="mx-1 text-slate-300">•</span>
+                                <span className="mx-1.5 text-slate-300">•</span>
                                 สำหรับผู้ใช้งานที่ได้รับอนุญาต
                             </p>
                         </div>
