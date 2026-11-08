@@ -1,6 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Swal from 'sweetalert2';
-import { Pencil, Trash2, Plus } from 'lucide-react';
+import {
+    Pencil,
+    Trash2,
+    Plus,
+    Search,
+    RefreshCw,
+    Package,
+    Boxes,
+    CheckCircle2,
+    PackageCheck,
+    ArrowUpRight,
+    Wrench,
+    X,
+} from 'lucide-react';
 import Navbar from '../components/Navbar';
 
 import {
@@ -15,6 +29,7 @@ export default function Dashboard() {
     const [equipments, setEquipments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [search, setSearch] = useState('');
 
     const loadEquipments = useCallback(async () => {
         setLoading(true);
@@ -22,11 +37,12 @@ export default function Dashboard() {
 
         try {
             const data = await getEquipments();
-            const sortedEquipments = [...data].sort(
-                (a, b) => Number(a.EID) - Number(b.EID)
-            );
 
-            setEquipments(sortedEquipments);
+            setEquipments(
+                [...data].sort(
+                    (a, b) => Number(a.EID) - Number(b.EID)
+                )
+            );
         } catch (err) {
             setError(err.message || 'ไม่สามารถโหลดข้อมูลอุปกรณ์ได้');
         } finally {
@@ -38,18 +54,49 @@ export default function Dashboard() {
         loadEquipments();
     }, [loadEquipments]);
 
-    async function handleAdd() {
+    const filteredEquipments = useMemo(() => {
+        const keyword = search.trim().toLowerCase();
+
+        if (!keyword) return equipments;
+
+        return equipments.filter(item =>
+            String(item.EID).toLowerCase().includes(keyword) ||
+            String(item.EName || '').toLowerCase().includes(keyword)
+        );
+    }, [equipments, search]);
+
+    const totalEquipment = equipments.reduce(
+        (sum, item) => sum + (Number(item.Total) || 0),
+        0
+    );
+
+    const availableEquipment = equipments.reduce(
+        (sum, item) => sum + (Number(item.Available) || 0),
+        0
+    );
+
+    const usedEquipment = Math.max(
+        totalEquipment - availableEquipment,
+        0
+    );
+
+    const escapeHTML = (value) =>
+        String(value ?? '').replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+        })[char]);
+
+    async function showEquipmentForm(equipment = null) {
+        const isEdit = Boolean(equipment);
+
         const result = await Swal.fire({
-            title: `
-            <div style="font-size:22px;font-weight:700;color:#0f172a;">
-                เพิ่มอุปกรณ์ใหม่
-            </div>
-        `,
+            title: isEdit ? 'แก้ไขข้อมูลอุปกรณ์' : 'เพิ่มอุปกรณ์ใหม่',
             html: `
-            <div style="text-align:left;margin-top:20px;">
-                <div style="margin-bottom:18px;">
-                    <label for="equipment-name"
-                        style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#334155;">
+                <div style="text-align:left;margin-top:12px;">
+                    <label style="display:block;margin-bottom:7px;font-size:14px;font-weight:600;color:#334155;">
                         ชื่ออุปกรณ์
                     </label>
                     <input
@@ -57,14 +104,12 @@ export default function Dashboard() {
                         class="swal2-input"
                         type="text"
                         maxlength="150"
-                        placeholder="เช่น คอมพิวเตอร์, เครื่องพิมพ์"
-                        style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;font-size:15px;box-shadow:none;"
+                        placeholder="กรอกชื่ออุปกรณ์"
+                        value="${escapeHTML(equipment?.EName || '')}"
+                        style="box-sizing:border-box;width:100%;margin:0 0 20px;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:15px;box-shadow:none;"
                     />
-                </div>
 
-                <div style="margin-bottom:8px;">
-                    <label for="equipment-total"
-                        style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#334155;">
+                    <label style="display:block;margin-bottom:7px;font-size:14px;font-weight:600;color:#334155;">
                         จำนวนอุปกรณ์ทั้งหมด
                     </label>
                     <input
@@ -73,36 +118,30 @@ export default function Dashboard() {
                         type="number"
                         min="0"
                         step="1"
-                        placeholder="กรอกจำนวนอุปกรณ์"
-                        style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;font-size:15px;box-shadow:none;"
+                        placeholder="กรอกจำนวน"
+                        value="${equipment?.Total ?? ''}"
+                        style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #dbe3e8;border-radius:10px;padding:0 13px;font-size:15px;box-shadow:none;"
                     />
-                    <p style="margin:8px 0 0;font-size:12px;color:#64748b;">
-                        สามารถระบุจำนวน 0 ขึ้นไปได้
+                    <p style="font-size:12px;color:#94a3b8;margin-top:8px;">
+                        ระบุจำนวนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป
                     </p>
                 </div>
-            </div>
-        `,
-            width: '460px',
+            `,
+            width: '440px',
             padding: '28px',
-            background: '#ffffff',
-            color: '#0f172a',
             showCancelButton: true,
-            confirmButtonText: 'บันทึกอุปกรณ์',
+            confirmButtonText: isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มอุปกรณ์',
             cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#15803d',
-            cancelButtonColor: '#ea580c',
-            buttonsStyling: true,
+            confirmButtonColor: '#15966b',
+            cancelButtonColor: '#64748b',
             reverseButtons: true,
             focusConfirm: false,
             allowOutsideClick: false,
-            customClass: {
-                popup: 'equipment-popup',
-                confirmButton: 'equipment-confirm-btn',
-                cancelButton: 'equipment-cancel-btn',
-            },
+
             didOpen: () => {
-                document.getElementById('equipment-name').focus();
+                document.getElementById('equipment-name')?.focus();
             },
+
             preConfirm: () => {
                 const nameInput = document.getElementById('equipment-name');
                 const totalInput = document.getElementById('equipment-total');
@@ -136,27 +175,33 @@ export default function Dashboard() {
         if (!result.isConfirmed || !result.value) return;
 
         try {
-            await createEquipment(
-                result.value.name,
-                result.value.total
-            );
+            if (isEdit) {
+                await updateEquipment(
+                    equipment.EID,
+                    result.value.name,
+                    result.value.total
+                );
+            } else {
+                await createEquipment(
+                    result.value.name,
+                    result.value.total
+                );
+            }
 
             await Swal.fire({
                 icon: 'success',
-                title: 'เพิ่มอุปกรณ์สำเร็จ',
-                text: `เพิ่ม "${result.value.name}" จำนวน ${result.value.total} ชิ้นเรียบร้อยแล้ว`,
-                timer: 1800,
-                timerProgressBar: true,
+                title: isEdit ? 'แก้ไขข้อมูลสำเร็จ' : 'เพิ่มอุปกรณ์สำเร็จ',
+                text: 'บันทึกข้อมูลเรียบร้อยแล้ว',
+                timer: 1600,
                 showConfirmButton: false,
             });
 
             await loadEquipments();
         } catch (err) {
-            await Swal.fire({
+            Swal.fire({
                 icon: 'error',
-                title: 'เพิ่มอุปกรณ์ไม่สำเร็จ',
-                text: err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
-                confirmButtonText: 'ตกลง',
+                title: 'เกิดข้อผิดพลาด',
+                text: err.message || 'กรุณาลองใหม่อีกครั้ง',
                 confirmButtonColor: '#dc2626',
             });
         }
@@ -171,149 +216,12 @@ export default function Dashboard() {
                 throw new Error('ไม่พบข้อมูลอุปกรณ์');
             }
 
-            const result = await Swal.fire({
-                title: `
-                <div style="font-size:22px;font-weight:700;color:#0f172a;">
-                    แก้ไขข้อมูลอุปกรณ์
-                </div>
-            `,
-                html: `
-                <div style="text-align:left;margin-top:20px;">
-                    <div style="margin-bottom:18px;">
-                        <h for="equipment-name"
-                            style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#334155;">
-                            ชื่ออุปกรณ์
-                        </h>
-                        <input
-                            id="equipment-name"
-                            class="swal2-input"
-                            type="text"
-                            maxlength="150"
-                            placeholder="กรอกชื่ออุปกรณ์"
-                            style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;font-size:15px;box-shadow:none;"
-                        />
-                    </div>
-
-                    <div style="margin-bottom:8px;">
-                        <label for="equipment-total"
-                            style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#334155;">
-                            จำนวนอุปกรณ์ทั้งหมด
-                        </label>
-                        <input
-                            id="equipment-total"
-                            class="swal2-input"
-                            type="number"
-                            min="0"
-                            step="1"
-                            placeholder="กรอกจำนวนอุปกรณ์"
-                            style="box-sizing:border-box;width:100%;margin:0;height:46px;border:1px solid #cbd5e1;border-radius:10px;padding:0 14px;font-size:15px;box-shadow:none;"
-                        />
-                        <p style="margin:8px 0 0;font-size:12px;color:#64748b;">
-                            ระบุจำนวนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป
-                        </p>
-                    </div>
-                </div>
-            `,
-                width: '460px',
-                padding: '28px',
-                background: '#ffffff',
-                color: '#0f172a',
-                showCancelButton: true,
-                confirmButtonText: 'บันทึกการแก้ไข',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#09ff00',
-                cancelButtonColor: '#ea580c',
-                buttonsStyling: true,
-                reverseButtons: true,
-                focusConfirm: false,
-                allowOutsideClick: false,
-
-                didOpen: () => {
-                    const nameInput =
-                        document.getElementById('equipment-name');
-
-                    const totalInput =
-                        document.getElementById('equipment-total');
-
-                    nameInput.value = equipment.EName ?? '';
-                    totalInput.value = equipment.Total ?? 0;
-
-                    nameInput.focus();
-                },
-
-                preConfirm: () => {
-                    const nameInput =
-                        document.getElementById('equipment-name');
-
-                    const totalInput =
-                        document.getElementById('equipment-total');
-
-                    const name = nameInput.value.trim();
-                    const totalValue = totalInput.value;
-                    const total = Number(totalValue);
-
-                    if (!name) {
-                        Swal.showValidationMessage(
-                            'กรุณากรอกชื่ออุปกรณ์'
-                        );
-                        nameInput.focus();
-                        return false;
-                    }
-
-                    if (
-                        totalValue === '' ||
-                        !Number.isInteger(total) ||
-                        total < 0
-                    ) {
-                        Swal.showValidationMessage(
-                            'กรุณากรอกจำนวนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป'
-                        );
-                        totalInput.focus();
-                        return false;
-                    }
-
-                    return { name, total };
-                },
-            });
-
-            if (!result.isConfirmed || !result.value) return;
-
-            await updateEquipment(
-                id,
-                result.value.name,
-                result.value.total
-            );
-
-            await Swal.fire({
-                icon: 'success',
-                title: 'แก้ไขข้อมูลสำเร็จ',
-                html: `
-                <p style="color:#64748b;font-size:14px;">
-                    บันทึกข้อมูลอุปกรณ์
-                    <strong style="color:#0f172a;">
-                        ${result.value.name.replace(/[&<>"']/g, char => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#39;'
-                })[char])}
-                    </strong>
-                    เรียบร้อยแล้ว
-                </p>
-            `,
-                timer: 1800,
-                timerProgressBar: true,
-                showConfirmButton: false,
-            });
-
-            await loadEquipments();
+            await showEquipmentForm(equipment);
         } catch (err) {
-            await Swal.fire({
+            Swal.fire({
                 icon: 'error',
-                title: 'แก้ไขข้อมูลไม่สำเร็จ',
-                text: err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
-                confirmButtonText: 'ตกลง',
+                title: 'ไม่สามารถโหลดข้อมูลได้',
+                text: err.message || 'กรุณาลองใหม่อีกครั้ง',
                 confirmButtonColor: '#dc2626',
             });
         }
@@ -321,75 +229,32 @@ export default function Dashboard() {
 
     async function handleDelete(equipment) {
         const result = await Swal.fire({
-            title: `
-            <div style="font-size:22px;font-weight:700;color:#0f172a;">
-                ยืนยันการลบอุปกรณ์
-            </div>
-        `,
+            title: 'ยืนยันการลบ?',
             html: `
-            <div style="margin-top:16px;text-align:center;">
-                <div style="
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    width:64px;
-                    height:64px;
-                    margin:0 auto 16px;
-                    border-radius:50%;
-                    background:#fef2f2;
-                    color:#dc2626;
-                    font-size:30px;
-                ">
-                    !
-                </div>
-
-                <p style="margin:0 0 8px;font-size:14px;color:#64748b;">
-                    คุณกำลังจะลบอุปกรณ์รายการนี้
-                </p>
-
-                <div style="
-                    padding:14px;
-                    border:1px solid #fecaca;
-                    border-radius:12px;
-                    background:#fff7f7;
-                ">
-                    <p style="margin:0;font-size:16px;font-weight:700;color:#b91c1c;">
-                        ${String(equipment.EName ?? '').replace(/[&<>"']/g, char => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            })[char])}
+                <div style="padding:12px 0;">
+                    <div style="width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:#fff1f0;display:flex;align-items:center;justify-content:center;color:#e05252;">
+                        <span style="font-size:32px;font-weight:bold;">!</span>
+                    </div>
+                    <p style="color:#64748b;font-size:14px;margin-bottom:10px;">
+                        คุณต้องการลบอุปกรณ์รายการนี้ใช่หรือไม่
                     </p>
-                    <p style="margin:6px 0 0;font-size:12px;color:#64748b;">
-                        รหัสอุปกรณ์: ${String(equipment.EID ?? '').replace(/[&<>"']/g, char => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            })[char])}
-                    </p>
+                    <div style="background:#fff7f6;border:1px solid #ffe0dc;padding:14px;border-radius:12px;">
+                        <strong style="color:#c2413b;font-size:16px;">
+                            ${escapeHTML(equipment.EName)}
+                        </strong>
+                        <p style="color:#94a3b8;font-size:12px;margin-top:5px;">
+                            รหัสอุปกรณ์: ${escapeHTML(equipment.EID)}
+                        </p>
+                    </div>
                 </div>
-
-                <p style="margin:14px 0 0;font-size:13px;color:#dc2626;">
-                    การลบข้อมูลนี้อาจไม่สามารถย้อนกลับได้
-                </p>
-            </div>
-        `,
-            width: '430px',
-            padding: '28px',
-            background: '#ffffff',
+            `,
             showCancelButton: true,
             confirmButtonText: 'ยืนยันลบ',
             cancelButtonText: 'ยกเลิก',
-            confirmButtonColor: '#dc2626',
-            cancelButtonColor: '#a7ccfd',
-            buttonsStyling: true,
+            confirmButtonColor: '#dc5252',
+            cancelButtonColor: '#64748b',
             reverseButtons: true,
             focusCancel: true,
-            allowOutsideClick: false,
         });
 
         if (!result.isConfirmed) return;
@@ -399,265 +264,520 @@ export default function Dashboard() {
 
             await Swal.fire({
                 icon: 'success',
-                title: 'ลบอุปกรณ์สำเร็จ',
-                text: `ลบ "${equipment.EName}" เรียบร้อยแล้ว`,
-                timer: 1800,
-                timerProgressBar: true,
+                title: 'ลบข้อมูลสำเร็จ',
+                timer: 1500,
                 showConfirmButton: false,
             });
 
             await loadEquipments();
         } catch (err) {
-            await Swal.fire({
+            Swal.fire({
                 icon: 'error',
-                title: 'ลบอุปกรณ์ไม่สำเร็จ',
-                text: err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง',
-                confirmButtonText: 'ตกลง',
+                title: 'ลบข้อมูลไม่สำเร็จ',
+                text: err.message || 'กรุณาลองใหม่อีกครั้ง',
                 confirmButtonColor: '#dc2626',
             });
         }
     }
 
+    const stats = [
+        {
+            title: 'รายการอุปกรณ์',
+            value: equipments.length,
+            unit: 'รายการ',
+            icon: Package,
+            color: 'bg-blue-50 text-blue-600',
+            accent: 'bg-blue-500',
+            description: 'อุปกรณ์ทั้งหมดในระบบ',
+        },
+        {
+            title: 'จำนวนอุปกรณ์',
+            value: totalEquipment,
+            unit: 'ชิ้น',
+            icon: Boxes,
+            color: 'bg-violet-50 text-violet-600',
+            accent: 'bg-violet-500',
+            description: 'จำนวนอุปกรณ์ทั้งหมด',
+        },
+        {
+            title: 'พร้อมใช้งาน',
+            value: availableEquipment,
+            unit: 'ชิ้น',
+            icon: CheckCircle2,
+            color: 'bg-emerald-50 text-emerald-600',
+            accent: 'bg-emerald-500',
+            description: 'อุปกรณ์ที่ยังพร้อมใช้งาน',
+        },
+        {
+            title: 'กำลังถูกใช้งาน',
+            value: usedEquipment,
+            unit: 'ชิ้น',
+            icon: PackageCheck,
+            color: 'bg-orange-50 text-orange-600',
+            accent: 'bg-orange-500',
+            description: 'อุปกรณ์ที่ถูกนำไปใช้งาน',
+        },
+    ];
+
     return (
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-[#f5f7f6]">
             <Navbar />
 
-            <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 md:pt-24">
-                <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <div>
-                        <p className="mb-1 text-sm font-semibold text-green-700">
-                            ระบบจัดการอุปกรณ์
-                        </p>
+            <main className="mx-auto max-w-[1450px] px-4 pb-12 pt-24 sm:px-6 lg:px-8">
 
-                        <h1 className="text-2xl font-bold text-slate-800 sm:text-3xl">
-                            รายการอุปกรณ์
+                {/* Header */}
+                <div className="mb-8 flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+                    <div>
+                        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
+                            <span className="h-2 w-2 rounded-full bg-emerald-500"></span>
+                            EQUIPMENT MANAGEMENT
+                        </div>
+
+                        <h1 className="text-3xl font-bold tracking-tight text-slate-800 sm:text-4xl">
+                            จัดการอุปกรณ์
                         </h1>
 
-                        <p className="mt-2 text-sm text-slate-500">
-                            จัดการข้อมูลและจำนวนอุปกรณ์ภายในระบบ
+                        <p className="mt-2 text-sm text-slate-500 sm:text-base">
+                            จัดการข้อมูล ตรวจสอบจำนวน และติดตามสถานะอุปกรณ์ทั้งหมด
                         </p>
                     </div>
 
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <button
                             type="button"
                             onClick={loadEquipments}
                             disabled={loading}
-                            className="rounded-xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-50"
                         >
-                            {loading ? 'กำลังโหลด...' : 'รีเฟรช'}
+                            <RefreshCw
+                                size={17}
+                                className={loading ? 'animate-spin' : ''}
+                            />
+                            รีเฟรช
                         </button>
 
                         <button
                             type="button"
-                            onClick={handleAdd}
-                            className="rounded-2xl bg-green-700 px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-green-800"
+                            onClick={() => showEquipmentForm()}
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-emerald-600/20 transition hover:-translate-y-0.5 hover:bg-emerald-700"
                         >
-                            <Plus size={20} /> เพิ่มอุปกรณ์
-                        </button>   
-                    </div>
-                </div>
-
-                <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">รายการอุปกรณ์</p>
-                        <p className="mt-2 text-3xl font-bold text-slate-800">
-                            {equipments.length}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">รายการ</p>
-                    </div>
-
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">จำนวนทั้งหมด</p>
-                        <p className="mt-2 text-3xl font-bold text-blue-700">
-                            {equipments.reduce(
-                                (sum, item) => sum + (Number(item.Total) || 0),
-                                0
-                            )}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">ชิ้น</p>
-                    </div>
-
-                    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                        <p className="text-sm text-slate-500">จำนวนพร้อมใช้งาน</p>
-                        <p className="mt-2 text-3xl font-bold text-green-700">
-                            {equipments.reduce(
-                                (sum, item) => sum + (Number(item.Available) || 0),
-                                0
-                            )}
-                        </p>
-                        <p className="mt-1 text-xs text-slate-400">ชิ้น</p>
-                    </div>
-                </div>
-
-                {error && (
-                    <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                        <p className="font-semibold">โหลดข้อมูลไม่สำเร็จ</p>
-                        <p className="mt-1">{error}</p>
-                        <button
-                            type="button"
-                            onClick={loadEquipments}
-                            className="mt-3 font-semibold underline"
-                        >
-                            ลองอีกครั้ง
+                            <Plus size={19} />
+                            เพิ่มอุปกรณ์
                         </button>
                     </div>
-                )}
+                </div>
 
-                <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                    <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
-                        <h2 className="font-bold text-slate-800">
-                            ข้อมูลอุปกรณ์ทั้งหมด
-                        </h2>
-                        <span className="text-sm text-slate-500">
-                            {equipments.length} รายการ
-                        </span>
+                {/* Welcome Banner */}
+                <div className="relative mb-7 overflow-hidden rounded-2xl bg-gradient-to-r from-[#087f68] via-[#109879] to-[#22a887] px-6 py-7 text-white shadow-lg shadow-emerald-900/10 sm:px-8">
+                    <div className="relative z-10 flex items-center justify-between gap-5">
+                        <div>
+                            <p className="text-sm font-medium text-emerald-100">
+                                ภาพรวมการจัดการอุปกรณ์
+                            </p>
+                            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
+                                ทุกอย่างพร้อมจัดการในที่เดียว
+                            </h2>
+                            <p className="mt-2 text-sm text-emerald-50/90">
+                                ตรวจสอบข้อมูลและสถานะอุปกรณ์ได้อย่างสะดวก
+                            </p>
+                        </div>
+
+                        <div className="hidden h-20 w-20 items-center justify-center rounded-2xl bg-white/15 sm:flex">
+                            <Wrench size={42} strokeWidth={1.5} />
+                        </div>
+                    </div>
+
+                    <div className="absolute -right-10 -top-20 h-64 w-64 rounded-full border-[35px] border-white/10"></div>
+                    <div className="absolute -bottom-28 right-40 h-48 w-48 rounded-full bg-white/5"></div>
+                </div>
+
+                {/* Statistics */}
+                <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    {stats.map((stat, index) => {
+                        const Icon = stat.icon;
+
+                        return (
+                            <div
+                                key={stat.title}
+                                className="group relative overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                            >
+                                <div className={`absolute left-0 top-0 h-full w-1 ${stat.accent}`}></div>
+
+                                <div className="flex items-start justify-between">
+                                    <div>
+                                        <p className="text-sm font-medium text-slate-500">
+                                            {stat.title}
+                                        </p>
+
+                                        <div className="mt-3 flex items-baseline gap-2">
+                                            <span className="text-3xl font-bold tracking-tight text-slate-800">
+                                                {stat.value.toLocaleString('th-TH')}
+                                            </span>
+                                            <span className="text-xs text-slate-400">
+                                                {stat.unit}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${stat.color} transition group-hover:scale-110`}>
+                                        <Icon size={23} />
+                                    </div>
+                                </div>
+
+                                <div className="mt-5 flex items-center justify-between">
+                                    <p className="text-xs text-slate-400">
+                                        {stat.description}
+                                    </p>
+                                    <ArrowUpRight
+                                        size={16}
+                                        className="text-slate-300 transition group-hover:text-emerald-600"
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Equipment Section */}
+                <section className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+
+                    <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                                    <Package size={19} />
+                                </div>
+
+                                <h2 className="text-lg font-bold text-slate-800">
+                                    รายการอุปกรณ์ทั้งหมด
+                                </h2>
+                            </div>
+
+                            <p className="mt-2 text-sm text-slate-400">
+                                ข้อมูลอุปกรณ์ที่อยู่ในระบบ
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-3 sm:flex-row">
+                            <div className="relative">
+                                <Search
+                                    size={18}
+                                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                                />
+
+                                <input
+                                    type="text"
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    placeholder="ค้นหาชื่อหรือรหัสอุปกรณ์..."
+                                    className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-10 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:bg-white focus:ring-4 focus:ring-emerald-50 sm:w-72"
+                                />
+
+                                {search && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearch('')}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {error && (
+                        <div className="m-5 rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+                            <p className="font-semibold">
+                                ไม่สามารถโหลดข้อมูลได้
+                            </p>
+                            <p className="mt-1">{error}</p>
+
+                            <button
+                                type="button"
+                                onClick={loadEquipments}
+                                className="mt-2 font-semibold underline"
+                            >
+                                ลองอีกครั้ง
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-5 py-3 sm:px-6">
+                        <p className="text-xs text-slate-500">
+                            แสดงข้อมูล
+                            <span className="mx-1 font-bold text-emerald-700">
+                                {filteredEquipments.length}
+                            </span>
+                            จาก {equipments.length} รายการ
+                        </p>
+
+                        {search && (
+                            <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+                                ผลการค้นหา
+                            </span>
+                        )}
                     </div>
 
                     {loading ? (
-                        <div className="px-6 py-16 text-center text-slate-500">
-                            กำลังโหลดข้อมูลอุปกรณ์...
+                        <div className="flex flex-col items-center justify-center px-6 py-20">
+                            <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-100 border-t-emerald-600"></div>
+                            <p className="mt-4 text-sm text-slate-500">
+                                กำลังโหลดข้อมูลอุปกรณ์...
+                            </p>
                         </div>
-                    ) : equipments.length === 0 ? (
-                        <div className="px-6 py-16 text-center">
-                            <p className="font-semibold text-slate-700">
-                                ยังไม่มีข้อมูลอุปกรณ์
+                    ) : filteredEquipments.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
+                            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-50 text-slate-300">
+                                <Package size={38} />
+                            </div>
+
+                            <h3 className="mt-5 font-bold text-slate-700">
+                                {search
+                                    ? 'ไม่พบอุปกรณ์ที่ค้นหา'
+                                    : 'ยังไม่มีข้อมูลอุปกรณ์'}
+                            </h3>
+
+                            <p className="mt-2 text-sm text-slate-400">
+                                {search
+                                    ? 'ลองค้นหาด้วยชื่อหรือรหัสอุปกรณ์อื่น'
+                                    : 'เริ่มต้นเพิ่มอุปกรณ์รายการแรกของคุณ'}
                             </p>
-                            <p className="mt-2 text-sm text-slate-500">
-                                กดปุ่มเพิ่มอุปกรณ์เพื่อเริ่มต้น
-                            </p>
+
+                            {search ? (
+                                <button
+                                    type="button"
+                                    onClick={() => setSearch('')}
+                                    className="mt-5 rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200"
+                                >
+                                    ล้างการค้นหา
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    onClick={() => showEquipmentForm()}
+                                    className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-700"
+                                >
+                                    <Plus size={17} />
+                                    เพิ่มอุปกรณ์
+                                </button>
+                            )}
                         </div>
                     ) : (
                         <>
+                            {/* Desktop Table */}
                             <div className="hidden overflow-x-auto md:block">
                                 <table className="w-full text-left text-sm">
-                                    <thead className="bg-slate-50 text-slate-600">
-                                        <tr>
-                                            <th className="px-5 py-4 font-semibold">รหัส</th>
-                                            <th className="px-5 py-4 font-semibold">ชื่ออุปกรณ์</th>
-                                            <th className="px-5 py-4 text-center font-semibold">
+                                    <thead>
+                                        <tr className="bg-[#f8faf9] text-xs uppercase tracking-wide text-slate-500">
+                                            <th className="px-6 py-4 font-semibold">
+                                                รหัส
+                                            </th>
+                                            <th className="px-6 py-4 font-semibold">
+                                                ชื่ออุปกรณ์
+                                            </th>
+                                            <th className="px-6 py-4 text-center font-semibold">
                                                 จำนวนทั้งหมด
                                             </th>
-                                            <th className="px-5 py-4 text-center font-semibold">
+                                            <th className="px-6 py-4 text-center font-semibold">
                                                 พร้อมใช้งาน
                                             </th>
-                                            <th className="px-5 py-4 text-center font-semibold">
-                                                แก้ไข
+                                            <th className="px-6 py-4 text-center font-semibold">
+                                                สถานะ
                                             </th>
-                                            <th className="px-5 py-4 text-center font-semibold">
-                                                ลบ
+                                            <th className="px-6 py-4 text-center font-semibold">
+                                                จัดการ
                                             </th>
                                         </tr>
                                     </thead>
 
                                     <tbody className="divide-y divide-slate-100">
-                                        {equipments.map((item) => (
-                                            <tr
-                                                key={item.EID}
-                                                className="transition hover:bg-slate-50"
-                                            >
-                                                <td className="px-5 py-4 text-slate-500">
-                                                    {item.EID}
-                                                </td>
-                                                <td className="px-5 py-4 font-medium text-slate-800">
-                                                    {item.EName}
-                                                </td>
-                                                <td className="px-5 py-4 text-center text-slate-700">
-                                                    {item.Total ?? 0}
-                                                </td>
-                                                <td className="px-5 py-4 text-center">
-                                                    <span className="inline-flex rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                                                        {item.Available ?? 0}
-                                                    </span>
-                                                </td>
-                                                <td className="px-5 py-4">
-                                                    <div className="flex justify-center gap-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleEdit(item.EID)}
-                                                            title="แก้ไขอุปกรณ์"
-                                                            aria-label="แก้ไขอุปกรณ์"
-                                                            className="rounded-lg bg-orange-50 p-2.5 text-orange-600 transition-colors hover:bg-orange-100"
-                                                        >
-                                                            <Pencil size={24} />
-                                                            <span className="ml-2">แก้ไข</span>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                                <td className="px-5 py-4">
-                                                    <div className="flex justify-center gap-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleDelete(item)}
-                                                            title="ลบอุปกรณ์"
-                                                            aria-label="ลบอุปกรณ์"
-                                                            className="rounded-lg bg-red-50 p-2.5 text-red-600 transition-colors hover:bg-red-100"
-                                                        >
-                                                            <Trash2 size={24} />
-                                                            <span className="ml-2">ลบ</span>
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {filteredEquipments.map(item => {
+                                            const total = Number(item.Total) || 0;
+                                            const available = Number(item.Available) || 0;
+                                            const isAvailable = available > 0;
+
+                                            return (
+                                                <tr
+                                                    key={item.EID}
+                                                    className="group transition-colors hover:bg-emerald-50/40"
+                                                >
+                                                    <td className="px-6 py-5">
+                                                        <span className="inline-flex rounded-lg bg-slate-100 px-3 py-1.5 font-mono text-xs font-semibold text-slate-600">
+                                                            #{item.EID}
+                                                        </span>
+                                                    </td>
+
+                                                    <td className="px-6 py-5">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                                                <Package size={19} />
+                                                            </div>
+
+                                                            <span className="font-semibold text-slate-700">
+                                                                {item.EName}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="px-6 py-5 text-center">
+                                                        <span className="font-semibold text-slate-700">
+                                                            {total.toLocaleString('th-TH')}
+                                                        </span>
+                                                        <span className="ml-1 text-xs text-slate-400">
+                                                            ชิ้น
+                                                        </span>
+                                                    </td>
+
+                                                    <td className="px-6 py-5 text-center">
+                                                        <span className="inline-flex min-w-16 items-center justify-center rounded-lg bg-emerald-50 px-3 py-2 font-bold text-emerald-700">
+                                                            {available.toLocaleString('th-TH')}
+                                                        </span>
+                                                    </td>
+
+                                                    <td className="px-6 py-5 text-center">
+                                                        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                                                            isAvailable
+                                                                ? 'bg-emerald-50 text-emerald-700'
+                                                                : 'bg-red-50 text-red-600'
+                                                        }`}>
+                                                            <span className={`h-1.5 w-1.5 rounded-full ${
+                                                                isAvailable
+                                                                    ? 'bg-emerald-500'
+                                                                    : 'bg-red-500'
+                                                            }`}></span>
+                                                            {isAvailable ? 'พร้อมใช้งาน' : 'หมด'}
+                                                        </span>
+                                                    </td>
+
+                                                    <td className="px-6 py-5">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleEdit(item.EID)}
+                                                                title="แก้ไข"
+                                                                className="flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+                                                            >
+                                                                <Pencil size={15} />
+                                                                แก้ไข
+                                                            </button>
+
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleDelete(item)}
+                                                                title="ลบ"
+                                                                className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-100"
+                                                            >
+                                                                <Trash2 size={15} />
+                                                                ลบ
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
 
+                            {/* Mobile Cards */}
                             <div className="grid grid-cols-1 gap-4 p-4 md:hidden">
-                                {equipments.map((item) => (
-                                    <article
-                                        key={item.EID}
-                                        className="rounded-xl border border-slate-200 p-4"
-                                    >
-                                        <div className="flex items-start justify-between gap-3">
-                                            <div>
-                                                <p className="text-xs text-slate-400">
-                                                    รหัสอุปกรณ์: {item.EID}
-                                                </p>
-                                                <h3 className="mt-1 font-bold text-slate-800">
-                                                    {item.EName}
-                                                </h3>
+                                {filteredEquipments.map(item => {
+                                    const total = Number(item.Total) || 0;
+                                    const available = Number(item.Available) || 0;
+                                    const isAvailable = available > 0;
+
+                                    return (
+                                        <article
+                                            key={item.EID}
+                                            className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition hover:shadow-md"
+                                        >
+                                            <div className="flex items-start justify-between gap-3 p-4">
+                                                <div className="flex min-w-0 items-center gap-3">
+                                                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                                        <Package size={23} />
+                                                    </div>
+
+                                                    <div className="min-w-0">
+                                                        <p className="text-xs text-slate-400">
+                                                            รหัส #{item.EID}
+                                                        </p>
+                                                        <h3 className="mt-1 break-words font-bold text-slate-800">
+                                                            {item.EName}
+                                                        </h3>
+                                                    </div>
+                                                </div>
+
+                                                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${
+                                                    isAvailable
+                                                        ? 'bg-emerald-50 text-emerald-700'
+                                                        : 'bg-red-50 text-red-600'
+                                                }`}>
+                                                    {isAvailable ? 'พร้อมใช้' : 'หมด'}
+                                                </span>
                                             </div>
 
-                                            <span className="shrink-0 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                                                พร้อมใช้ {item.Available ?? 0}
-                                            </span>
-                                        </div>
+                                            <div className="mx-4 grid grid-cols-2 gap-3 rounded-xl bg-slate-50 p-4">
+                                                <div>
+                                                    <p className="text-xs text-slate-400">
+                                                        จำนวนทั้งหมด
+                                                    </p>
+                                                    <p className="mt-1 text-xl font-bold text-slate-700">
+                                                        {total.toLocaleString('th-TH')}
+                                                        <span className="ml-1 text-xs font-normal text-slate-400">
+                                                            ชิ้น
+                                                        </span>
+                                                    </p>
+                                                </div>
 
-                                        <div className="mt-4 rounded-lg bg-slate-50 p-3">
-                                            <p className="text-sm text-slate-500">
-                                                จำนวนทั้งหมด
-                                            </p>
-                                            <p className="mt-1 text-xl font-bold text-slate-800">
-                                                {item.Total ?? 0} ชิ้น
-                                            </p>
-                                        </div>
+                                                <div className="border-l border-slate-200 pl-4">
+                                                    <p className="text-xs text-slate-400">
+                                                        พร้อมใช้งาน
+                                                    </p>
+                                                    <p className="mt-1 text-xl font-bold text-emerald-600">
+                                                        {available.toLocaleString('th-TH')}
+                                                        <span className="ml-1 text-xs font-normal text-slate-400">
+                                                            ชิ้น
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                        <div className="mt-4 grid grid-cols-2 gap-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => handleEdit(item.EID)}
-                                                className="flex items-center justify-center gap-2 rounded-lg bg-orange-50 px-3 py-2.5 font-medium text-orange-700 transition-colors hover:bg-orange-100"
-                                            >
-                                                <Pencil size={24} />
-                                                <span>แก้ไข</span>
-                                            </button>
+                                            <div className="grid grid-cols-2 gap-2 p-4">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleEdit(item.EID)}
+                                                    className="flex items-center justify-center gap-2 rounded-xl bg-amber-50 py-3 text-sm font-semibold text-amber-700 transition hover:bg-amber-100"
+                                                >
+                                                    <Pencil size={17} />
+                                                    แก้ไข
+                                                </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={() => handleDelete(item)}
-                                                className="flex items-center justify-center gap-2 rounded-lg bg-red-50 px-3 py-2.5 font-medium text-red-700 transition-colors hover:bg-red-100"
-                                            >
-                                                <Trash2 size={24} />
-                                                <span>ลบ</span>
-                                            </button>
-                                        </div>
-                                    </article>
-                                ))}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDelete(item)}
+                                                    className="flex items-center justify-center gap-2 rounded-xl bg-red-50 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100"
+                                                >
+                                                    <Trash2 size={17} />
+                                                    ลบ
+                                                </button>
+                                            </div>
+                                        </article>
+                                    );
+                                })}
                             </div>
                         </>
                     )}
+
+                    <div className="flex flex-col items-center justify-between gap-2 border-t border-slate-100 bg-slate-50/50 px-5 py-4 sm:flex-row sm:px-6">
+                        <p className="text-xs text-slate-400">
+                            BiwBoongShop · ระบบจัดการอุปกรณ์
+                        </p>
+
+                        <p className="text-xs font-medium text-slate-500">
+                            ทั้งหมด {equipments.length} รายการ
+                        </p>
+                    </div>
                 </section>
             </main>
         </div>
